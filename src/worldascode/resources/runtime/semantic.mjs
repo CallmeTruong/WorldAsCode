@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-// These generators are an optional reusable kit, not the native object's reconstruction route.
+// Reusable geometry generators and composition of owned Three.js factories.
 const SUPPORTED = new Set(['box','hollow_shaft','gable_roof','window_frame','tree','lamp','road_strip','rail_track','loft','roof_planes']);
 // A loft joins horizontal rings {y, points[[x,z]]} with flat faces and caps the top.
 // Rings are compiled from evidence in Python (massing.py); this only triangulates them,
@@ -112,14 +112,14 @@ function lamp(c,m) {
   g.add(box([w*.43,.12,Math.max(d,.23)],glow,'luminaire',[w*.85,h/2-.15,0]));
   const light=new THREE.PointLight(0xffd49a,0,12,2);light.position.set(w*.85,h/2-.3,0);light.userData.nightLight=true;g.add(light);return g;
 }
-export function buildWorld(world,nativeFactories={}) {
+export function buildWorld(world,factories={}) {
   const root=new THREE.Group();root.name='world';const definitions=new Map(world.blueprints.map(b=>[b.id,b]));
-  root.userData.components=[];root.userData.nativeAssets=[];const materialPools=new Map();
+  root.userData.components=[];root.userData.factoryAssets=[];const materialPools=new Map();
   for(const instance of world.instances) {
     const b=definitions.get(instance.blueprint);
-    if(b.origin==='native'){
-      const factory=nativeFactories[b.id];if(!factory)throw Error('NATIVE_BLUEPRINT_REQUIRES_NATIVE_FACTORY');
-      const asset=factory();asset.name=instance.id;asset.position.set(...instance.anchor);asset.rotation.y=instance.rotation_y;asset.scale.setScalar(instance.scale);root.add(asset);root.userData.nativeAssets.push(asset);continue;
+    if(b.origin==='factory'){
+      const factory=factories[b.id];if(!factory)throw Error('BLUEPRINT_REQUIRES_FACTORY');
+      const asset=factory({seed:(world.seed^instance.seed)>>>0,instanceId:instance.id});if(!asset?.isObject3D)throw Error('FACTORY_MUST_RETURN_OBJECT3D');asset.userData.instanceId=instance.id;asset.position.set(...instance.anchor);asset.rotation.y=instance.rotation_y;asset.scale.setScalar(instance.scale);root.add(asset);root.userData.factoryAssets.push(asset);continue;
     }
     if(!materialPools.has(b.id))materialPools.set(b.id,new Map(b.materials.map(v=>[v.id,material(v)])));
     const materials=materialPools.get(b.id);
@@ -191,17 +191,18 @@ export function semanticProbes(root) {
     }
   }
   for(const check of root.userData.semanticChecks??[]) {
-    const node=root.userData.sculptRuntime?.nodes?.[check.component_id];let passed=false,details={};
+    const node=root.getObjectByName(check.component_id);let passed=false,details={};
     if(node){
-      const axis=new THREE.Vector3(...check.axis).normalize().transformDirection(node.matrixWorld),centre=node.localToWorld(new THREE.Vector3(...check.centre));
-      const half=check.length/2,wall=node.localToWorld(new THREE.Vector3(...check.wall_probe));
-      const ray=new THREE.Raycaster(centre.clone().addScaledVector(axis,half+.001),axis.clone().negate(),0,check.length+.002);
-      const wallRay=new THREE.Raycaster(wall.clone().addScaledVector(axis,half+.001),axis.clone().negate(),0,check.length+.002);
+      const localAxis=new THREE.Vector3(...check.axis).normalize(),centre=node.localToWorld(new THREE.Vector3(...check.centre));
+      const endpoint=node.localToWorld(new THREE.Vector3(...check.centre).addScaledVector(localAxis,check.length/2));
+      const half=endpoint.distanceTo(centre),axis=endpoint.sub(centre).normalize(),wall=node.localToWorld(new THREE.Vector3(...check.wall_probe));
+      const ray=new THREE.Raycaster(centre.clone().addScaledVector(axis,half+.001),axis.clone().negate(),0,2*half+.002);
+      const wallRay=new THREE.Raycaster(wall.clone().addScaledVector(axis,half+.001),axis.clone().negate(),0,2*half+.002);
       const hits=ray.intersectObject(root,true),walls=wallRay.intersectObject(node,true);
       passed=hits.length===0&&walls.length>0;details={centreHits:hits.map(h=>h.object.name),wallHits:walls.length};
-    }else details={error:'MISSING_NATIVE_COMPONENT'};
+    }else details={error:'MISSING_PROBE_COMPONENT'};
     reports.push({component:check.component_id,requirement:check.requirement,passed,details});
   }
-  for(const asset of root.userData.nativeAssets??[])reports.push(...semanticProbes(asset).map(r=>({...r,instance:asset.name})));
+  for(const asset of root.userData.factoryAssets??[])reports.push(...semanticProbes(asset).map(r=>({...r,instance:asset.userData.instanceId??asset.name})));
   return reports;
 }

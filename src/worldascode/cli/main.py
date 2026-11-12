@@ -29,16 +29,6 @@ def main(argv=None):
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("demo")
     p.add_argument("--run", type=Path, default=paths().runs_dir / "semantic-demo")
-    p = sub.add_parser("native")
-    p.add_argument("--reference", type=Path, required=True)
-    p.add_argument("--styles", type=Path)
-    p.add_argument("--context", type=Path, nargs="*", default=[])
-    p.add_argument(
-        "--evidence", type=Path, help="Validated georeferenced evidence bundle"
-    )
-    p.add_argument("--run", type=Path, required=True)
-    p.add_argument("--max-calls", type=int, default=10)
-    p.add_argument("--max-tokens", type=int, default=240000)
     p = sub.add_parser(
         "evidence",
         help="Build a georeferenced evidence bundle from an OSM outline and a capture folder",
@@ -162,8 +152,6 @@ def main(argv=None):
     p.add_argument("--osm", type=Path, required=True)
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--fitted", type=Path, nargs="*", default=[])
-    p = sub.add_parser("status")
-    p.add_argument("--run", type=Path, required=True)
     p = sub.add_parser("compose")
     p.add_argument("--world", type=Path, required=True)
     p.add_argument("--factories", type=Path)
@@ -186,10 +174,6 @@ def main(argv=None):
     p.add_argument("--height", type=float, required=True)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--url", default=None)
-    p = sub.add_parser(
-        "native-pin", help="Explicitly configure the optional upstream checkout"
-    )
-    p.add_argument("--path", type=Path, required=True)
     p = sub.add_parser("config", help="Inspect effective configuration without secrets")
     p.add_argument("action", choices=["show"])
     sub.add_parser(
@@ -252,11 +236,6 @@ def main(argv=None):
 
         result = capture_site(args.osm, args.way, args.out, args.height, args.url)
         print(json.dumps({"object_id": result["object_id"], "path": str(args.out)}))
-        return 0
-    if args.command == "native-pin":
-        from worldascode.experimental.native.bridge import pin_upstream
-
-        print(json.dumps(pin_upstream(args.path)))
         return 0
     if args.command == "kit-library":
         from worldascode.kits.registry import Library
@@ -467,36 +446,6 @@ def main(argv=None):
         result = run_district(args.osm, args.run, args.fitted)
         print(json.dumps(result, ensure_ascii=False))
         return 0 if result["browser_passed"] else 2
-    if args.command == "native":
-        from worldascode.experimental.native.workflow import Workflow
-
-        settings = Settings.load()
-        if not settings.api_key or not settings.base_url:
-            parser.error(
-                "OPENAI_BASE_URL and OPENAI_API_KEY required in workspace .env"
-            )
-        styles = (
-            sorted(
-                p
-                for p in args.styles.glob("*")
-                if p.suffix.lower() in (".jpg", ".jpeg", ".png")
-            )
-            if args.styles
-            else []
-        )
-        if len(styles) > 6:
-            parser.error(
-                "At most 6 style images per pilot; curate the style folder to control cost"
-            )
-        result = Workflow(
-            args.run, settings, args.max_calls, args.max_tokens
-        ).run_native(args.reference, styles, args.context, args.evidence)
-        print(
-            json.dumps(
-                {k: v for k, v in result.items() if k != "usage"}, ensure_ascii=False
-            )
-        )
-        return 0 if result.get("accepted") else 2
     if args.command == "compose":
         from worldascode.adapters.rendering.browser import bundle, capture
 
@@ -506,7 +455,7 @@ def main(argv=None):
             if args.factories
             else {}
         )
-        folder = bundle(args.run, world=world, native_factories=factories)
+        folder = bundle(args.run, world=world, factories=factories)
         report = capture(folder)
         result = {
             "accepted": False,
@@ -517,15 +466,6 @@ def main(argv=None):
         write_json(folder / "result.json", result)
         print(json.dumps(result))
         return 0 if report["passed"] else 2
-    if args.command == "status":
-        from worldascode.experimental.native.bridge import NativeBridge
-
-        bridge = NativeBridge(args.run)
-        bridge.init(
-            json.loads((args.run / "inputs.json").read_text())["reference"]["path"]
-        )
-        print(bridge.next()["stdout"])
-        return 0
     if args.command == "serve":
         import http.server
         from functools import partial

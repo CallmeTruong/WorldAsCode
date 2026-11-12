@@ -14,7 +14,7 @@ The research package mixed writable state, packaged resources, orchestration, pr
 4. Keep model author/reviewer/kit developer nodes inside the workflow; preserve measured evidence and quality contracts.
 5. Preserve release hashes and protected methods; require host grants for shared publication. Load relevant kit context only.
 6. Distinguish execution completion from visual quality acceptance; retain failure tracebacks and accounting.
-7. Package rendering/capture resources; require explicit optional img2threejs upstream.
+7. Package rendering/capture resources; run independently of img2threejs, upstream scripts, skills and locks. Support owned Three.js factories through an explicit createModel contract.
 8. Validate with mocked providers, existing regression tests, isolated wheel installation and real browser fixtures.
 
 ## Scope and limits

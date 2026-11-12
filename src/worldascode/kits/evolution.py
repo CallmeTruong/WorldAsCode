@@ -7,8 +7,8 @@ import subprocess
 from pathlib import Path
 
 from worldascode.config import ROOT, paths
+from worldascode.kits.code import text_edits
 from worldascode.kits.context import build_manifest, context, methods
-from worldascode.kits.patches import text_edits
 from worldascode.storage.artifacts import digest, file_hash, write_json
 
 PATCHABLE = {

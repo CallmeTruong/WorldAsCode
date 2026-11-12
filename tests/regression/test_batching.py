@@ -13,7 +13,7 @@ def test_static_batch_preserves_geometry_bounds_raycast_ownership_and_materials(
     script.write_text(
         'import * as THREE from "three";\n'
         + f"import {{batchStaticAssets,resolveBatchHit}} from {json.dumps((ROOT / 'runtime/batching.mjs').as_posix())};\n"
-        + """export function createProbe(options: ProceduralModelOptions={}) {
+        + """export function createModel(options={}) {
           const p=new THREE.Group(),material=new THREE.MeshStandardMaterial();
           for(let i=0;i<2;i++){const mesh=new THREE.Mesh(new THREE.BoxGeometry(2,4,2),material);mesh.position.set(i*3,2,0);mesh.name='part-'+i;p.add(mesh);}
           const placements=[{id:'first',position:[0,0,0]},{id:'second',position:[10,0,0]}];
@@ -29,7 +29,7 @@ def test_static_batch_preserves_geometry_bounds_raycast_ownership_and_materials(
         }""",
         encoding="utf-8",
     )
-    bundle(tmp_path, native=script)
+    bundle(tmp_path, factory=script)
     with serve(tmp_path) as url, sync_playwright() as pw:
         browser = pw.chromium.launch(headless=True, args=["--use-angle=swiftshader"])
         page = browser.new_page()

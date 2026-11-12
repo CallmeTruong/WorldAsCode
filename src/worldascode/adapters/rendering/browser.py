@@ -5,7 +5,6 @@ import contextlib
 import http.server
 import io
 import json
-import re
 import subprocess
 import threading
 import time
@@ -18,7 +17,7 @@ from PIL import Image, ImageStat
 from playwright.sync_api import sync_playwright
 
 from worldascode.config import ROOT, paths
-from worldascode.contracts.world import World
+from worldascode.contracts.world import GeometryProbe, World
 from worldascode.evidence.images import (
     detail_sheet,
     evidence_capture,
@@ -59,18 +58,24 @@ def serve(directory):
 def bundle(
     run,
     world=None,
-    native=None,
-    native_factories=None,
+    factory=None,
+    factories=None,
     design=None,
     site=None,
     style=None,
     kit_path=None,
 ):
-    """Bundle one route: a World recipe, a native factory, or a kit design script."""
+    """Bundle a World recipe, owned createModel factory, or kit design script.
+
+    Factories export createModel(options) and return a THREE.Object3D. They have
+    no dependency on an upstream generator, schema, signature or state machine.
+    """
     run = Path(run).resolve()
     run.mkdir(parents=True, exist_ok=True)
-    if sum(v is not None for v in (world, native, design)) != 1:
+    if sum(v is not None for v in (world, factory, design)) != 1:
         raise ValueError("Exactly one reconstruction route required")
+    if factories and world is None:
+        raise ValueError("FACTORIES_REQUIRE_WORLD")
     runtime = (ROOT / "runtime/viewer.mjs").as_posix()
     if design is not None:
         source = Path(design).resolve()
@@ -93,22 +98,16 @@ def bundle(
         write_json(run / "world.json", world)
         imports = []
         bindings = {}
-        for i, (key, path) in enumerate((native_factories or {}).items()):
-            factory = Path(path).resolve()
-            names = re.findall(
-                r"export function (\w+)\(options: ProceduralModelOptions",
-                factory.read_text(encoding="utf-8"),
-            )
-            if len(names) != 1:
-                raise ValueError("Native factory export could not be identified")
-            alias = "nativeFactory" + str(i)
+        for i, (key, path) in enumerate((factories or {}).items()):
+            model_path = Path(path).resolve()
+            alias = "modelFactory" + str(i)
             imports.append(
-                f"import {{{names[0]} as {alias}}} from {json.dumps(factory.as_posix())};"
+                f"import {{createModel as {alias}}} from {json.dumps(model_path.as_posix())};"
             )
             bindings[key] = alias
-        native_ids = {b.id for b in validated.blueprints if b.origin == "native"}
-        if native_ids != set(bindings):
-            raise ValueError("NATIVE_FACTORY_MAP_MISMATCH")
+        factory_ids = {b.id for b in validated.blueprints if b.origin == "factory"}
+        if factory_ids != set(bindings):
+            raise ValueError("FACTORY_MAP_MISMATCH")
         mapping = (
             "{" + ",".join(json.dumps(k) + ":" + v for k, v in bindings.items()) + "}"
         )
@@ -118,27 +117,23 @@ def bundle(
         )
         source = run / "world.json"
     else:
-        source = Path(native).resolve()
-        text = source.read_text(encoding="utf-8")
-        functions = re.findall(
-            r"export function (\w+)\(options: ProceduralModelOptions", text
-        )
-        if len(functions) != 1:
-            raise ValueError("Native factory export could not be identified")
-        entry = f"import {{{functions[0]} as factory}} from {json.dumps(source.as_posix())};\nconst root=factory();\n"
+        source = Path(factory).resolve()
+        entry = f"import {{createModel}} from {json.dumps(source.as_posix())};\nconst root=createModel({{}});\nif(!root?.isObject3D)throw Error('FACTORY_MUST_RETURN_OBJECT3D');\n"
         if (run / "semantic-overlay.json").exists():
             overlay = json.loads(
                 (run / "semantic-overlay.json").read_text(encoding="utf-8")
             )
-            entry += (
-                "root.userData.semanticChecks=" + json.dumps(overlay["checks"]) + ";\n"
-            )
+            checks = [
+                GeometryProbe.model_validate(check).model_dump()
+                for check in overlay["checks"]
+            ]
+            entry += "root.userData.semanticChecks=" + json.dumps(checks) + ";\n"
     config = (
         json.loads((run / "render-config.json").read_text())
         if (run / "render-config.json").exists()
         else {}
     )
-    config["native"] = native is not None
+    config["isolated_stage"] = factory is not None
     entry = (
         f"import {{monitorAssets}} from {json.dumps(runtime)};\nmonitorAssets();\n"
         + entry
@@ -378,19 +373,6 @@ def capture(
     )
     write_json(run / "render-manifest.json", metadata)
     return metadata
-
-
-def comparison(reference, render, out):
-    images = []
-    for p in (reference, render):
-        im = Image.open(p).convert("RGB")
-        im.thumbnail((900, 850))
-        images.append(im)
-    canvas = Image.new("RGB", (1800, 850), "#dedede")
-    for i, im in enumerate(images):
-        canvas.paste(im, (i * 900 + (900 - im.width) // 2, (850 - im.height) // 2))
-    canvas.save(out)
-    return Path(out)
 
 
 def render_attempt(folder, code, site, style, evidence, kit_path=None):

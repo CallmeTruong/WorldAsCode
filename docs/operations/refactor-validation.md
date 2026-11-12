@@ -1,5 +1,7 @@
 # Vận hành và kiểm chứng refactor
 
+> Báo cáo lịch sử tại `c6cbce2`, trước khi bỏ adapter. Trạng thái hiện tại và kiểm chứng không dùng upstream: [independent-runtime-validation.md](independent-runtime-validation.md).
+
 Ngày kiểm chứng: 2026-11-13. Runtime chính: `src/worldascode`; CLI: `worldascode`.
 
 ## Cấu hình và triển khai

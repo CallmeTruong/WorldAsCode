@@ -178,7 +178,7 @@ class Blueprint(StrictModel):
     id: str
     version: str = "1.0.0"
     tier: Literal["kit", "family", "landmark"] = "family"
-    origin: Literal["semantic", "native"] = "semantic"
+    origin: Literal["semantic", "factory"] = "semantic"
     components: list[Component]
     materials: list[Material]
 
@@ -226,7 +226,7 @@ class RuntimeState(StrictModel):
     wind: float = Field(default=0, ge=0, le=2)
 
 
-class NativeSemanticCheck(StrictModel):
+class GeometryProbe(StrictModel):
     component_id: str
     requirement: Literal["air_path", "opening"]
     axis: tuple[float, float, float]

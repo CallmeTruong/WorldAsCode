@@ -38,7 +38,9 @@ uv run worldascode kit-library search --query roof
 
 Observer đọc bằng chứng và kích thước; author viết JavaScript sử dụng kit; trình duyệt dựng ảnh; critic trong workflow đánh giá và gửi phản hồi cho vòng sửa. Kit developer tạo candidate riêng khi thiếu capability. Đưa vào kho chung cần grant từ host, kiểm thử và promotion; workflow không tự cấp quyền. Context kit được chọn theo API liên quan thay vì nạp toàn kho.
 
-`design --help`, `capture-site --help`, `reference-serve --help` mô tả đầu vào cụ thể. Capture Google/Cesium cần `CESIUM_ION_TOKEN` có quyền dataset tương ứng. Adapter img2threejs native là tùy chọn: khai báo checkout upstream bằng `worldascode native-pin --path /path/to/img2threejs`, không tự tìm trong research.
+`design --help`, `capture-site --help`, `reference-serve --help` mô tả đầu vào cụ thể. Capture Google/Cesium cần `CESIUM_ION_TOKEN` có quyền dataset tương ứng. Runtime không cần img2threejs, checkout upstream, skill hoặc upstream lock.
+
+Đối tượng viết Three.js riêng có thể export `createModel(options)` và trả về `THREE.Object3D`. Khi ghép scene, dùng blueprint `origin: "factory"` và `compose --factories factories.json` với ánh xạ ID blueprint → đường dẫn module JS/TS. Factory nhận `seed` và `instanceId`; hệ thống đặt anchor/rotation/scale. Không cần signature hoặc metadata từ generator bên ngoài. Xem [hợp đồng factory và chuyển đổi](docs/architecture/independent-runtime.md).
 
 Chạy xong và đạt chất lượng là hai trạng thái riêng. `--require-quality` trả exit code 2 nếu chưa được chấp nhận; workflow vẫn lưu ảnh, phản hồi và usage. Các pilot cũ chưa được coi là đạt chất lượng chỉ vì refactor thành công.
 
@@ -47,6 +49,7 @@ Chạy xong và đạt chất lượng là hai trạng thái riêng. `--require-
 - [Thiết kế hệ thống](docs/architecture/system-refactor.md): ranh giới module, cấu hình, kit và dữ liệu.
 - [Vận hành và kết quả kiểm chứng](docs/operations/refactor-validation.md).
 - [SpecKit hệ thống](specs/001-workflow-system/spec.md).
+- [Runtime độc lập và kết quả bỏ adapter](docs/architecture/independent-runtime.md).
 - [Phương pháp và hạn chế trước refactor](workflow_scale_research/docs/00-phuong-phap-hien-tai.md).
 
 ```sh

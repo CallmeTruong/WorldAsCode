@@ -29,7 +29,7 @@ def probe(source_run, out, count=9, batched=True):
         'import * as THREE from "three";\n'
         + f"import {{buildDesign}} from {json.dumps(imports['kit'].as_posix())};\nimport {{design}} from {json.dumps(imports['design'].as_posix())};\nimport {{batchStaticAssets}} from {json.dumps(imports['batch'].as_posix())};\n"
     )
-    code += "export function createProbe(options: ProceduralModelOptions = {}) {\n"
+    code += "export function createModel(options = {}) {\n"
     code += (
         f"const prototype=buildDesign(design,{json.dumps(site)},{json.dumps(style)});\n"
     )
@@ -51,7 +51,7 @@ def probe(source_run, out, count=9, batched=True):
         },
     )
     started = time.monotonic()
-    bundle(out, native=script)
+    bundle(out, factory=script)
     report = capture(out, review_only=True, export_geometry=False)
     metrics = {
         "passed": report["passed"],

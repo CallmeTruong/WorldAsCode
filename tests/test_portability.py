@@ -2,7 +2,6 @@ import json
 import threading
 
 import httpx
-import pytest
 
 
 def test_regression_worker_inherits_config_discovery_directory(tmp_path, monkeypatch):
@@ -91,11 +90,3 @@ def test_cli_quality_exit_and_status_axes_are_consistent(tmp_path, monkeypatch, 
         and result["quality_status"] == "rejected"
     )
     assert main(command + ["--require-quality"]) == 2
-
-
-def test_native_dependency_is_optional_and_explicit(tmp_path, monkeypatch):
-    from worldascode.experimental.native.bridge import NativeBlocked, NativeBridge
-
-    monkeypatch.setenv("WORLDASCODE_DATA_DIR", str(tmp_path / "state"))
-    with pytest.raises(NativeBlocked, match="UPSTREAM_NOT_CONFIGURED"):
-        NativeBridge(tmp_path / "run")

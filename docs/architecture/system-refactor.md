@@ -12,7 +12,7 @@ Kiểm tra cấu hình từ chối khóa sai, provider không tồn tại, kiể
 
 Kit builtin có manifest, dependency AST và API card riêng. Các card ngắn là đơn vị truy xuất context; giữ riêng để tránh nạp toàn bộ tài liệu mỗi node. Tài nguyên Git giữ nguyên byte để checksum nhất quán giữa hệ điều hành. Kho mutable và quyền host nằm ngoài package.
 
-Cài trên máy khác cần đồng bộ Python dependencies, npm lock và Chromium, rồi chọn config và nơi lưu dữ liệu. Không cần đường dẫn máy tác giả hay thư mục research. Native upstream phải pin explicit. Windows ngoài checkout đã có kiểm chứng; Linux/macOS chưa chạy trong phiên này.
+Cài trên máy khác cần đồng bộ Python dependencies, npm lock và Chromium, rồi chọn config và nơi lưu dữ liệu. Không cần đường dẫn máy tác giả, thư mục research hoặc img2threejs. Windows ngoài checkout đã có kiểm chứng; Linux/macOS chưa chạy trong phiên này.
 
 Không tự nhập kho/grant cũ: có thể chỉ định `--library` khi thao tác kho lịch sử; cần kế hoạch migration riêng trước khi chuyển quyền và dữ liệu. Đợt này không đổi hash release cũ và không tự nâng channel stable.
 
@@ -39,7 +39,6 @@ src/worldascode/
   execution/         # jobs, worker processes, model budgets
   storage/           # atomic JSON, asset store, manifest lookup
   adapters/          # LLM transport, browser bundle/capture, Cesium viewer
-  experimental/      # optional native img2threejs bridge and legacy passes
   cli/               # command registration / dependency composition
   resources/         # packaged JS runtime, builtin kit, schemas/templates
 ```
@@ -52,7 +51,7 @@ Các package có logic thật; không tạo hàng loạt class rỗng. Dependenc
 - `WORLDASCODE_DATA_DIR` quyết định nơi ghi run/cache/database/registry/grants. Mặc định là `.worldascode` trong working directory; CLI và config ghi rõ vị trí thực tế.
 - `.env` đọc từ thư mục config hoặc `WORLDASCODE_ENV_FILE`, không tự leo lên repo cha. Khi không chọn config, dùng cwd. Credentials chỉ tới provider tương ứng.
 - Node toolchain được pin bằng root `package.json`/lock; `WORLDASCODE_NODE_MODULES` cho phép worker dùng toolchain đã cài ngoài cwd.
-- Capture SDK server đóng gói trong adapter mới. Native img2threejs là adapter optional với upstream path/lock explicit; thiếu dependency báo lỗi có loại, không tìm `workflow_research` ngầm.
+- Capture SDK server đóng gói trong adapter. Nhánh img2threejs đã bỏ; renderer nhận recipe World, design dùng kit hoặc factory `createModel` do hệ thống quản lý. Xem `independent-runtime.md`.
 
 ## Hợp đồng thực thi
 
@@ -71,7 +70,7 @@ Thay việc parse class bằng khoảng trắng thành JavaScript AST analyzer. 
 1. Ghi baseline, schema/config và test ranh giới mới.
 2. Chuyển package, tài nguyên và CLI; giữ research nguyên trạng, không tạo shim.
 3. Tách node/quality/worker để loại dependency ngược; chuẩn hóa status/path/error.
-4. Đóng gói capture service, policy và upstream optional.
+4. Đóng gói capture service và policy; loại bỏ phụ thuộc upstream theo yêu cầu tiếp theo.
 5. Chuẩn hóa phân tích code/manifest kit và strict resolution.
 6. Chạy suite, render fixture, kiểm wheel trong thư mục sạch, cập nhật docs/SpecKit.
 

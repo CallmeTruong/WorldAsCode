@@ -6,6 +6,7 @@ import subprocess
 from functools import lru_cache
 
 from worldascode.config import RESOURCE_ROOT, paths
+from worldascode.storage.artifacts import digest
 
 
 @lru_cache(maxsize=128)
@@ -61,3 +62,15 @@ def lint(code):
     if len(code) > 30_000:
         problems.append("Script too long; use loops and kit parts.")
     return problems
+
+
+def text_edits(source, edits, expected_hash):
+    if digest(source) != expected_hash:
+        raise ValueError("STALE_CODE_PATCH")
+    result = source
+    for edit in edits:
+        find = edit["find"]
+        if not find or result.count(find) != 1:
+            raise ValueError("CODE_PATCH_ANCHOR_NOT_UNIQUE")
+        result = result.replace(find, edit["replace"], 1)
+    return result
