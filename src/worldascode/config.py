@@ -161,7 +161,7 @@ def node_role(node):
         return "kit_developer"
     if "kit-gap" in node:
         return "planner"
-    if "observer" in node:
+    if "observer" in node or node == "program-detail":
         return "observer"
     if "style" in node:
         return "style"

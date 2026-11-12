@@ -16,9 +16,9 @@ api_key_env = "OPENAI_API_KEY"
 default = "gpt-6-sol"
 observer = ""
 style = ""
-author = ""
+author = "gpt-6-astra"
 critic = ""
-kit_developer = ""
+kit_developer = "gpt-6-astra"
 planner = ""
 
 # Example: critic = "secondary" routes critics to [llm.providers.secondary].
