@@ -28,4 +28,14 @@
 - [ ] T027 Bridge compiled massing into the native img2threejs spec as locked macro components.
 - [X] T028 Agent design route: site brief, style sheet, building kit, tolerant metric checks, vision critic, bounded revision; museum pilot built twice without errors for 38.5k tokens, not accepted by the critic. See docs/09.
 - [ ] T029 Reuse one design script on a second site of the same type; grow the kit from recurring critic fixes (wall gables, dormer variants, window surrounds); compare the critic with human judgement.
+- [X] T030 Extend the measured-site kit with seeded independent material channels, metric surface scale, roof-following dormer cheeks, trimmed gables, modeled window surrounds and hollow chimney assemblies.
+- [X] T031 Enforce frozen site inputs, exactly one wall assembly and unchanged wall transforms/vertices; add browser regression tests.
+- [X] T032 Add matching source/render detail sheets, palette-independent style extraction, validated critic scores and balanced candidate selection.
+- [ ] T033 Complete and directly inspect the quality-first pilot; retain measured visual limitations and validate reusable scripts on another site.
+- [X] T034 Implement run-local kit gap/developer/consumer/critic nodes, protected source patches, pinned dependencies and verified reuse; preserve the shared kit.
+- [X] T035 Require backward-compatibility fixtures and explicit new-capability exercises on rectangle/L/rotated plans before real-site evaluation and local activation.
+- [X] T036 Run model-backed kit-evolution experiments and inspect rejected candidates; correct feedback/coverage defects and document permission boundaries in docs/12.
+- [ ] T037 Demonstrate an activated kit candidate meeting visual acceptance on the real pilot, then validate a reusable family on a second real site.
+- [ ] T038 Implement broader domain retrieval, held-out release benchmarks, shared kit registry/promotion and asset migration; prove district throughput and seams.
+- [X] T039 Demonstrate model-authored run-local activation on the real pilot after compatibility/new-feature/browser/critic gates, retain absolute visual rejection, and verify pinned reuse hashes (v6; docs/12).
 - [X] T022 Bind macro wing poses before rendering and demonstrate footprint overlap improvement from 0.4352 to 0.9950. Full appearance acceptance remains T012/T021.

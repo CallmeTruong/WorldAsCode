@@ -15,6 +15,33 @@ COMPASS = ("N", "NE", "E", "SE", "S", "SW", "W", "NW")
 MAIN_PLANE_M2 = 15.0
 
 
+def registered_wings(evidence, registration):
+    """Preserve measured wing poses; dimensions alone lose the roof layout.
+
+    These remain approximate rectangular priors, never replacements for the
+    protected polygon. Apply the same translation/growth as footprint fitting.
+    """
+    result=[]
+    for wing in evidence.get('wings',[]):
+        length,width=wing['length_m'],wing['width_m']
+        yaw=wing.get('rotation_y_rad',0.0)
+        if length<width:
+            length,width=width,length
+            yaw+=math.pi/2
+        item={'length_m':length+2*registration.grow,'width_m':width+2*registration.grow,
+              'rotation_y_rad':yaw,'confidence':'approximate rectangular evidence prior'}
+        centre=wing.get('centre_xz')
+        if centre is not None:
+            x,z=centre[0]+registration.dx,centre[1]+registration.dz
+            u,v=(math.cos(yaw),-math.sin(yaw)),(math.sin(yaw),math.cos(yaw))
+            item['centre_xz']=[x,z]
+            item['corners']=[[x+su*u[0]*item['length_m']/2+sv*v[0]*item['width_m']/2,
+                              z+su*u[1]*item['length_m']/2+sv*v[1]*item['width_m']/2]
+                             for su,sv in ((-1,-1),(1,-1),(1,1),(-1,1))]
+        result.append(item)
+    return result
+
+
 def edges(plan):
     ends = massing.end_edges(plan)
     result = []
@@ -28,6 +55,7 @@ def edges(plan):
                 "length_m": round(math.hypot(dx, dn), 1),
                 "facing": COMPASS[int((bearing + 22.5) // 45) % 8],
                 "end": bool(ends[i]),
+                "role": "wing_end" if ends[i] else "facade",
             }
         )
     return result
@@ -109,11 +137,8 @@ def site_brief(evidence, program, heights=None):
         "tags": evidence.get("tags", {}),
         "footprint": [[round(x, 2), round(z, 2)] for x, z in massing.from_plan(plan)],
         "edges": edges(plan),
-        "wings": [
-            {"length_m": round(max(w["length_m"], w["width_m"]), 1),
-             "width_m": round(min(w["length_m"], w["width_m"]), 1)}
-            for w in evidence.get("wings", [])
-        ],
+        "wings": registered_wings(evidence,program.registration),
+        "registration":program.registration.model_dump(),
         "axis_yaw": evidence.get("wings", [{}])[0].get("rotation_y_rad", 0.0),
         "storeys": program.storeys,
         "eave_m": round(program.eave_height, 1),
@@ -127,6 +152,12 @@ def site_brief(evidence, program, heights=None):
             "heights": "multi-view silhouette fit",
             "features": "none",
         },
+        "confidence": {
+            "outline": {"status": "approximate_registered_osm", "note": "Small image-fitted translation/offset may differ from raw OSM; not a surveyed plan."},
+            "heights": {"status": "inferred", "note": "Silhouette fit unless a photogrammetric height field is supplied."},
+            "feature_identity": {"status": "heuristic", "note": "Height blobs cannot reliably distinguish gable, dormer and turret. Confirm type in source views; use plausible details for hidden surfaces."},
+            "colours": {"status": "appearance_cues", "note": "Baked shadows and image exposure remain; these are not recovered reflectance."},
+        },
     }
     if heights is not None:
         grid, layout = heights
@@ -138,4 +169,5 @@ def site_brief(evidence, program, heights=None):
         brief["roof"]["pitch_deg"] = round(measured["pitch"])
         brief["sources"]["heights"] = "sampled photogrammetric height field (not surveyed)"
         brief["sources"]["features"] = "small roof planes in the height field; counts and sizes approximate"
+        brief["confidence"]["heights"]["status"] = "sampled_photogrammetry_not_surveyed"
     return brief

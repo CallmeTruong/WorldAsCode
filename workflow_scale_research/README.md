@@ -64,4 +64,6 @@ Checkout img2threejs được pin ở `../workflow_research/vendor/img2threejs`;
 
 ## Ghép asset
 
+Nhánh workflow tự phát triển kit đã có: `design --adaptive-kit --max-kit-cycles 1`, hoặc chạy độc lập `adapt-kit --source-run runs/<design-run> --run runs/<new-run> --max-cycles 2`. Node viết kit chỉ sửa bản sao được cấp quyền, phải qua kiểm thử API cũ + khả năng mới và render/critic trước khi kích hoạt cục bộ. Xem [thiết kế, phân quyền và kết quả thực nghiệm](docs/12-adaptive-agent-kit-evolution.md). Chưa tự phát hành kit dùng chung và chưa chứng minh chất lượng đô thị.
+
 `compose --world world.json --factories factories.json --run runs/composition` dựng một World IR gồm các kit procedural và factory native. `factories.json` ánh xạ blueprint ID sang file factory TS. Instance có anchor, rotation, uniform scale và seed; native landmark không bị random lại kiến trúc. Kết quả composition luôn là draft cho tới khi có scene-level review; chất lượng asset riêng không tự chứng minh chất lượng cả khu phố.

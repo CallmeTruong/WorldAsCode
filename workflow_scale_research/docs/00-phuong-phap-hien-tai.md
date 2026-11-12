@@ -2,7 +2,11 @@
 
 Cập nhật: 2026-11-12. Đây là tài liệu định hướng chính của `workflow_scale_research`. Đọc file này trước; các file `01`–`07` là lịch sử của hướng cũ, `08` và `09` là số liệu chi tiết của hướng hiện tại.
 
+Cải tiến chất lượng đang triển khai: [kit và vòng đánh giá](10-quality-first-kit.md). Phân biệt kit, công thức thiết kế và bố trí cảnh; cấu trúc SDK đích: [World kit](11-world-kit-structure.md). Cấu trúc SDK này chưa được triển khai đầy đủ; `runtime/kit.mjs` hiện mới là nhóm công cụ cho tòa nhà.
+
 ## 1. Bài toán
+
+Workflow đã có nhánh [tự phát triển kit theo quyền hạn và phiên bản riêng](12-adaptive-agent-kit-evolution.md): triage → developer → kiểm thử API cũ/mới → consumer → render/critic → kích hoạt hoặc giữ bản trước. Chất lượng pilot vẫn chưa đạt nghiệm thu; xem số liệu trong docs/10 và docs/12.
 
 Tạo mô hình 3D đô thị bằng code Three.js sao cho:
 

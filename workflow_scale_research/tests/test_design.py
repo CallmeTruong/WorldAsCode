@@ -1,8 +1,23 @@
 import numpy as np
+import pytest
 
 from worldscale import brief, design, dsm, massing
 
 RECTANGLE = [[-15, 6], [15, 6], [15, -6], [-15, -6]]  # 30 m east-west, 12 m north-south
+
+
+def test_wing_brief_preserves_pose_and_exact_rectangles_after_registration():
+    evidence={'wings':[{'centre_xz':[2,3],'length_m':5,'width_m':20,'rotation_y_rad':.27}]}
+    registration=massing.Registration(dx=1,dz=-2,grow=.5)
+    wing=brief.registered_wings(evidence,registration)[0]
+    assert wing['centre_xz']==[3,1]
+    assert wing['length_m']==21 and wing['width_m']==6
+    corners=np.array(wing['corners'])
+    u,v=corners[1]-corners[0],corners[3]-corners[0]
+    assert abs(np.dot(u,v))<1e-10
+    assert np.linalg.norm(u)==pytest.approx(21)
+    assert np.linalg.norm(v)==pytest.approx(6)
+    assert corners.mean(axis=0)==pytest.approx([3,1])
 
 SCRIPT = """export function design(site, b, style) {
   b.material('brick', {color: site.colours.wall});
@@ -91,3 +106,16 @@ def test_metric_checks_are_tolerant_of_style_but_not_of_a_wrong_building():
     assert not run(0.5, 0.8, 20.0)["checks"]["outline_oblique"]
     assert not run(0.8, 0.5, 20.0)["checks"]["outline_plan"]
     assert not run(0.8, 0.8, 40.0)["checks"]["height"]
+
+
+def test_candidate_selection_protects_acceptance_and_weakest_quality_dimension():
+    def candidate(likeness, style, detail, accepted=False):
+        return {"accepted": accepted, "metrics_passed": True,
+                "scores": {"likeness": likeness, "style": style, "detail": detail}}
+    balanced = candidate(.73, .72, .68, True)
+    flashy_wrong = candidate(.4, .99, .99)
+    assert design.candidate_rank(balanced) > design.candidate_rank(flashy_wrong)
+    assert design.candidate_rank(candidate(.7, .7, .6)) > design.candidate_rank(candidate(.95, .95, .35))
+    for value in (float('nan'), float('inf'), True, -1, '0.9'):
+        with pytest.raises(ValueError, match='INVALID_CRITIC_SCORE'):
+            design.validated_scores({"likeness": value, "style": .7, "detail": .7})

@@ -47,7 +47,7 @@ def serve(directory):
         thread.join()
 
 
-def bundle(run, world=None, native=None, native_factories=None, design=None, site=None, style=None):
+def bundle(run, world=None, native=None, native_factories=None, design=None, site=None, style=None, kit_path=None):
     """Bundle one route: a World recipe, a native factory, or a kit design script."""
     run = Path(run).resolve()
     run.mkdir(parents=True, exist_ok=True)
@@ -59,7 +59,7 @@ def bundle(run, world=None, native=None, native_factories=None, design=None, sit
         write_json(run / "site.json", site)
         entry = (
             f"import {{design}} from {json.dumps(source.as_posix())};\n"
-            f"import {{buildDesign}} from {json.dumps((ROOT / 'runtime/kit.mjs').as_posix())};\n"
+            f"import {{buildDesign}} from {json.dumps(Path(kit_path or ROOT / 'runtime/kit.mjs').resolve().as_posix())};\n"
             f"const root=buildDesign(design,{json.dumps(site)},{json.dumps(style or {})});\n"
         )
     elif world is not None:
@@ -241,6 +241,9 @@ def capture(run, reference=None, camera_override=None, extra=None):
             browser.close()
             return failure
         errors.extend(page.evaluate("worldscaleLoading.failed").copy())
+        # Automated captures call draw() explicitly through view/pose/state.
+        # Do not compete with a continuous animation loop on software WebGL.
+        page.evaluate("worldscale.renderer.setAnimationLoop(null)")
         try:
             initial = page.evaluate("worldscale.manifest()")
         except Exception as exc:

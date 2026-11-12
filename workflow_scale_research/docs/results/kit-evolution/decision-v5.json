@@ -1,0 +1,24 @@
+{
+  "activated": false,
+  "checks": {
+    "regressions": true,
+    "metrics": true,
+    "likeness": true,
+    "balanced_visual_gain": false,
+    "other_quality_preserved": true
+  },
+  "weakest_score_gain": 0.01,
+  "scope": "this run only; not a global kit release",
+  "human_review": false,
+  "candidate_sha256": "80add4cd1a3409f6ec28c3cd749d7f692fd15753610374bf1abe6c030eaf5afe",
+  "before_scores": {
+    "likeness": 0.48,
+    "style": 0.68,
+    "detail": 0.41
+  },
+  "after_scores": {
+    "likeness": 0.54,
+    "style": 0.68,
+    "detail": 0.42
+  }
+}

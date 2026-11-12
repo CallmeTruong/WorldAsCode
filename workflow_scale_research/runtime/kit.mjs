@@ -8,6 +8,11 @@
 // Frame: X east, Y up, Z south, metres. An edge frame has local +X along the wall and
 // local +Z pointing out of the building.
 import * as THREE from 'three';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {surfaceMaps, metricUVs} from './surfaces.mjs';
+import {cutRoofOpening} from './roof-openings.mjs';
+
+function deepFreeze(value) { if (value && typeof value === 'object' && !Object.isFrozen(value)) { Object.freeze(value); for (const child of Object.values(value)) deepFreeze(child); } return value; }
 
 // ---- plan geometry (counter-clockwise in [x, north]) --------------------------------
 const toPlan = fp => { const p = fp.map(([x, z]) => [x, -z]); return area(p) > 0 ? p : p.reverse(); };
@@ -81,7 +86,7 @@ function windowTile(spec, color) {
 // ---- builder -------------------------------------------------------------------------
 class Builder {
   constructor(site, style) {
-    this.site = site; this.style = style ?? {}; this.THREE = THREE;
+    this.site = deepFreeze(structuredClone(site)); this.style = style ?? {}; this.THREE = THREE;
     this.plan = toPlan(site.footprint); this.root = new THREE.Group(); this.root.name = site.object_id ?? 'building';
     this.materials = new Map(); this.parts = []; this.counts = {}; this.roofProfile = null; this.lookConfig = {};
     const n = this.plan.length;
@@ -97,8 +102,15 @@ class Builder {
     m.userData.base = { roughness: spec.roughness ?? 0.8, emissive_at_night: false, weather_response: spec.weather ?? true };
     m.userData.spec = { ...spec, color };
     if (spec.surface && spec.surface.type !== 'plain') {
-      m.map = canvasTexture(256, (g, size) => paintSurface(g, size, color, spec.surface)); m.map.colorSpace = THREE.SRGBColorSpace;
-      const s = 1 / (spec.surface.scale ?? 2); m.map.repeat.set(s, s); m.color.set('#ffffff');
+      if (['brick', 'slate', 'panels'].includes(spec.surface.type)) {
+        Object.assign(m, surfaceMaps(color, spec.surface, spec.seed ?? this.site.seed ?? 0));
+        m.bumpScale = spec.surface.relief_m ?? (spec.surface.type === 'brick' ? .012 : .008);
+        m.userData.surfaceProvenance = 'seeded synthetic material; not source PBR';
+      } else {
+        m.map = canvasTexture(512, (g, size) => paintSurface(g, size, color, spec.surface)); m.map.colorSpace = THREE.SRGBColorSpace;
+        m.map.repeat.set(1 / (spec.surface.scale ?? 2), 1 / (spec.surface.scale ?? 2));
+      }
+      m.color.set('#ffffff');
     }
     if (spec.glow) { m.emissive.set(spec.glow); m.emissiveIntensity = 0; m.userData.base.emissive_at_night = true; }
     this.materials.set(name, m); return name;
@@ -136,6 +148,24 @@ class Builder {
   at(x, z, yaw = 0) { return { x, z, yaw }; }
   // -- core masses
   _add(object, type, frame) {
+    if (type === 'window') {
+      // Static trim pieces share a material and can be rendered in one draw.
+      // Keep the window pivot for semantic selection and state control.
+      const batches = new Map();
+      for (const child of [...object.children]) if (child.isMesh) {
+        child.updateMatrix();
+        const geometry = (child.geometry.index ? child.geometry.toNonIndexed() : child.geometry.clone()).applyMatrix4(child.matrix);
+        if (!batches.has(child.material)) batches.set(child.material, []);
+        batches.get(child.material).push(geometry);
+        object.remove(child); child.geometry.dispose();
+      }
+      for (const [material, geometries] of batches) {
+        const merged = mergeGeometries(geometries, false);
+        if (!merged) throw Error('KIT_WINDOW_BATCH_FAILED');
+        object.add(new THREE.Mesh(merged, material));
+        geometries.forEach(g => g.dispose());
+      }
+    }
     const pivot = new THREE.Group(); this.counts[type] = (this.counts[type] ?? 0) + 1; const id = type + '-' + this.counts[type];
     pivot.name = id + ':pivot'; if (frame) { pivot.position.set(frame.x, 0, frame.z); pivot.rotation.y = frame.yaw ?? 0; }
     object.name = object.name || id; pivot.add(object); this.root.add(pivot);
@@ -150,7 +180,8 @@ class Builder {
       const low = rings[k], high = rings[k + 1], n = low.plan.length; if (high.plan.length !== n) throw Error('KIT_LOFT_RING_MISMATCH');
       for (let i = 0; i < n; i++) {
         const j = (i + 1) % n, a = low.plan[i], b = low.plan[j], length = Math.hypot(b[0] - a[0], b[1] - a[1]);
-        const ub = facade ? Math.max(1, Math.round(length / facade.bay)) : length, va = facade ? (low.y - rings[0].y) / facade.storey : low.y, vb = facade ? (high.y - rings[0].y) / facade.storey : high.y;
+        const ub = facade ? Math.max(1, Math.round(length / facade.bay)) : length, va = facade ? (low.y - rings[0].y) / facade.storey : low.y;
+        const vb = facade ? (high.y - rings[0].y) / facade.storey : va + Math.hypot(high.y-low.y, high.plan[i][0]-a[0], high.plan[i][1]-a[1]);
         quad([a[0], low.y, -a[1]], [b[0], low.y, -b[1]], [high.plan[j][0], high.y, -high.plan[j][1]], [high.plan[i][0], high.y, -high.plan[i][1]], 0, ub, va, vb);
       }
     }
@@ -160,10 +191,14 @@ class Builder {
     return new THREE.Mesh(g, material);
   }
   walls(o = {}) {
+    if (this.counts.walls) throw Error('KIT_EXACTLY_ONE_WALL_ASSEMBLY');
     const height = o.height ?? this.site.eave_m, y = o.y ?? 0, storeys = o.storeys ?? this.site.storeys ?? 3, facade = { bay: o.bay ?? 3.2, storey: height / storeys, window: o.window, course: o.course };
+    if (Math.abs(height / this.site.eave_m - 1) > .15 || y !== 0) throw Error('KIT_WALL_HEIGHT_OUTSIDE_MEASURED_TOLERANCE');
     const m = o.windows === false ? this._material(o.material) : this._facadeMaterial(o.material, facade);
     this.wallTop = Math.max(this.wallTop ?? 0, y + height);
-    return this._add(this._loft([{ y, plan: this.plan }, { y: y + height, plan: this.plan }], m, o.windows === false ? null : facade), 'walls');
+    const part = this._add(this._loft([{ y, plan: this.plan }, { y: y + height, plan: this.plan }], m, o.windows === false ? null : facade), 'walls');
+    this.wallGuard = {part, positions: Array.from(part.object.geometry.attributes.position.array)};
+    return part;
   }
   band(o = {}) {
     const plan = offset(this.plan, -(o.out ?? 0.25)); if (!plan) throw Error('KIT_BAND_OFFSET_FAILED');
@@ -183,7 +218,8 @@ class Builder {
       rings.push({ y: eave + rise, plan: offset(this.plan, weights.map(w => limit * w)) }); insets.push(limit);
     }
     this.roofProfile = { eave, weights, ys: rings.map(r => r.y), insets, top: rings[rings.length - 1].y };
-    return { ...this._add(this._loft(rings, this._material(o.material)), 'roof'), ridgeY: this.roofProfile.top, eaveY: eave };
+    const part=this._add(this._loft(rings, this._material(o.material)), 'roof');this.roofMesh=part.object;
+    return { ...part, ridgeY: this.roofProfile.top, eaveY: eave };
   }
   // Height of the roof surface (or wall top outside any roof) at a plan position.
   roofY(x, z) {
@@ -195,7 +231,7 @@ class Builder {
   }
   _world(frame, lx, lz) { const c = Math.cos(frame.yaw ?? 0), s = Math.sin(frame.yaw ?? 0); return [frame.x + lx * c + lz * s, frame.z - lx * s + lz * c]; }
   // -- primitives in a frame's local space (x along, y up, z out)
-  _box(w, h, d, x, y, z, material) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), this._material(material)); m.position.set(x, y + h / 2, z); return m; }
+  _box(w, h, d, x, y, z, material) { const m = new THREE.Mesh(metricUVs(new THREE.BoxGeometry(w, h, d)), this._material(material)); m.position.set(x, y + h / 2, z); return m; }
   _prism(profile, depth, material) { const s = new THREE.Shape(); profile.forEach(([x, y], i) => i ? s.lineTo(x, y) : s.moveTo(x, y)); s.closePath(); const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: false }); return new THREE.Mesh(g, this._material(material)); }
   box(frame, o) { return this._add(this._box(o.w, o.h, o.d, o.dx ?? 0, o.y ?? 0, o.dz ?? 0, o.material), 'box', frame); }
   cylinder(frame, o) { const m = new THREE.Mesh(new THREE.CylinderGeometry(o.rTop ?? o.r, o.r, o.h, o.sides ?? 16), this._material(o.material)); m.position.set(o.dx ?? 0, (o.y ?? 0) + o.h / 2, o.dz ?? 0); return this._add(m, 'cylinder', frame); }
@@ -208,26 +244,82 @@ class Builder {
   dormer(frame, o = {}) {
     const w = o.width ?? 1.6, h = o.height ?? 1.9, d = o.depth ?? 2.4, g = new THREE.Group(), [fx, fz] = this._world(frame, 0, -(o.setback ?? 0.6)), y = this.roofY(fx, fz) - 0.15;
     const z0 = -(o.setback ?? 0.6), body = h * (o.roof === 'flat' ? 1 : 0.62);
-    g.add(this._box(w, body, d, 0, y, z0 - d / 2, o.material ?? o.wall));
+    if(this.roofMesh&&o.cutRoof!==false)cutRoofOpening(this.roofMesh,frame,w*.94,z0-.03,z0-d+.03);
+    // Side cheeks follow the host roof instead of forming a box perched above it.
+    const [bx, bz] = this._world(frame, 0, z0 - d), backY = Math.min(y + body - .12, this.roofY(bx, bz) - .15);
+    const cheek = new THREE.BufferGeometry(), vertices = [];
+    for (const x of [-w / 2, w / 2]) {
+      const points = [[x,y,z0],[x,backY,z0-d],[x,y+body,z0-d],[x,y+body,z0]];
+      for (const i of x < 0 ? [0,2,1,0,3,2] : [0,1,2,0,2,3]) vertices.push(...points[i]);
+    }
+    cheek.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3)); cheek.computeVertexNormals(); metricUVs(cheek);
+    g.add(new THREE.Mesh(cheek, this._material(o.material ?? o.wall)));
+    g.add(this._box(w, body, .18, 0, y, z0 - .09, o.material ?? o.wall));
     if (o.roof !== 'flat') { const r = this._prism(o.roof === 'shed' ? [[-w / 2 - .12, 0], [w / 2 + .12, 0], [w / 2 + .12, h - body], [-w / 2 - .12, (h - body) * .3]] : [[-w / 2 - .15, 0], [w / 2 + .15, 0], [0, h - body]], d + 0.15, o.roofMaterial ?? o.material); r.position.set(0, y + body, z0 - d); g.add(r); }
-    if (o.window !== false && o.glass) g.add(this._box(w * 0.6, body * 0.62, 0.06, 0, y + body * 0.2, z0 + 0.02, o.glass));
+    if (o.window !== false && o.glass) {
+      g.add(this._box(w * .7, body * .74, .09, 0, y + body * .12, z0 + .035, o.trimMaterial ?? o.material));
+      g.add(this._box(w * .56, body * .61, .06, 0, y + body * .19, z0 + .095, o.glass));
+    }
     return this._add(g, 'dormer', frame);
   }
   chimney(frame, o = {}) {
     const w = o.width ?? 0.9, d = o.depth ?? 0.6, top = this.roofY(frame.x, frame.z) + (o.height ?? 1.6), y = this.roofY(frame.x, frame.z) - 0.6, g = new THREE.Group();
-    g.add(this._box(w, top - y, d, 0, y, 0, o.material));
-    if (o.cap !== false) g.add(this._box(w + 0.16, 0.14, d + 0.16, 0, top, 0, o.capMaterial ?? o.material));
-    for (let i = 0; i < (o.pots ?? 0); i++) { const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 0.35, 8), this._material(o.potMaterial ?? o.material)); pot.position.set((i - (o.pots - 1) / 2) * w / o.pots, top + 0.31, 0); g.add(pot); }
+    const ring = (width, depth, thickness, bottom, height, material) => {
+      const shape = new THREE.Shape(); shape.moveTo(-width/2,-depth/2); shape.lineTo(width/2,-depth/2); shape.lineTo(width/2,depth/2); shape.lineTo(-width/2,depth/2); shape.closePath();
+      const hole = new THREE.Path(); hole.moveTo(-width/2+thickness,-depth/2+thickness); hole.lineTo(-width/2+thickness,depth/2-thickness); hole.lineTo(width/2-thickness,depth/2-thickness); hole.lineTo(width/2-thickness,-depth/2+thickness); hole.closePath(); shape.holes.push(hole);
+      const geometry = new THREE.ExtrudeGeometry(shape, {depth:height,bevelEnabled:false}); geometry.rotateX(-Math.PI/2); metricUVs(geometry);
+      const mesh = new THREE.Mesh(geometry,this._material(material)); mesh.position.y = bottom; g.add(mesh);
+    };
+    const thickness = Math.min(w,d) * .19;
+    ring(w,d,thickness,y,top-y,o.material);
+    if (o.cap !== false) ring(w+.16,d+.16,thickness+.08,top,.14,o.capMaterial ?? o.material);
+    // Open cylinders plus an annular rim preserve a real flue, not a painted dot.
+    for (let i = 0; i < (o.pots ?? 0); i++) {
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(.09,.12,.35,12,1,true),this._material(o.potMaterial ?? o.material));
+      pot.material = pot.material.clone(); pot.material.side = THREE.DoubleSide;
+      pot.position.set((i-(o.pots-1)/2)*w/o.pots,top+.315,0);g.add(pot);
+      const lip = new THREE.Mesh(new THREE.TorusGeometry(.082,.018,6,12),this._material(o.capMaterial ?? o.material));lip.rotation.x=Math.PI/2;lip.position.copy(pot.position);lip.position.y=top+.49;g.add(lip);
+    }
     return this._add(g, 'chimney', frame);
   }
   // A wall-plane gable: the facade continues above the eave to a peak, with its own roof running inward.
   gable(frame, o = {}) {
     const w = o.width ?? 4, h = o.height ?? 3, d = o.depth ?? 3, y = o.y ?? this.wallTop ?? this.site.eave_m, g = new THREE.Group(), stem = o.stem ?? 0;
+    if(this.roofMesh&&o.cutRoof!==false)cutRoofOpening(this.roofMesh,frame,w*.95,-.27,-d-.20);
     const front = this._prism([[-w / 2, 0], [w / 2, 0], [w / 2, stem], [0, stem + h], [-w / 2, stem]], 0.3, o.material); front.position.set(0, y, (o.out ?? 0.05) - 0.3); g.add(front);
-    const roof = this._prism([[-w / 2 - .2, stem], [w / 2 + .2, stem], [0, stem + h + .15]], d, o.roofMaterial ?? o.material); roof.position.set(0, y, -d - 0.25); g.add(roof);
+    // Blend the back ridge into the sampled host surface instead of terminating
+    // a tall triangular extrusion in an exposed vertical rear face.
+    const hostY = (x,z) => { const [wx,wz]=this._world(frame,x,z); return this.roofY(wx,wz); };
+    const backZ=-d-.25,leftBack=hostY(-w/2,backZ)+.035,rightBack=hostY(w/2,backZ)+.035;
+    const backPeak=Math.max(hostY(0,backZ)+.06,leftBack+.04,rightBack+.04);
+    const points=[[-w/2-.2,y+stem,-.25],[0,y+stem+h+.15,-.25],[w/2+.2,y+stem,-.25],[-w/2-.2,leftBack,backZ],[0,backPeak,backZ],[w/2+.2,rightBack,backZ]];
+    const positions=[]; for(const i of [0,3,4,0,4,1,1,4,5,1,5,2])positions.push(...points[i]);
+    const roofGeometry=new THREE.BufferGeometry();roofGeometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));roofGeometry.computeVertexNormals();metricUVs(roofGeometry);
+    const roofMaterial=this._material(o.roofMaterial ?? o.material).clone();roofMaterial.side=THREE.DoubleSide;
+    g.add(new THREE.Mesh(roofGeometry,roofMaterial));
     if (stem > 0) g.add(this._box(w, stem, d, 0, y, -d / 2 - 0.25, o.material));
     if (o.glass) g.add(this._box(w * 0.22, (stem + h) * 0.3, 0.06, 0, y + (stem + h) * 0.22, (o.out ?? 0.05) + 0.02, o.glass));
+    if (o.trimMaterial) {
+      const line = (a,b,width) => { const delta=new THREE.Vector3().subVectors(b,a); const beam=new THREE.Mesh(new THREE.BoxGeometry(width,delta.length(),.18),this._material(o.trimMaterial));beam.position.copy(a).add(b).multiplyScalar(.5);beam.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());g.add(beam); };
+      const z=(o.out ?? .05)+.1;
+      line(new THREE.Vector3(-w/2,y+stem,z),new THREE.Vector3(0,y+stem+h,z),o.trimWidth ?? .18);
+      line(new THREE.Vector3(0,y+stem+h,z),new THREE.Vector3(w/2,y+stem,z),o.trimWidth ?? .18);
+      g.add(this._box(w+.35,.18,.35,0,y-.1,z-.05,o.trimMaterial));
+    }
     return this._add(g, 'gable', frame);
+  }
+  window(frame, o = {}) {
+    const w=o.width ?? 1.4,h=o.height ?? 2.3,y=o.y ?? 1,trim=o.trimMaterial,glass=o.glass,g=new THREE.Group(),t=o.trimWidth ?? .13,z=o.out ?? .06;
+    g.add(this._box(w,h,.055,0,y,z+.025,glass));
+    for (const x of [-w/2-t/2,w/2+t/2]) g.add(this._box(t,h+2*t,.15,x,y-t,z+.11,trim));
+    for (const py of [y-t,y+h]) g.add(this._box(w+2*t,t,.16,0,py,z+.12,trim));
+    g.add(this._box(w+4*t,.16,.38,0,y-.2,z+.18,trim));
+    const [cols,rows]=o.mullions ?? [2,2];
+    for(let i=1;i<cols;i++)g.add(this._box(.045,h,.08,-w/2+w*i/cols,y,z+.13,trim));
+    for(let i=1;i<rows;i++)g.add(this._box(w,.045,.08,0,y+h*i/rows,z+.13,trim));
+    if(o.pediment){const crown=this._prism([[-w*.65,0],[w*.65,0],[0,o.pediment==='triangular'?.5:.22]],.22,trim);crown.position.set(0,y+h+.19,z);g.add(crown);}
+    if(o.keystone)g.add(this._box(.2,.3,.24,0,y+h+.1,z+.12,trim));
+    return this._add(g,'window',frame);
   }
   turret(frame, o = {}) {
     const r = o.radius ?? 1.6, sides = o.sides ?? 8, y = o.y ?? 0, wall = (o.wallTop ?? (this.wallTop ?? this.site.eave_m) + 1.5) - y, g = new THREE.Group();
@@ -259,9 +351,18 @@ class Builder {
   look(o) { Object.assign(this.lookConfig, o); }
   finish() {
     if (!this.counts.walls) throw Error('KIT_DESIGN_HAS_NO_WALLS: call b.walls(...)');
+    this.root.updateMatrixWorld(true);
+    const guard = this.wallGuard, positions = guard.part.object.geometry.attributes.position.array;
+    const identity = new THREE.Matrix4();
+    if (!guard.part.object.matrixWorld.equals(identity) || positions.length !== guard.positions.length || guard.positions.some((v, i) => v !== positions[i]) || !guard.part.object.visible) throw Error('KIT_MEASURED_WALL_GEOMETRY_MUTATED');
     this.root.userData.components = this.parts; this.root.userData.kitCounts = this.counts; this.root.userData.look = this.lookConfig; this.root.updateMatrixWorld(true); return this.root;
   }
 }
 
-export function buildDesign(design, site, style) { const b = new Builder(site, style); design(site, b, style); return b.finish(); }
+export function buildDesign(design, site, style) {
+  const b = new Builder(site, style), api = {THREE};
+  for (const key of Object.getOwnPropertyNames(Builder.prototype)) if (key !== 'constructor' && key !== 'finish' && !key.startsWith('_')) api[key] = b[key].bind(b);
+  design(b.site, Object.freeze(api), deepFreeze(structuredClone(style ?? {})));
+  return b.finish();
+}
 export const planGeometry = { toPlan, fromPlan, offset, insetLimit, area };

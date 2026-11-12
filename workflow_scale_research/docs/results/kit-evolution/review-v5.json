@@ -1,0 +1,67 @@
+{
+  "likeness": 0.54,
+  "style": 0.68,
+  "detail": 0.42,
+  "checklist": [
+    {
+      "feature": "Three-storey red-brick wings and overall courtyard footprint",
+      "status": "present"
+    },
+    {
+      "feature": "Steep, intersecting roof volumes",
+      "status": "weak"
+    },
+    {
+      "feature": "Prominent front-facing gables of differing scale",
+      "status": "wrong"
+    },
+    {
+      "feature": "Gabled roof features along the long wings",
+      "status": "weak"
+    },
+    {
+      "feature": "Dormers embedded in the roof slopes",
+      "status": "weak"
+    },
+    {
+      "feature": "Pointed corner roof features",
+      "status": "present"
+    },
+    {
+      "feature": "Chimneys distributed across the roof",
+      "status": "present"
+    },
+    {
+      "feature": "Deep window surrounds and articulated façade bays",
+      "status": "missing"
+    },
+    {
+      "feature": "Three-storey window rhythm",
+      "status": "present"
+    },
+    {
+      "feature": "Fine masonry and trim variation",
+      "status": "weak"
+    }
+  ],
+  "defects": [
+    "Broad, relatively plain roof planes suppress the reference’s complex roof silhouette despite the strong overall outline match.",
+    "The two front gables read as similar repeated modules rather than the more varied, prominent gables in the reference.",
+    "Several dormers read as small boxes placed on the roof rather than openings integrated into its slopes.",
+    "Flat, uniformly repeated windows and horizontal bands replace the reference’s substantial window-surround and bay relief.",
+    "Pointed roof elements look mechanically repeated; some have abrupt cylindrical bases."
+  ],
+  "fixes": [
+    "Rebuild the roof kit with distinct intersecting steep roof volumes, resolved valleys, and legible changes of plane at the courtyard corner.",
+    "Give the principal front gable its own larger profile and placement; vary the secondary gables to match the reference rather than duplicating one module.",
+    "Cut dormer openings into the roof planes and join their sidewalls and miniature roofs cleanly to the surrounding slopes.",
+    "Add a window-surround kit with recessed glazing, projecting pale trim, lintels, and stronger bay-to-bay depth where supported by the reference.",
+    "Vary the pointed corner-feature kit by location and blend its bases into the adjacent roof geometry.",
+    "Replace the conspicuous uniform roof pattern and flat brick fill with subtler, finer-scale material texture."
+  ],
+  "keep": [
+    "The broadly matching wing layout and three-storey massing.",
+    "The red masonry, pale trim, and slate-coloured roof material separation.",
+    "The established window rhythm and roof chimney distribution."
+  ]
+}

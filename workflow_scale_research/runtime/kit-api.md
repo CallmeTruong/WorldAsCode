@@ -13,7 +13,7 @@ Write one ES module: `export function design(site, b, style) { ... }`. No import
 - `colours`: `{wall, roof, trim}` sampled or estimated material colours
 - `tags`: map tags such as architecture style
 
-`style`: the style sheet you must follow (palette treatment, proportions, detail density).
+`style`: transferable treatment of materials, proportions, detail and lighting; never a fixed palette.
 
 ## Rules
 
@@ -33,7 +33,7 @@ Write one ES module: `export function design(site, b, style) { ... }`. No import
 ## Materials
 
 `b.material(name, {color, roughness = 0.8, metalness = 0, surface, glow})`
-- `surface`: `{type: 'plain' | 'brick' | 'slate' | 'stripes' | 'panels', scale: metres per tile, color2}`
+- `surface`: `{type: 'plain' | 'brick' | 'slate' | 'stripes' | 'panels', scale: metres per TILE (typically 2.4), course_m, unit_width_m, relief_m, color2}`. Brick defaults: 0.075 m courses and 0.23 m units. Slate: 0.24 m courses / 0.32 m units. Seeded synthetic color/bump/roughness channels, not source PBR. `seed` on material selects a reproducible variant.
 - `glow`: emissive colour switched on at night.
 
 ## Main masses
@@ -45,9 +45,10 @@ Write one ES module: `export function design(site, b, style) { ... }`. No import
 
 ## Architectural parts (first argument is a frame)
 
-- `b.dormer(frame, {width, height, depth, roof: 'gable' | 'shed' | 'flat', material, roofMaterial, glass, setback = 0.6})` — sits on the roof just inside the eave.
-- `b.gable(frame, {width, height, depth, stem = 0, material, roofMaterial, glass})` — the facade rises above the eave into a peaked gable with its own roof running back.
-- `b.chimney(frame, {width, depth, height, material, capMaterial, pots})` — `height` is above the roof at that point.
+- `b.dormer(frame, {width, height, depth, roof: 'gable' | 'shed' | 'flat', material, roofMaterial, trimMaterial, glass, setback = 0.6})` — side cheeks follow the host roof; a rectangular opening is cut in the host shell (disable with `cutRoof:false`). Vary type and dimensions only where observed.
+- `b.gable(frame, {width, height, depth, stem = 0, material, roofMaterial, trimMaterial, trimWidth, glass})` — facade-plane gable with sloped trim; the back roof blends into sampled host height and cuts the underlying shell. Use for prominent tall gables; do not substitute uniform small dormers. This is a local attachment, not a general ridge/valley solver.
+- `b.window(frame, {width, height, y, trimMaterial, glass, trimWidth = 0.13, mullions: [2,2], pediment: 'triangular' | 'flat', keystone, out = 0.06})` — modeled jambs, lintel, sill, glass and mullions. Use per floor/edge with `walls({windows:false,...})`; upper-floor ornament may differ. Glass is a separate surface; no actual wall recess is claimed.
+- `b.chimney(frame, {width, depth, height, material, capMaterial, pots})` — hollow rectangular shaft/cap with open pots. `height` is above the roof at that point.
 - `b.turret(frame, {radius, sides = 8, y = 0, wallTop, roof: 'cone' | 'dome', roofHeight, material, roofMaterial, finial})` — `sides: 4` gives a square tower.
 - `b.bay(frame, {width, depth, height, y = 0, storeys, material, glass, roofMaterial, roofHeight})` — a mass projecting out of the facade.
 - `b.portal(frame, {width, height, depth, arch = true, material, door, steps})` — entrance surround.

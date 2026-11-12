@@ -15,6 +15,9 @@ export function mount(root,config={}) {
   const width=config.width??1100,height=config.height??850;
   const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(width,height);renderer.setPixelRatio(1);
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  // Camera-only changes do not alter the light-space shadow of static assets.
+  // Explicit state/geometry changes invalidate it below.
+  renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();scene.environment=pmrem.fromScene(room,.04,.1,100,{size:64}).texture;scene.environmentIntensity=.45;room.dispose();pmrem.dispose();
   document.getElementById('viewport').append(renderer.domElement);
   const bounds=new THREE.Box3().setFromObject(root),size=bounds.getSize(new THREE.Vector3()),centre=bounds.getCenter(new THREE.Vector3());
@@ -41,14 +44,15 @@ export function mount(root,config={}) {
   // A design may set its own daylight look; night and the native black stage are unchanged.
   const look={background:'#ccd6dc',ground:'#a5aaa5',sky:2,sun:3,exposure:1,...(root.userData.look??{})};
   renderer.toneMappingExposure=look.exposure;floor.material.color.set(look.ground);
-  function state(v){const s=applyState(root,v);sky.intensity=s.night?.18:look.sky;sun.intensity=s.night?.12:look.sun;scene.environmentIntensity=s.night?.02:.45;scene.background.set(config.native?'#000000':(s.night?'#101923':look.background));draw();return s;}
-  function lookdev(mode){if(mode==='grazing'){sky.intensity=.35;sun.intensity=4;sun.position.copy(centre).add(new THREE.Vector3(radius*1.5,radius*.25,radius*.1));}else{sky.intensity=look.sky;sun.intensity=look.sun;sun.position.copy(centre).add(new THREE.Vector3(radius,radius*1.7,radius*.8));}draw();}
+  function state(v){const s=applyState(root,v);renderer.shadowMap.autoUpdate=Number(s.wind??0)>0;renderer.shadowMap.needsUpdate=true;sky.intensity=s.night?.18:look.sky;sun.intensity=s.night?.12:look.sun;scene.environmentIntensity=s.night?.02:.45;scene.background.set(config.native?'#000000':(s.night?'#101923':look.background));draw();return s;}
+  function lookdev(mode){renderer.shadowMap.needsUpdate=true;if(mode==='grazing'){sky.intensity=.35;sun.intensity=4;sun.position.copy(centre).add(new THREE.Vector3(radius*1.5,radius*.25,radius*.1));}else{sky.intensity=look.sky;sun.intensity=look.sun;sun.position.copy(centre).add(new THREE.Vector3(radius,radius*1.7,radius*.8));}draw();}
   function manifest(){let triangles=0;const parts=[];root.traverse(o=>{if(o.isMesh){const g=o.geometry;const positionCount=g?.attributes?.position?.count??0;triangles+=(g?.index?.count??positionCount)/3;parts.push({name:o.name,geometry:g?.uuid??null,position:o.getWorldPosition(new THREE.Vector3()).toArray()});}});return {triangles,parts,bounds:{min:bounds.min.toArray(),max:bounds.max.toArray()},probes:semanticProbes(root),sculptRuntime:!!root.userData.sculptRuntime,profile:{three:THREE.REVISION,toneMapping:'ACESFilmic',exposure:renderer.toneMappingExposure,colorSpace:renderer.outputColorSpace,environment:'RoomEnvironment',environmentIntensity:scene.environmentIntensity}};}
   const runtime=root.userData.sculptRuntime;
   const partNodes=runtime?Object.entries(runtime.nodes).filter(([id,o])=>id!=='root'&&o.isObject3D&&o!==root):root.userData.components.map(v=>[v.instance+'/'+v.component.id,v.pivot]);
   for(const asset of root.userData.nativeAssets??[])for(const [id,o] of Object.entries(asset.userData.sculptRuntime?.nodes??{}))if(id!=='root'&&o!==asset)partNodes.push([asset.name+'/'+id,o]);
   const originals=partNodes.map(([id,o])=>({id,o,local:o.position.clone(),world:o.getWorldPosition(new THREE.Vector3())}));
   function explode(amount=0){
+    renderer.shadowMap.needsUpdate=true;
     for(const p of originals)p.o.position.copy(p.local);root.updateMatrixWorld(true);
     if(amount)for(const p of originals){const desired=p.world.clone().sub(centre).multiplyScalar(1+amount).add(centre);p.o.position.copy(p.o.parent.worldToLocal(desired));p.o.updateMatrixWorld(true);}draw();
   }

@@ -40,6 +40,10 @@ FR-011: New code/package lives here without imports from the legacy implementati
 FR-012: Preflight validates the exact pinned factory semantics (including transform-scale precedence, extrusion point/depth fields, and numeric executable repetition data), records lossless normalization, and keeps the original spec/evidence auditable. Deterministic hard-gate corrections follow the pinned correction-loop decision and limits.
 FR-013: Separate source material observations from final authored appearance. Undersampled or illumination-contaminated image regions may establish material family, broad color placement and pattern direction, but cannot be presented as recovered high-resolution PBR. The workflow must let critic/coder nodes author deterministic, tileable procedural maps that creatively follow the requested style while retaining observed material identity, and must inspect those maps in rendered output.
 
+FR-014: For the measured-site design route, permit bounded node-authored kit evolution in isolated, versioned copies. Distinguish evidence gaps, API misuse and missing capabilities. Protect measured walls/frames, cameras, shared source and acceptance policy; expose only relevant API/source to each role.
+
+FR-015: A kit candidate must execute compatibility fixtures and an explicit exercise of its new capability on varied footprints, retain per-case failures for node feedback, and pass real-site metric/critic comparison before run-local activation. Pin dependencies, preserve rollback and verify hashes on reuse. Local activation is not global release, family generality or human visual acceptance.
+
 ## Key Entities
 EvidenceBundle; WorldIR; AssetBlueprint; AssetInstance; SemanticComponent; RuntimeState; NetworkEdge/Port; NativeState; PassReview; BuildArtifact; JobLedger.
 

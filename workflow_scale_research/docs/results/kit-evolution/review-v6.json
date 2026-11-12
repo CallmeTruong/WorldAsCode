@@ -1,0 +1,63 @@
+{
+  "likeness": 0.54,
+  "style": 0.72,
+  "detail": 0.46,
+  "checklist": [
+    {
+      "feature": "Three-storey brick wings enclosing an open courtyard",
+      "status": "present"
+    },
+    {
+      "feature": "Steep, varied roof silhouette",
+      "status": "weak"
+    },
+    {
+      "feature": "Tall, narrow gables on the principal frontage",
+      "status": "weak"
+    },
+    {
+      "feature": "Distinct roof intersections at the wing junctions",
+      "status": "weak"
+    },
+    {
+      "feature": "Dormers embedded in the roof slopes",
+      "status": "weak"
+    },
+    {
+      "feature": "Corner towers integrated with the roof and walls",
+      "status": "wrong"
+    },
+    {
+      "feature": "Chimneys distributed across the roof",
+      "status": "present"
+    },
+    {
+      "feature": "Projecting surrounds and vertical articulation around the windows",
+      "status": "weak"
+    },
+    {
+      "feature": "Fine-scale masonry and façade variation",
+      "status": "weak"
+    }
+  ],
+  "defects": [
+    "Broad, relatively even roof planes flatten the reference's more varied roofscape, particularly around the courtyard and wing junctions.",
+    "The cylindrical tower drums and simple conical caps read as separate ornaments rather than the more integrated, sharply profiled roof features visible in the reference.",
+    "Dormers and frontage gables have overly uniform geometry; several appear placed on top of a continuous roof rather than interrupting its planes.",
+    "Repeated flat window modules and continuous horizontal bands make the façades much more generic than the reference. The reference's melted photogrammetry is not evidence for irregular ornament."
+  ],
+  "fixes": [
+    "Rebuild the roof kit with steeper, broken planes and explicit valleys and ridges at each wing junction; preserve the courtyard opening.",
+    "Replace the generic cylindrical tower modules with roof-integrated tower bases and caps matched to the visible corner profiles.",
+    "Give the principal-front gable modules taller, narrower profiles and check their positions and scale against each camera view.",
+    "Cut dormer openings into their host roof planes, with proper cheeks and flashing, and vary dormer size and type by roof edge.",
+    "Add restrained projecting window surrounds, sills and vertical façade divisions where supported by the reference, rather than repeating one flat surround everywhere.",
+    "Reduce the apparent size and regularity of the brick texture and add subtle material variation without copying capture artifacts."
+  ],
+  "keep": [
+    "Recognisable three-storey courtyard-wing massing and overall footprint.",
+    "Brick-and-dark-roof material distinction.",
+    "Legible window rhythm and distributed chimneys.",
+    "Clear daylight presentation and readable silhouette."
+  ]
+}

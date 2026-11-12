@@ -54,6 +54,14 @@ def main(argv=None):
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--max-revisions", type=int, default=1)
     p.add_argument("--max-tokens", type=int, default=220000)
+    p.add_argument("--adaptive-kit", action="store_true", help="Develop isolated kit candidates after an unaccepted design")
+    p.add_argument("--max-kit-cycles", type=int, default=1)
+    p.add_argument("--kit-version", type=Path, help="Verified active-kit.json to pin for this run")
+    p = sub.add_parser("adapt-kit", help="Develop and evaluate isolated kit versions from an existing design run")
+    p.add_argument("--source-run", type=Path, required=True)
+    p.add_argument("--run", type=Path, required=True)
+    p.add_argument("--max-cycles", type=int, default=1)
+    p.add_argument("--max-tokens", type=int, default=220000)
     p = sub.add_parser(
         "heights",
         help="Sample a dense height grid for an evidence bundle from a running reference viewer",
@@ -77,6 +85,12 @@ def main(argv=None):
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--port", type=int, default=8770)
     args = parser.parse_args(argv)
+    if args.command == "adapt-kit":
+        from .adaptive import evolve_design
+
+        result = evolve_design(args.source_run, args.run, Settings.load(), args.max_cycles, args.max_tokens)
+        print(json.dumps(result, ensure_ascii=False))
+        return 0 if result.get("accepted") else 2
     if args.command == "demo":
         from .browser import bundle, capture
         from .demo import demo_world
@@ -139,7 +153,9 @@ def main(argv=None):
         if not 1 <= len(styles) <= 3:
             parser.error("Provide one to three style images")
         result = run_design(
-            args.evidence, styles, args.run, settings, args.max_revisions, args.max_tokens
+            args.evidence, styles, args.run, settings, args.max_revisions, args.max_tokens,
+            adaptive_kit=args.adaptive_kit, max_kit_cycles=args.max_kit_cycles,
+            kit_version=args.kit_version,
         )
         print(json.dumps(result, ensure_ascii=False))
         return 0 if result["status"] == "designed" else 2
