@@ -9,6 +9,66 @@ from worldascode.config import ROOT
 from worldascode.storage.artifacts import file_hash, write_json
 
 
+def probe_object(source_run, out, count=16):
+    """Replicate an exact pinned object recipe; not a city/unique-asset benchmark."""
+    from worldascode.kits import packs
+
+    if type(count) is not int or not 1 <= count <= 64:
+        raise ValueError("OBJECT_SCALE_COUNT_MUST_BE_1_TO_64")
+    source_run, out = Path(source_run).resolve(), Path(out).resolve()
+    result = json.loads((source_run / "result.json").read_text(encoding="utf-8"))
+    attempt = source_run / f"attempt-{result['best_attempt']}"
+    if (
+        file_hash(attempt / "design.mjs")
+        != json.loads((attempt / "build.json").read_text())["source_sha256"]
+    ):
+        raise ValueError("OBJECT_SCALE_SOURCE_CHANGED")
+    host = attempt / "selected-runtime"
+    selection = json.loads((host / "selection.json").read_text())
+    if any(
+        file_hash(host / name) != expected
+        for name, expected in selection["modules"].items()
+    ):
+        raise ValueError("OBJECT_SCALE_RUNTIME_CHANGED")
+    chosen = [
+        packs.load(p.parent)
+        for p in sorted((attempt / "selected-packs").glob("*/pack.json"))
+    ]
+    site = json.loads((attempt / "site.json").read_text())
+    style = (
+        json.loads((source_run / "style.json").read_text())
+        if (source_run / "style.json").exists()
+        else {}
+    )
+    out.mkdir(parents=True, exist_ok=False)
+    imports = [
+        f"import * as pack{i} from {json.dumps(p['module'].replace(chr(92), '/'))};"
+        for i, p in enumerate(chosen)
+    ]
+    source = (
+        "\n".join(imports)
+        + f"\nimport {{buildDesign}} from {json.dumps((host / 'kit.mjs').as_posix())};\nimport {{design}} from {json.dumps((attempt / 'design.mjs').as_posix())};\nimport {{batchStaticAssets}} from {json.dumps((ROOT / 'runtime/batching.mjs').as_posix())};\nimport * as THREE from 'three';\n"
+    )
+    source += f"export function createModel(){{const prototype=buildDesign(design,{json.dumps(site)},{json.dumps(style)},[{','.join('pack' + str(i) for i in range(len(chosen)))}]);const size=new THREE.Box3().setFromObject(prototype).getSize(new THREE.Vector3()),columns=Math.ceil(Math.sqrt({count}));return batchStaticAssets(prototype,Array.from({{length:{count}}},(_,i)=>({{id:'object-'+i,position:[(i%columns)*(size.x+2),0,Math.floor(i/columns)*(size.z+2)]}})));}}"
+    factory = out / "factory.mjs"
+    factory.write_text(source, encoding="utf-8")
+    started = time.monotonic()
+    bundle(out, factory=factory)
+    report = capture(out, review_only=True, export_geometry=False)
+    summary = {
+        "passed": report["passed"],
+        "count": count,
+        "seconds": round(time.monotonic() - started, 2),
+        "performance": report.get("manifest", {}).get("performance"),
+        "triangles": report.get("manifest", {}).get("triangles"),
+        "source_quality_status": result.get("quality_status"),
+        "state_preserves_geometry": report.get("state_preserves_geometry"),
+        "scope": "static copies of one pinned asset, including existing nested instances; no diversity, streaming or city-throughput claim",
+    }
+    write_json(out / "result.json", summary)
+    return summary
+
+
 def probe(source_run, out, count=9, batched=True):
     source_run, out = Path(source_run).resolve(), Path(out).resolve()
     if out.exists():

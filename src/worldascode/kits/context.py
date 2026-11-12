@@ -17,6 +17,18 @@ GROUPS = {
     "roofs": {"roof", "roofY", "gable", "dormer"},
     "facades": {"window", "bay", "portal", "pilasters", "quoins"},
     "details": {"turret", "chimney"},
+    "massing": {"roofSections", "volume", "tier", "parapet", "cornice"},
+    "systems": {"curtainWall", "ribbonWindows", "fins", "frameGrid", "balconies"},
+    "street": {"arcade", "storefront", "columns", "canopy", "awning", "stairs", "sign"},
+    "rooftop": {
+        "mechanical",
+        "tank",
+        "antenna",
+        "skylight",
+        "dome",
+        "spire",
+        "railing",
+    },
     "geometry": {"box", "cylinder", "cone", "prism", "loft", "add"},
 }
 
@@ -127,7 +139,7 @@ def context(
     feedback=None,
     requested=(),
     method_names=(),
-    max_chars=16000,
+    max_chars=24000,
 ):
     catalog = cards(api_path)
     if any(key not in catalog for key in requested):
@@ -145,10 +157,12 @@ def context(
             bool(re.search(r"\b" + re.escape(name) + r"s?\b", query))
             for name in card["methods"]
         )
-        if key == "facades":
+        # Default architectural context stays bounded; other cards require
+        # observed features, actual method use or explicit retrieval.
+        if key in {"facades", "roofs"}:
             score += 2
-        if key == "roofs":
-            score += 2
+        if key == "massing" and (site or {}).get("roof", {}).get("sections"):
+            score += 5
         if score:
             scored.append((score, order, key))
     ranked = [key for _, _, key in sorted(scored, reverse=True)]
@@ -156,7 +170,7 @@ def context(
     discover = list(dict.fromkeys([*requested, *ranked, *catalog]))[:12]
     required = set(selected)
     for key in ranked:
-        if len(selected) >= 8:
+        if len(selected) >= 14:
             break
         if sum(len(catalog[k]["text"]) for k in selected | {key}) <= max_chars:
             selected.add(key)
@@ -178,7 +192,13 @@ def context(
     }
 
 
-def runtime_slice(kit_path, design_code, destination):
+def runtime_slice(kit_path, design_code, destination, pack_parts=(), host_services=()):
+    """Compile only the kit methods a design uses.
+
+    ``pack_parts`` are names supplied by part packs rather than the kit;
+    ``host_services`` are kit methods those parts call on their host and which
+    must therefore survive the slice even if the design never names them.
+    """
     kit_path, destination = Path(kit_path), Path(destination)
     source = kit_path.read_text(encoding="utf-8")
     blocks = methods(source)
@@ -188,10 +208,12 @@ def runtime_slice(kit_path, design_code, destination):
     if analysis["dynamic_api_access"]:
         raise ValueError("KIT_DYNAMIC_API_ACCESS_REQUIRES_STATIC_METHOD")
     used = set(analysis["api_methods"])
-    unknown = used - set(blocks) - {"THREE"}
+    unknown = used - set(blocks) - {"THREE"} - set(pack_parts)
     if unknown:
         raise ValueError("KIT_UNKNOWN_REFERENCED_METHOD:" + ",".join(sorted(unknown)))
     keep = {"constructor", "walls", "finish"} | (used & blocks.keys())
+    if used & set(pack_parts):
+        keep |= set(host_services) & blocks.keys()
     while True:
         called = {
             dep

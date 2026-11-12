@@ -1,3 +1,5 @@
 - `b.walls({material, height = site.eave_m, storeys = site.storeys, bay = 3.2, window: {w, h, sill, arch, mullions: [cols, rows], frame, glass, glow}, course, windows = true})` — `bay` is window spacing in metres; `w`/`h`/`sill` are fractions of a bay/storey; `course` is a colour for a line at each floor.
 - `b.band({y, height = 0.4, out = 0.25, material})` — horizontal band around the whole outline (cornice, plinth, string course).
 - `b.ground({material, margin = 3})` — pavement slab around the building.
+- `b.tier({inset, y, height, storeys, bay, material, window, windows})` → `{topY}` — upper storeys stepped back from the outline (tower on a podium, attic storey, crown). Call after `b.walls`; later tiers stack with a larger `inset`.
+- `b.curtainWall(which, {glass, frame, spandrel, module = 1.5, floor, y = 0, top, mullionDepth, spandrelHeight})` — glazed wall with a mullion grid and optional opaque spandrel per floor. Use with `b.walls({windows: false})`.

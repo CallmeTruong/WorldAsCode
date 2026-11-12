@@ -73,7 +73,50 @@ export function mount(root,config={}) {
   const clayMaterial=new THREE.MeshStandardMaterial({color:0xaaaaaa,roughness:.85});
   function clay(enabled){scene.overrideMaterial=enabled?clayMaterial:null;draw();}
   function silhouette(){scene.overrideMaterial=white;const oldFloor=floor.visible;floor.visible=false;const oldBackground=scene.background.clone();scene.background.set('#000000');draw();const data=renderer.domElement.toDataURL('image/png');scene.overrideMaterial=null;floor.visible=oldFloor;scene.background.copy(oldBackground);draw();return data;}
-  window.worldscale={view,pose,state,lookdev,manifest,geometry,explode,pick,silhouette,clay,root,renderer};
+  // Top-down height of the model on a measured grid, for comparison with a sampled height field.
+  // Grid axes follow the layout: +u along `angle_rad` in plan (x east, north), +v 90 degrees left of it.
+  function heightMap(l){
+    const a=l.angle_rad,y0=-2,y1=bounds.max.y+5;
+    const cam=new THREE.OrthographicCamera(l.u0-l.step/2,l.u0+(l.nu-.5)*l.step,l.v0+(l.nv-.5)*l.step,l.v0-l.step/2,.1,y1+60);
+    cam.position.set(0,y1+50,0);cam.up.set(-Math.sin(a),0,-Math.cos(a));cam.lookAt(0,0,0);cam.updateMatrixWorld(true);
+    const encode=new THREE.ShaderMaterial({side:THREE.DoubleSide,uniforms:{y0:{value:y0},y1:{value:y1}},
+      vertexShader:'varying float vY;void main(){vec4 p=vec4(position,1.);\n#ifdef USE_INSTANCING\np=instanceMatrix*p;\n#endif\nvec4 w=modelMatrix*p;vY=w.y;gl_Position=projectionMatrix*viewMatrix*w;}',
+      fragmentShader:'uniform float y0;uniform float y1;varying float vY;void main(){float h=clamp((vY-y0)/(y1-y0),0.,1.)*.999;vec3 c=fract(h*vec3(1.,255.,65025.));c-=c.yzz*vec3(1./255.,1./255.,0.);gl_FragColor=vec4(c,1.);}'});
+    const target=new THREE.WebGLRenderTarget(l.nu,l.nv,{minFilter:THREE.NearestFilter,magFilter:THREE.NearestFilter,depthBuffer:true});
+    const old={floor:floor.visible,background:scene.background,clear:renderer.getClearColor(new THREE.Color()),alpha:renderer.getClearAlpha()};
+    floor.visible=false;scene.background=null;scene.overrideMaterial=encode;renderer.setClearColor(0x000000,1);renderer.setRenderTarget(target);renderer.clear();renderer.render(scene,cam);
+    const pixels=new Uint8Array(l.nu*l.nv*4);renderer.readRenderTargetPixels(target,0,0,l.nu,l.nv,pixels);
+    renderer.setRenderTarget(null);scene.overrideMaterial=null;scene.background=old.background;floor.visible=old.floor;renderer.setClearColor(old.clear,old.alpha);target.dispose();encode.dispose();draw();
+    const heights=new Array(l.nu*l.nv);
+    for(let i=0;i<heights.length;i++){const r=pixels[4*i],g=pixels[4*i+1],b=pixels[4*i+2];heights[i]=r+g+b===0?null:Math.round((y0+(r/255+g/65025+b/16581375)/.999*(y1-y0))*100)/100;}
+    return heights;
+  }
+  // Deterministic sanity checks on kit parts: is every raised part resting on or joined to
+  // something, and is anything a thin sheet standing clear of the roof behind it?
+  function structure(){
+    root.updateMatrixWorld(true);
+    const parts=root.userData.components??[],ray=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0),issues=[];
+    const hosts=new Set(['walls','roof','band','ground','tier','parapet','cornice']),surface=new Set(['window','curtainWall','ribbonWindows','fins','frameGrid','storefront','tree','columns','arcade','stairs']);
+    const topAt=(list,x,z)=>{ray.set(new THREE.Vector3(x,1e4,z),down);ray.far=2e4;const hit=ray.intersectObjects(list,true)[0];return hit?hit.point.y:-Infinity;};
+    let checked=0;
+    for(const part of parts){
+      const kind=part.component.kind;if((root.userData.objectKind??'building')==='building'&&(hosts.has(kind)||surface.has(kind)))continue;
+      const box=new THREE.Box3().setFromObject(part.pivot);if((root.userData.objectKind??'building')!=='building'&&box.min.y<-.25)issues.push({id:part.component.id,kind,problem:'below_ground',bottom_m:box.min.y,top_m:box.max.y});if(box.isEmpty()||box.min.y<=((root.userData.objectKind??'building')==='building'?.6:.25))continue;
+      if(++checked>400)break;
+      const size=box.getSize(new THREE.Vector3()),c=box.getCenter(new THREE.Vector3()),others=parts.filter(p=>p!==part&&p.component.kind!=='ground').map(p=>p.pivot);
+      const tops=[[0,0],[.3,.3],[-.3,.3],[.3,-.3],[-.3,-.3]].map(([dx,dz])=>topAt(others,c.x+dx*size.x,c.z+dz*size.z));
+      const seated=tops.filter(t=>t>=box.min.y-.35).length;let joined=seated>=3;
+      for(let k=0;k<8&&!joined;k++){ray.set(c,new THREE.Vector3(Math.cos(k*Math.PI/4),0,Math.sin(k*Math.PI/4)));ray.far=Math.hypot(size.x,size.z)/2+.5;joined=ray.intersectObjects(others,true).length>0;}
+      const where={part:part.component.id,kind,x:+c.x.toFixed(1),z:+c.z.toFixed(1),bottom_m:+box.min.y.toFixed(2),top_m:+box.max.y.toFixed(2)};
+      if(!joined){const support=Math.max(...tops),found=Number.isFinite(support);issues.push({...where,problem:'unsupported',support_found:found,gap_below_m:found?+(box.min.y-support).toFixed(2):null});}
+      const inverse=part.pivot.matrixWorld.clone().invert(),local=new THREE.Box3();
+      part.pivot.traverse(o=>{if(o.isMesh){o.geometry.computeBoundingBox();local.union(o.geometry.boundingBox.clone().applyMatrix4(new THREE.Matrix4().multiplyMatrices(inverse,o.matrixWorld)));}});
+      const extent=local.getSize(new THREE.Vector3()),thin=Math.min(extent.x,extent.z),host=Math.max(0,topAt(others,c.x,c.z));
+      if(thin<.5&&Math.max(extent.x,extent.z)>2&&extent.y>3&&box.max.y-host>2.5)issues.push({...where,problem:'thin_sheet_above_host',thickness_m:+thin.toFixed(2),rises_above_host_m:+(box.max.y-host).toFixed(2)});
+    }
+    return {checked,issues};
+  }
+  window.worldscale={view,pose,state,lookdev,manifest,geometry,explode,pick,silhouette,clay,heightMap,structure,root,renderer};
   const params=new URLSearchParams(location.search);view(Number(params.get('azimuth')??35),Number(params.get('elevation')??28));state({hour:13,wetness:0,wind:0});
   const hour=document.getElementById('hour'),wet=document.getElementById('wetness'),wind=document.getElementById('wind');
   const change=()=>state({hour:Number(hour.value),wetness:Number(wet.value),wind:Number(wind.value)});hour.oninput=change;wet.oninput=change;wind.oninput=change;

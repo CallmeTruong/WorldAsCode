@@ -64,8 +64,11 @@ def bundle(
     site=None,
     style=None,
     kit_path=None,
+    packs=None,
 ):
     """Bundle a World recipe, owned createModel factory, or kit design script.
+
+    ``packs`` are part packs (see ``kits.packs``) made available to the design.
 
     Factories export createModel(options) and return a THREE.Object3D. They have
     no dependency on an upstream generator, schema, signature or state machine.
@@ -79,18 +82,40 @@ def bundle(
     runtime = (ROOT / "runtime/viewer.mjs").as_posix()
     if design is not None:
         source = Path(design).resolve()
+        from worldascode.kits import packs as pack_library
         from worldascode.kits.context import runtime_slice
 
+        packs = [
+            pack_library.pin(pack, run / "selected-packs" / pack["id"])
+            for pack in (packs or [])
+        ]
         selected = runtime_slice(
             Path(kit_path or ROOT / "runtime/kit.mjs").resolve(),
             source.read_text(encoding="utf-8"),
             run / "selected-runtime",
+            pack_parts=pack_library.part_names(packs),
+            host_services=pack_library.HOST_SERVICES,
         )
         write_json(run / "site.json", site)
+        write_json(
+            run / "packs.json",
+            [
+                {"id": p["id"], "version": p["version"], "sha256": p["sha256"]}
+                for p in packs
+            ],
+        )
         entry = (
             f"import {{design}} from {json.dumps(source.as_posix())};\n"
             f"import {{buildDesign}} from {json.dumps(selected.as_posix())};\n"
-            f"const root=buildDesign(design,{json.dumps(site)},{json.dumps(style or {})});\n"
+            + "".join(
+                f"import * as pack{i} from {json.dumps(Path(p['module']).as_posix())};\n"
+                for i, p in enumerate(packs)
+            )
+            + "".join(
+                f"for(const name of {json.dumps(p['parts'])})if(typeof pack{i}.parts?.[name]!=='function')throw Error('PACK_PART_MISSING:'+name);\n"
+                for i, p in enumerate(packs)
+            )
+            + f"const root=buildDesign(design,{json.dumps(site)},{json.dumps(style or {})},[{','.join('pack' + str(i) for i in range(len(packs)))}]);\n"
         )
     elif world is not None:
         validated = World.model_validate(world)
@@ -375,8 +400,14 @@ def capture(
     return metadata
 
 
-def render_attempt(folder, code, site, style, evidence, kit_path=None):
-    """Bundle and capture one script. Returns (metrics, error text or None)."""
+def render_attempt(
+    folder, code, site, style, evidence, kit_path=None, heights=None, packs=None
+):
+    """Bundle and capture one script. Returns (metrics, error text or None).
+
+    ``heights`` is the optional ``(grid, layout)`` height field; with it the
+    model's roof is compared to the measured one.
+    """
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
     (folder / "design.mjs").write_text(code, encoding="utf-8")
@@ -395,20 +426,44 @@ def render_attempt(folder, code, site, style, evidence, kit_path=None):
             site=site,
             style=style,
             kit_path=kit_path,
+            packs=packs,
         )
         record_runtime_snapshot(folder)
     except (RuntimeError, ValueError) as exc:
         return None, str(exc)[-1500:]
-    browser = {}
+    browser, inspection = {}, {}
+    views = evidence_capture(evidence, folder, browser)
+
+    def extra(page, shots):
+        views(page, shots)
+        inspection["structure"] = page.evaluate("worldscale.structure()")
+        if heights is not None:
+            from worldascode.quality import roof_shape
+
+            inspection["model_heights"] = roof_shape.capture(page, heights[1])
+
     report = capture(
         folder,
         camera_override={"azimuth": 215, "elevation": 32, "method": "free review view"},
-        extra=evidence_capture(evidence, folder, browser),
+        extra=extra,
         review_only=True,
     )
     if report.get("runtime_error"):
         return None, "RUNTIME: " + str(report["runtime_error"])[:1500]
-    metrics = measure(folder, evidence, site, report, browser)
+    if "model_heights" in inspection:
+        import worldascode.geometry.massing as massing
+        from worldascode.quality import roof_shape
+
+        plan = massing.to_plan(site["footprint"])
+        inspection["roof_shape"] = roof_shape.compare(
+            inspection.pop("model_heights"),
+            heights[0],
+            heights[1],
+            plan,
+            evidence["height_m"],
+            out_image=folder / "roof-error.png",
+        )
+    metrics = measure(folder, evidence, site, report, browser, inspection)
     write_json(folder / "metrics.json", metrics)
     sheet(
         [folder / ("view-" + v["id"] + ".png") for v in evidence["views"]]
@@ -429,6 +484,7 @@ def record_runtime_snapshot(folder):
         "roof-openings.mjs",
         "viewer.mjs",
         "semantic.mjs",
+        "parts.mjs",
     }
     versions = {
         source.replace("\\", "/"): sha256(content.encode("utf-8")).hexdigest()
@@ -445,3 +501,93 @@ def record_runtime_snapshot(folder):
             "provenance": "Exact source content embedded by esbuild, not the current runtime files after rendering.",
         },
     )
+
+
+def render_object(folder, code, site, style=None, packs=None, kit_path=None):
+    """Bundle and capture a free-standing object (no evidence cameras).
+
+    Returns (metrics, error). Checks are the ones that need no reference: it
+    builds, nothing floats, and it fits the size the site asked for.
+    """
+    folder = Path(folder)
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / "design.mjs").write_text(code, encoding="utf-8")
+    problems = lint(code)
+    if problems:
+        return None, "LINT: " + " ".join(problems)
+    try:
+        bundle(
+            folder,
+            design=folder / "design.mjs",
+            site=site,
+            style=style,
+            kit_path=kit_path,
+            packs=packs,
+        )
+        record_runtime_snapshot(folder)
+    except (RuntimeError, ValueError) as exc:
+        return None, str(exc)[-1500:]
+    inspection = {}
+
+    def extra(page, shots):
+        inspection["structure"] = page.evaluate("worldscale.structure()")
+        inspection["part_calls"] = page.evaluate(
+            "worldscale.root.userData.packCalls??{}"
+        )
+        for name, azimuth in [("rear", 35), ("side", 305)]:
+            page.evaluate("v=>worldscale.view(...v)", [azimuth, 28])
+            page.locator("canvas").screenshot(path=str(folder / (name + ".png")))
+            shots.append(name + ".png")
+
+    report = capture(
+        folder,
+        camera_override={"azimuth": 215, "elevation": 28, "method": "free review view"},
+        extra=extra,
+        review_only=True,
+        export_geometry=False,
+    )
+    if report.get("runtime_error"):
+        return None, "RUNTIME: " + str(report["runtime_error"])[:1500]
+    bounds = report["manifest"]["bounds"]
+    size = [round(bounds["max"][i] - bounds["min"][i], 2) for i in range(3)]
+    envelope = site.get("envelope")
+    fits = True
+    if envelope:
+        wanted = [
+            envelope.get("length_m"),
+            envelope.get("height_m"),
+            envelope.get("width_m"),
+        ]
+        horizontal = sorted([size[0], size[2]], reverse=True)
+        target = sorted([v for v in (wanted[0], wanted[2]) if v], reverse=True)
+        fits = all(0.6 <= a / b <= 1.6 for a, b in zip(horizontal, target)) and (
+            not wanted[1] or 0.6 <= size[1] / wanted[1] <= 1.6
+        )
+    triangles = report["manifest"]["triangles"]
+    checks = {
+        "browser": bool(report.get("passed")),
+        "structure": not inspection["structure"]["issues"],
+        "envelope": fits,
+        "triangles": 0 < triangles <= 60_000,
+        "ground": -0.25 <= bounds["min"][1] <= 0.25,
+        "required_probes": all(
+            any(
+                probe.get("requirement") == requirement and probe.get("passed")
+                for probe in report["manifest"]["probes"]
+            )
+            for requirement in site.get("required_checks", [])
+        ),
+    }
+    metrics = {
+        "passed": all(checks.values()),
+        "checks": checks,
+        "size_m": {"x": size[0], "y": size[1], "z": size[2]},
+        "bounds_m": bounds,
+        "triangles": triangles,
+        "structure": inspection["structure"],
+        "part_calls": inspection["part_calls"],
+        "probes": report["manifest"]["probes"],
+        "performance": report["manifest"].get("performance"),
+    }
+    write_json(folder / "metrics.json", metrics)
+    return metrics, None

@@ -16,9 +16,25 @@ const walk=(node,visit)=>{
 };
 const memberName=node=>!node.computed&&node.property.type==='Identifier'?node.property.name:
   node.computed&&node.property.type==='Literal'&&typeof node.property.value==='string'?node.property.value:null;
-const methods=Object.create(null),api=new Set(),imports=[],dynamic=[];
+const methods=Object.create(null),api=new Set(),imports=[],dynamic=[],packParts=[],hostMembers=new Set(),optionNames=new Set();let hasDynamicImport=false;
 walk(tree,node=>{
   if(node.type==='ImportDeclaration')imports.push(node.source.value);
+  if(node.type==='ImportExpression')hasDynamicImport=true;
+  if(node.type==='MemberExpression'&&node.object.type==='Identifier'&&['o','options'].includes(node.object.name)){const name=memberName(node);if(name)optionNames.add(name);}
+  if(node.type==='ExportNamedDeclaration'&&node.declaration?.type==='VariableDeclaration'){
+    for(const declaration of node.declaration.declarations)if(declaration.id.name==='parts'){
+      if(declaration.init?.type!=='ObjectExpression')throw Error('PACK_PARTS_MUST_BE_OBJECT');
+      for(const property of declaration.init.properties){
+        if(property.type!=='Property'||property.computed||property.kind!=='init'||!['FunctionExpression','ArrowFunctionExpression'].includes(property.value.type)||property.value.params[0]?.name!=='host')throw Error('PACK_PART_MUST_BE_HOST_FUNCTION');
+        const name=property.key.name??property.key.value;
+        if(packParts.includes(name))throw Error('DUPLICATE_PACK_PART');
+        packParts.push(name);
+      }
+    }
+  }
+  if(node.type==='MemberExpression'&&node.object.type==='Identifier'&&node.object.name==='host'){
+    const name=memberName(node);if(!name)throw Error('PACK_DYNAMIC_HOST_ACCESS');hostMembers.add(name);
+  }
   if(node.type==='ClassDeclaration'&&node.id?.name==='Builder'){
     const members=node.body.body;
     for(let i=0;i<members.length;i++){
@@ -42,4 +58,5 @@ walk(tree,node=>{
   }
 });
 console.log(JSON.stringify({methods,public_methods:Object.keys(methods).filter(n=>n!=='constructor'&&!n.startsWith('_')&&n!=='finish'),
-  api_methods:[...api].sort(),dynamic_api_access:dynamic.length>0,imports}));
+  api_methods:[...api].sort(),dynamic_api_access:dynamic.length>0,imports,
+  pack_parts:packParts,host_members:[...hostMembers].sort(),option_names:[...optionNames].sort(),dynamic_import:hasDynamicImport}));

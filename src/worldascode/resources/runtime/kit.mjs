@@ -87,7 +87,7 @@ function windowTile(spec, color) {
 class Builder {
   constructor(site, style) {
     this.site = deepFreeze(structuredClone(site)); this.style = style ?? {}; this.THREE = THREE;
-    this.plan = toPlan(site.footprint); this.root = new THREE.Group(); this.root.name = site.object_id ?? 'building';
+    this.plan = site.footprint ? toPlan(site.footprint) : []; this.root = new THREE.Group(); this.root.name = site.object_id ?? 'building'; this.root.userData.objectKind=site.kind??'building';
     this.materials = new Map(); this.parts = []; this.counts = {}; this.roofProfile = null; this.lookConfig = {};
     const n = this.plan.length;
     this.edges = this.plan.map((a, i) => {
@@ -98,13 +98,15 @@ class Builder {
   // -- materials
   material(name, spec = {}) {
     if (this.materials.has(name)) throw Error('KIT_DUPLICATE_MATERIAL:' + name);
-    const color = spec.color ?? '#999999', m = new THREE.MeshStandardMaterial({ color, roughness: spec.roughness ?? 0.8, metalness: spec.metalness ?? 0 });
+    const opacity=spec.opacity??1;if(!Number.isFinite(opacity)||opacity<0||opacity>1)throw Error('KIT_INVALID_MATERIAL_OPACITY');
+    const color = spec.color ?? '#999999', m = new THREE.MeshStandardMaterial({ color, roughness: spec.roughness ?? 0.8, metalness: spec.metalness ?? 0,opacity,transparent:opacity<1,depthWrite:opacity>=1 });
     m.userData.base = { roughness: spec.roughness ?? 0.8, emissive_at_night: false, weather_response: spec.weather ?? true };
     m.userData.spec = { ...spec, color };
     if (spec.surface && spec.surface.type !== 'plain') {
-      if (['brick', 'slate', 'panels'].includes(spec.surface.type)) {
+      if (['brick', 'slate', 'panels','asphalt','concrete','bark','foliage','soil'].includes(spec.surface.type)) {
         Object.assign(m, surfaceMaps(color, spec.surface, spec.seed ?? this.site.seed ?? 0));
-        m.bumpScale = spec.surface.relief_m ?? (spec.surface.type === 'brick' ? .012 : .008);
+        m.bumpScale = spec.surface.relief_m ?? (spec.surface.type === 'brick' ? .012 : spec.surface.type==='foliage'?.001:.008);
+        if(spec.surface.type==='foliage'){m.side=THREE.DoubleSide;m.alphaTest=.4;}
         m.userData.surfaceProvenance = 'seeded synthetic material; not source PBR';
       } else {
         m.map = canvasTexture(512, (g, size) => paintSurface(g, size, color, spec.surface)); m.map.colorSpace = THREE.SRGBColorSpace;
@@ -116,6 +118,10 @@ class Builder {
     this.materials.set(name, m); return name;
   }
   _material(name) { const m = this.materials.get(name); if (!m) throw Error('KIT_UNKNOWN_MATERIAL:' + name + ' (declare it with b.material first)'); return m; }
+  _surface(name,surface,seed=0) {
+    const base=this._material(name),key=name+'#surface#'+JSON.stringify([surface,seed]);
+    if(!this.materials.has(key)){const m=base.clone();Object.assign(m,surfaceMaps(base.userData.spec.color,surface,seed));m.color.set('#ffffff');m.bumpScale=surface.relief_m??(surface.type==='bark'?.025:surface.type==='foliage'?.001:.006);if(surface.type==='foliage'){m.side=THREE.DoubleSide;m.alphaTest=.4;}m.userData.surfaceProvenance='seeded synthetic '+surface.type+'; not recovered source PBR';this.materials.set(key,m);}return this.materials.get(key);
+  }
   _facadeMaterial(name, facade) {
     const key = name + '#facade#' + JSON.stringify(facade);
     if (!this.materials.has(key)) {
@@ -148,11 +154,11 @@ class Builder {
   at(x, z, yaw = 0) { return { x, z, yaw }; }
   // -- core masses
   _add(object, type, frame) {
-    if (type === 'window') {
-      // Static trim pieces share a material and can be rendered in one draw.
-      // Keep the window pivot for semantic selection and state control.
+    if (object.isGroup && type !== 'custom' && !object.userData.dynamic) {
+      // Static pieces of one part that share a material render in one draw.
+      // The part's pivot is kept for semantic selection and state control.
       const batches = new Map();
-      for (const child of [...object.children]) if (child.isMesh) {
+      for (const child of [...object.children]) if (child.isMesh && !child.isInstancedMesh && !child.isSkinnedMesh && !Array.isArray(child.material) && !child.userData.dynamic) {
         child.updateMatrix();
         const geometry = (child.geometry.index ? child.geometry.toNonIndexed() : child.geometry.clone()).applyMatrix4(child.matrix);
         if (!batches.has(child.material)) batches.set(child.material, []);
@@ -160,10 +166,10 @@ class Builder {
         object.remove(child); child.geometry.dispose();
       }
       for (const [material, geometries] of batches) {
-        const merged = mergeGeometries(geometries, false);
-        if (!merged) throw Error('KIT_WINDOW_BATCH_FAILED');
-        object.add(new THREE.Mesh(merged, material));
-        geometries.forEach(g => g.dispose());
+        // Pieces with different attribute sets cannot merge; they stay separate.
+        const merged = geometries.length > 1 ? mergeGeometries(geometries, false) : null;
+        if (merged) { object.add(new THREE.Mesh(merged, material)); geometries.forEach(g => g.dispose()); }
+        else for (const geometry of geometries) object.add(new THREE.Mesh(geometry, material));
       }
     }
     const pivot = new THREE.Group(); this.counts[type] = (this.counts[type] ?? 0) + 1; const id = type + '-' + this.counts[type];
@@ -223,6 +229,20 @@ class Builder {
   }
   // Height of the roof surface (or wall top outside any roof) at a plan position.
   roofY(x, z) {
+    let tier = -Infinity; for (const t of this.tiers ?? []) if (inside(t.plan, x, -z)) tier = Math.max(tier, t.top);
+    if (tier > -Infinity) return tier;
+    if (this.roofSurfaces) {
+      let best = -Infinity;
+      for (const s of this.roofSurfaces) {
+        const dx = x - s.cx, dz = z - s.cz, u = dx * s.c - dz * s.n, v = dx * s.n + dz * s.c;
+        if (Math.abs(u) > s.half || Math.abs(v) > s.halfWidth) continue;
+        let k = 1; if (s.hs) k = Math.min(k, Math.max(0, (u + s.half) / s.hs)); if (s.he) k = Math.min(k, Math.max(0, (s.half - u) / s.he));
+        let y = v < s.prof[0][0] ? s.prof[0][1] : s.prof[s.prof.length - 1][1];
+        for (let j = 0; j + 1 < s.prof.length; j++) if (v >= s.prof[j][0] && v <= s.prof[j + 1][0]) y = s.prof[j][1] + (s.prof[j + 1][1] - s.prof[j][1]) * (v - s.prof[j][0]) / ((s.prof[j + 1][0] - s.prof[j][0]) || 1);
+        best = Math.max(best, s.b0 + (y - s.b0) * k);
+      }
+      return best > -Infinity ? best : this.wallTop ?? this.site.eave_m;
+    }
     const p = this.roofProfile; if (!p) return this.wallTop ?? this.site.eave_m;
     if (!inside(this.plan, x, -z)) return p.eave;
     let d = Infinity; this.edges.forEach((e, i) => { if (p.weights[i] > 0) d = Math.min(d, segmentDistance(e.a, e.b, x, -z)); });
@@ -287,17 +307,14 @@ class Builder {
     const w = o.width ?? 4, h = o.height ?? 3, d = o.depth ?? 3, y = o.y ?? this.wallTop ?? this.site.eave_m, g = new THREE.Group(), stem = o.stem ?? 0;
     if(this.roofMesh&&o.cutRoof!==false)cutRoofOpening(this.roofMesh,frame,w*.95,-.27,-d-.20);
     const front = this._prism([[-w / 2, 0], [w / 2, 0], [w / 2, stem], [0, stem + h], [-w / 2, stem]], 0.3, o.material); front.position.set(0, y, (o.out ?? 0.05) - 0.3); g.add(front);
-    // Blend the back ridge into the sampled host surface instead of terminating
-    // a tall triangular extrusion in an exposed vertical rear face.
+    // A cross roof: the ridge runs level and inward until the host roof rises to meet it.
+    // It is a closed solid, so a gable taller than the host ridge reads as a cross wing,
+    // never as a free-standing sheet.
     const hostY = (x,z) => { const [wx,wz]=this._world(frame,x,z); return this.roofY(wx,wz); };
-    const backZ=-d-.25,leftBack=hostY(-w/2,backZ)+.035,rightBack=hostY(w/2,backZ)+.035;
-    const backPeak=Math.max(hostY(0,backZ)+.06,leftBack+.04,rightBack+.04);
-    const points=[[-w/2-.2,y+stem,-.25],[0,y+stem+h+.15,-.25],[w/2+.2,y+stem,-.25],[-w/2-.2,leftBack,backZ],[0,backPeak,backZ],[w/2+.2,rightBack,backZ]];
-    const positions=[]; for(const i of [0,3,4,0,4,1,1,4,5,1,5,2])positions.push(...points[i]);
-    const roofGeometry=new THREE.BufferGeometry();roofGeometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));roofGeometry.computeVertexNormals();metricUVs(roofGeometry);
-    const roofMaterial=this._material(o.roofMaterial ?? o.material).clone();roofMaterial.side=THREE.DoubleSide;
-    g.add(new THREE.Mesh(roofGeometry,roofMaterial));
-    if (stem > 0) g.add(this._box(w, stem, d, 0, y, -d / 2 - 0.25, o.material));
+    const peak=y+stem+h+.15, limit=o.maxDepth ?? Math.max(d, w*2.2); let run=Math.min(d, limit);
+    while(run<limit && hostY(0,-run)<peak-.05) run+=.3;
+    const cross=this._prism([[-w/2-.2,0],[w/2+.2,0],[0,h+.15]],run,o.roofMaterial ?? o.material);cross.position.set(0,y+stem,-run-.25);metricUVs(cross.geometry);g.add(cross);
+    if (stem > 0) g.add(this._box(w, stem, run, 0, y, -run / 2 - 0.25, o.material));
     if (o.glass) g.add(this._box(w * 0.22, (stem + h) * 0.3, 0.06, 0, y + (stem + h) * 0.22, (o.out ?? 0.05) + 0.02, o.glass));
     if (o.trimMaterial) {
       const line = (a,b,width) => { const delta=new THREE.Vector3().subVectors(b,a); const beam=new THREE.Mesh(new THREE.BoxGeometry(width,delta.length(),.18),this._material(o.trimMaterial));beam.position.copy(a).add(b).multiplyScalar(.5);beam.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());g.add(beam); };
@@ -348,10 +365,230 @@ class Builder {
   // Vertical strips at every outline corner.
   quoins(o = {}) { return this.plan.map(([x, n]) => this.box(this.at(x, -n, o.yaw ?? this.site.axis_yaw ?? 0), { w: o.size ?? 0.7, h: o.height ?? this.site.eave_m, d: o.size ?? 0.7, material: o.material })); }
   ground(o = {}) { const plan = offset(this.plan, -(o.margin ?? 3)) ?? this.plan; return this._add(this._loft([{ y: -(o.thickness ?? 0.15), plan }, { y: 0.02, plan }], this._material(o.material)), 'ground'); }
+  _ids(which) { return which === 'all' ? this.edges.map(e => e.id) : which === 'long' ? this.site.edges.filter(e => !e.end).map(e => e.id) : which === 'ends' ? this.site.edges.filter(e => e.end).map(e => e.id) : [].concat(which); }
+  _mesh(positions, material) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); g.computeVertexNormals(); metricUVs(g); return new THREE.Mesh(g, material); }
+
+  // ---- measured roofs and roof-level masses ------------------------------------------
+  // Each wing's measured cross-section swept along the wing, with gable or hipped ends.
+  roofSections(o = {}) {
+    const sections = o.sections ?? this.site.roof?.sections;
+    if (!sections?.length) throw Error('KIT_NO_MEASURED_ROOF_SECTIONS: use b.roof(...)');
+    const over = o.overhang ?? 0.3, lift = o.lift ?? 0, scale = o.riseScale ?? 1, roofPositions = [], endPositions = []; let ridgeY = -Infinity;
+    if (scale < 0.7 || scale > 1.4) throw Error('KIT_ROOF_RISE_SCALE_OUTSIDE_0.7_1.4');
+    this.roofSurfaces = [];
+    for (const s of sections) {
+      const c = Math.cos(s.rotation_y_rad), n = Math.sin(s.rotation_y_rad), [cx, cz] = s.centre_xz, half = s.length_m / 2;
+      const base = Math.min(...s.profile.map(p => p[1])), b0 = base + lift, hs = s.hip_start_m ?? 0, he = s.hip_end_m ?? 0;
+      const prof = s.profile.map(([v, y]) => [v, b0 + (y - base) * scale]); prof[0] = [prof[0][0] - over, prof[0][1]]; prof[prof.length - 1] = [prof[prof.length - 1][0] + over, prof[prof.length - 1][1]];
+      ridgeY = Math.max(ridgeY, ...prof.map(p => p[1]));
+      const world = (u, v, y) => [cx + u * c + v * n, y, cz - u * n + v * c];
+      const stations = [[-half - (hs ? over : 0), hs ? 0 : 1], ...(hs ? [[-half + hs, 1]] : []), ...(he ? [[half - he, 1]] : []), [half + (he ? over : 0), he ? 0 : 1]];
+      const P = (st, j) => world(st[0], prof[j][0], b0 + (prof[j][1] - b0) * st[1]);
+      for (let i = 0; i + 1 < stations.length; i++) for (let j = 0; j + 1 < prof.length; j++) {
+        const a = P(stations[i], j), b = P(stations[i + 1], j), d = P(stations[i + 1], j + 1), e = P(stations[i], j + 1);
+        roofPositions.push(...a, ...e, ...d, ...a, ...d, ...b);
+      }
+      // A gable end is a wall up to the roof line, not an open section.
+      for (const [st, flip] of [[stations[0], false], [stations[stations.length - 1], true]]) if (st[1] === 1) for (let j = 0; j + 1 < prof.length; j++) {
+        const a = world(st[0], prof[j][0], b0 - .05), b = world(st[0], prof[j + 1][0], b0 - .05), t1 = world(st[0], prof[j + 1][0], prof[j + 1][1]), t0 = world(st[0], prof[j][0], prof[j][1]);
+        endPositions.push(...(flip ? [...a, ...b, ...t1, ...a, ...t1, ...t0] : [...a, ...t1, ...b, ...a, ...t0, ...t1]));
+      }
+      this.roofSurfaces.push({ c, n, cx, cz, half: half + over, halfWidth: s.width_m / 2 + over, hs, he, prof, b0 });
+    }
+    const material = this._material(o.material).clone(); material.side = THREE.DoubleSide;
+    const g = new THREE.Group(), roof = this._mesh(roofPositions, material); g.add(roof);
+    if (endPositions.length) { const end = this._material(o.endMaterial ?? o.material).clone(); end.side = THREE.DoubleSide; g.add(this._mesh(endPositions, end)); }
+    this.roofProfile = null; this.roofMesh = roof;
+    // 'custom' keeps the mesh objects intact: local roof openings are cut into `roof` later.
+    const part = this._add(g, 'custom'); this.parts[this.parts.length - 1].component.kind = 'roof';
+    return { ...part, ridgeY, eaveY: Math.min(...this.roofSurfaces.map(s => s.b0)) };
+  }
+  // A mass standing on or through the roof: pavilion, tower, cross wing, penthouse, plant room.
+  volume(frame, o = {}) {
+    const w = o.width ?? 4, d = o.depth ?? 4, y = o.y ?? (this.wallTop ?? this.site.eave_m) - .3, shoulder = o.shoulder ?? y + 3, top = Math.max(shoulder, o.top ?? shoulder), cap = o.cap ?? 'flat';
+    const g = new THREE.Group(), rm = o.roofMaterial ?? o.material, rise = top - shoulder, ov = o.overhang ?? .2;
+    g.add(this._box(w, shoulder - y, d, 0, y, 0, o.material));
+    if (cap === 'flat' || rise < .05) { if (o.parapet !== false) g.add(this._box(w + .16, o.parapet ?? .25, d + .16, 0, shoulder, 0, rm)); }
+    else if (cap === 'pyramid' || cap === 'hip') {
+      const ridge = cap === 'hip' ? Math.abs(w - d) / 2 : 0, rx = w >= d ? ridge : 0, rz = w >= d ? 0 : ridge, hw = w / 2 + ov, hd = d / 2 + ov;
+      const low = [[-hw, shoulder, hd], [hw, shoulder, hd], [hw, shoulder, -hd], [-hw, shoulder, -hd]], high = [[-rx, top, rz], [rx, top, rz], [rx, top, -rz], [-rx, top, -rz]], positions = [];
+      for (let i = 0; i < 4; i++) { const j = (i + 1) % 4; positions.push(...low[i], ...low[j], ...high[j], ...low[i], ...high[j], ...high[i]); }
+      const m = this._material(rm).clone(); m.side = THREE.DoubleSide; g.add(this._mesh(positions, m));
+    } else if (cap === 'gable') {
+      // Ridge along the longer side.
+      if (w >= d) { const r = this._prism([[-d / 2 - ov, 0], [d / 2 + ov, 0], [0, rise]], w + 2 * ov, rm); r.rotation.y = Math.PI / 2; r.position.set(-w / 2 - ov, shoulder, 0); g.add(r); }
+      else { const r = this._prism([[-w / 2 - ov, 0], [w / 2 + ov, 0], [0, rise]], d + 2 * ov, rm); r.position.set(0, shoulder, -d / 2 - ov); g.add(r); }
+    } else if (cap === 'cone') { const r = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w, d) / 2 + ov, rise, o.sides ?? 16), this._material(rm)); r.position.y = shoulder + rise / 2; if ((o.sides ?? 16) === 4) r.rotation.y = Math.PI / 4; g.add(r); }
+    else if (cap === 'dome') { const r = new THREE.Mesh(new THREE.SphereGeometry(.5, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), this._material(rm)); r.scale.set(w + ov, rise * 2, d + ov); r.position.y = shoulder; g.add(r); }
+    else throw Error('KIT_UNKNOWN_VOLUME_CAP:' + cap);
+    if (o.glass) { const gh = (shoulder - y) * (o.glassHeight ?? .45), gy = shoulder - gh - (shoulder - y) * .18; for (const [gx, gz, gw, gd] of [[0, d / 2 + .02, w * .5, .06], [0, -d / 2 - .02, w * .5, .06], [w / 2 + .02, 0, .06, d * .5], [-w / 2 - .02, 0, .06, d * .5]]) g.add(this._box(gw, gh, gd, gx, gy, gz, o.glass)); }
+    if (o.finial) { const f = new THREE.Mesh(new THREE.CylinderGeometry(.04, .07, o.finial, 6), this._material(o.finialMaterial ?? rm)); f.position.y = top + o.finial / 2; g.add(f); }
+    return this._add(g, 'volume', frame);
+  }
+  // Upper storeys stepped back from the outline: tower on a podium, attic storey, crown.
+  tier(o = {}) {
+    const plan = offset(this.plan, o.inset ?? 2); if (!plan) throw Error('KIT_TIER_INSET_TOO_LARGE');
+    const y = o.y ?? this.wallTop ?? this.site.eave_m, h = o.height ?? 3.5, storeys = o.storeys ?? Math.max(1, Math.round(h / 3.5));
+    const facade = { bay: o.bay ?? 3.2, storey: h / storeys, window: o.window, course: o.course };
+    const m = o.windows === false ? this._material(o.material) : this._facadeMaterial(o.material, facade);
+    (this.tiers ??= []).push({ plan, top: y + h });
+    return { ...this._add(this._loft([{ y, plan }, { y: y + h, plan }], m, o.windows === false ? null : facade), 'tier'), topY: y + h };
+  }
+  // Upstand around the outline (or `inset` metres inside it) at roof level.
+  parapet(o = {}) {
+    const outer = o.inset ? offset(this.plan, o.inset) : this.plan, inner = outer && offset(outer, o.thickness ?? .3); if (!inner) throw Error('KIT_PARAPET_DOES_NOT_FIT');
+    const shape = new THREE.Shape(outer.map(p => new THREE.Vector2(p[0], p[1]))); shape.holes.push(new THREE.Path(inner.map(p => new THREE.Vector2(p[0], p[1]))));
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth: o.height ?? .9, bevelEnabled: false }); geometry.rotateX(-Math.PI / 2); metricUVs(geometry);
+    const mesh = new THREE.Mesh(geometry, this._material(o.material)); mesh.position.y = o.y ?? this.roofY(inner[0][0], -inner[0][1]);
+    return this._add(mesh, 'parapet');
+  }
+  // Stacked bands stepping outward: a moulded cornice rather than a single strip.
+  cornice(o = {}) {
+    const steps = o.steps ?? 3, height = o.height ?? .9, out = o.out ?? .5, top = o.y ?? this.wallTop ?? this.site.eave_m, g = new THREE.Group();
+    for (let i = 0; i < steps; i++) { const plan = offset(this.plan, -out * (i + 1) / steps); if (!plan) throw Error('KIT_CORNICE_OFFSET_FAILED'); const y = top - height + height * i / steps; g.add(this._loft([{ y, plan }, { y: y + height / steps, plan }], this._material(o.material))); }
+    return this._add(g, 'cornice');
+  }
+
+  // ---- facade systems along edges ----------------------------------------------------
+  // Glazed curtain wall: glass plane, mullion grid, optional opaque spandrel per floor.
+  curtainWall(which, o = {}) {
+    const y0 = o.y ?? 0, y1 = o.top ?? this.wallTop ?? this.site.eave_m, h = y1 - y0, floor = o.floor ?? this.site.eave_m / (this.site.storeys ?? 3), out = o.out ?? .12, md = o.mullionDepth ?? .14, parts = [];
+    for (const id of this._ids(which)) {
+      const e = this.edge(id), L = e.length - 2 * (o.margin ?? .4); if (L <= .5) continue;
+      const g = new THREE.Group(), n = Math.max(1, Math.round(L / (o.module ?? 1.5))), rows = Math.max(1, Math.round(h / floor)), th = o.transomHeight ?? .08;
+      g.add(this._box(L, h, .05, 0, y0, out, o.glass));
+      for (let i = 0; i <= n; i++) g.add(this._box(o.mullionWidth ?? .07, h, md, -L / 2 + L * i / n, y0, out + md / 2, o.frame));
+      for (let r = 0; r <= rows; r++) { const y = y0 + h * r / rows; g.add(this._box(L, th, .1, 0, Math.min(y, y1 - th), out + .05, o.frame)); if (o.spandrel && r < rows) g.add(this._box(L, o.spandrelHeight ?? .9, .06, 0, y, out + .012, o.spandrel)); }
+      parts.push(this._add(g, 'curtainWall', e.at(.5)));
+    }
+    return parts;
+  }
+  // Continuous horizontal window bands, one per storey.
+  ribbonWindows(which, o = {}) {
+    const storeys = o.storeys ?? this.site.storeys ?? 3, floor = (o.top ?? this.wallTop ?? this.site.eave_m) / storeys, sill = o.sill ?? .95, out = o.out ?? .04, parts = [];
+    for (const id of this._ids(which)) {
+      const e = this.edge(id), L = e.length - 2 * (o.margin ?? .8); if (L <= 1) continue;
+      const g = new THREE.Group(), n = Math.max(1, Math.round(L / (o.module ?? 1.8)));
+      for (let s = o.fromStorey ?? 0; s < (o.toStorey ?? storeys); s++) {
+        const y = s * floor + sill, bh = Math.min(o.height ?? 1.7, floor - sill - .25);
+        g.add(this._box(L, bh, .05, 0, y, out, o.glass));
+        for (let i = 0; i <= n; i++) g.add(this._box(.06, bh, .09, -L / 2 + L * i / n, y, out + .03, o.frame));
+        for (const fy of [y - .08, y + bh]) g.add(this._box(L + .1, .08, .14, 0, fy, out + .04, o.frame));
+      }
+      parts.push(this._add(g, 'ribbonWindows', e.at(.5)));
+    }
+    return parts;
+  }
+  // Repeated blades standing off the facade: vertical fins, or horizontal louvres/sunshades.
+  fins(which, o = {}) {
+    const y0 = o.y ?? 0, y1 = o.top ?? this.wallTop ?? this.site.eave_m, depth = o.depth ?? .45, t = o.thickness ?? .08, spacing = o.spacing ?? 1.2, parts = [];
+    for (const id of this._ids(which)) {
+      const e = this.edge(id), L = e.length - 2 * (o.margin ?? .3); if (L <= .5) continue; const g = new THREE.Group();
+      if (o.horizontal) { const n = Math.max(1, Math.round((y1 - y0) / spacing)); for (let i = 0; i < n; i++) g.add(this._box(L, t, depth, 0, y0 + (y1 - y0) * (i + .5) / n, depth / 2 + (o.out ?? 0), o.material)); }
+      else { const n = Math.max(1, Math.round(L / spacing)); for (let i = 0; i <= n; i++) g.add(this._box(t, y1 - y0, depth, -L / 2 + L * i / n, y0, depth / 2 + (o.out ?? 0), o.material)); }
+      parts.push(this._add(g, 'fins', e.at(.5)));
+    }
+    return parts;
+  }
+  // Expressed structural frame: columns at bay lines and a beam at every floor.
+  frameGrid(which, o = {}) {
+    const storeys = o.storeys ?? this.site.storeys ?? 3, top = o.top ?? this.wallTop ?? this.site.eave_m, floor = top / storeys, out = o.out ?? .2, parts = [];
+    for (const id of this._ids(which)) {
+      const e = this.edge(id), L = e.length; const g = new THREE.Group(), n = Math.max(1, Math.round(L / (o.bay ?? 6)));
+      for (let i = 0; i <= n; i++) g.add(this._box(o.columnWidth ?? .5, top, out, -L / 2 + L * i / n, 0, out / 2, o.material));
+      for (let s = 1; s <= storeys; s++) g.add(this._box(L, o.beamHeight ?? .45, out, 0, s * floor - (o.beamHeight ?? .45), out / 2, o.material));
+      parts.push(this._add(g, 'frameGrid', e.at(.5)));
+    }
+    return parts;
+  }
+  // Balconies per storey: `spacing` gives separate balconies, otherwise one continuous run.
+  balconies(which, o = {}) {
+    const storeys = o.storeys ?? this.site.storeys ?? 3, floor = (o.top ?? this.wallTop ?? this.site.eave_m) / storeys, depth = o.depth ?? 1.2, rail = o.railHeight ?? 1.05, parts = [];
+    for (const id of this._ids(which)) {
+      const e = this.edge(id), L = e.length - 2 * (o.margin ?? 1); if (L <= 1.5) continue; const g = new THREE.Group();
+      const count = o.spacing ? Math.max(1, Math.round(L / o.spacing)) : 1, width = o.spacing ? Math.min(o.width ?? o.spacing * .7, L / count - .2) : L;
+      for (let s = o.fromStorey ?? 1; s < (o.toStorey ?? storeys); s++) for (let k = 0; k < count; k++) {
+        const x = -L / 2 + L * (k + .5) / count, y = s * floor;
+        g.add(this._box(width, o.slab ?? .18, depth, x, y - (o.slab ?? .18), depth / 2, o.material));
+        const rm = o.railMaterial ?? o.material;
+        if (o.rail === 'solid' || o.rail === 'glass') { g.add(this._box(width, rail, .05, x, y, depth - .03, rm)); for (const sx of [-1, 1]) g.add(this._box(.05, rail, depth, x + sx * (width / 2 - .03), y, depth / 2, rm)); }
+        else { g.add(this._box(width, .05, .05, x, y + rail, depth - .03, rm)); const bars = Math.max(2, Math.round(width / .45)); for (let i = 0; i <= bars; i++) g.add(this._box(.035, rail, .035, x - width / 2 + width * i / bars, y, depth - .03, rm)); }
+      }
+      parts.push(this._add(g, 'balconies', e.at(.5)));
+    }
+    return parts;
+  }
+  // Ground-floor arcade or colonnade standing in front of the facade.
+  arcade(which, o = {}) {
+    const h = o.height ?? 4.5, depth = o.depth ?? 2.4, pier = o.pier ?? .6, parts = [];
+    for (const id of this._ids(which)) {
+      const e = this.edge(id), L = e.length - 2 * (o.margin ?? .3); if (L <= 2) continue; const g = new THREE.Group(), n = Math.max(1, o.bays ?? Math.round(L / (o.spacing ?? 4))), bw = L / n;
+      for (let i = 0; i <= n; i++) g.add(this._box(pier, h, pier, -L / 2 + bw * i, 0, depth - pier / 2, o.material));
+      if (o.arch !== false) for (let i = 0; i < n; i++) {
+        const R = Math.min((bw - pier) / 2, h * .45), spring = h - R - .35, s = new THREE.Shape();
+        s.moveTo(-bw / 2, spring); s.lineTo(-bw / 2, h); s.lineTo(bw / 2, h); s.lineTo(bw / 2, spring); s.lineTo(R, spring); s.absarc(0, spring, R, 0, Math.PI, false); s.closePath();
+        const m = new THREE.Mesh(new THREE.ExtrudeGeometry(s, { depth: pier * .7, bevelEnabled: false, curveSegments: 10 }), this._material(o.material)); m.position.set(-L / 2 + bw * (i + .5), 0, depth - pier * .85); g.add(m);
+      }
+      else g.add(this._box(L + pier, .4, pier, 0, h - .4, depth - pier / 2, o.material));
+      g.add(this._box(L + pier, .22, depth, 0, h, depth / 2, o.roofMaterial ?? o.material));
+      parts.push(this._add(g, 'arcade', e.at(.5)));
+    }
+    return parts;
+  }
+  // Glazed shopfront at street level with a stall riser below and a fascia above.
+  storefront(which, o = {}) {
+    const h = o.height ?? 3.6, out = o.out ?? .08, parts = [];
+    for (const id of this._ids(which)) {
+      const e = this.edge(id), L = e.length - 2 * (o.margin ?? .6); if (L <= 1.5) continue; const g = new THREE.Group(), n = Math.max(1, Math.round(L / (o.bay ?? 3))), base = o.base ?? .45, fascia = o.fascia ?? .6;
+      g.add(this._box(L, h - base - fascia, .05, 0, base, out, o.glass)); g.add(this._box(L, base, .14, 0, 0, out + .03, o.frame)); g.add(this._box(L + .2, fascia, .2, 0, h - fascia, out + .06, o.fasciaMaterial ?? o.frame));
+      for (let i = 0; i <= n; i++) g.add(this._box(.09, h - fascia, .12, -L / 2 + L * i / n, 0, out + .04, o.frame));
+      parts.push(this._add(g, 'storefront', e.at(.5)));
+    }
+    return parts;
+  }
+  // Free-standing round or square columns in front of the facade.
+  columns(which, o = {}) {
+    const h = o.height ?? this.site.eave_m, r = o.radius ?? .35, out = o.out ?? 1.2;
+    return this.along(which, o).map(f => { const g = new THREE.Group(), shaft = new THREE.Mesh(new THREE.CylinderGeometry(r * .88, r, h - .5, o.sides ?? 16), this._material(o.material)); shaft.position.set(0, .25 + (h - .5) / 2, out); g.add(shaft); g.add(this._box(r * 2.6, .25, r * 2.6, 0, 0, out, o.material)); g.add(this._box(r * 2.5, .25, r * 2.5, 0, h - .25, out, o.material)); return this._add(g, 'columns', f); });
+  }
+
+  // ---- entrances and street-level parts (first argument is a frame) ------------------
+  canopy(frame, o = {}) {
+    const w = o.width ?? 4, d = o.depth ?? 2, y = o.y ?? 3.2, t = o.thickness ?? .18, g = new THREE.Group();
+    g.add(this._box(w, t, d, 0, y, d / 2, o.material));
+    if (o.posts) for (const sx of [-1, 1]) g.add(this._box(.12, y, .12, sx * (w / 2 - .15), 0, d - .15, o.postMaterial ?? o.material));
+    return this._add(g, 'canopy', frame);
+  }
+  awning(frame, o = {}) { const w = o.width ?? 3, d = o.depth ?? 1.2, y = o.y ?? 2.6, drop = o.drop ?? .6; const m = this._prism([[0, 0], [d, -drop], [d, -drop - .08], [0, -.08]], w, o.material); m.rotation.y = -Math.PI / 2; m.position.set(w / 2, y + drop, 0); return this._add(m, 'awning', frame); }
+  stairs(frame, o = {}) { const w = o.width ?? 3, n = o.steps ?? 4, rise = o.rise ?? .17, tread = o.tread ?? .3, g = new THREE.Group(); for (let i = 0; i < n; i++) g.add(this._box(w, rise * (n - i), tread, 0, 0, tread * (i + .5), o.material)); return this._add(g, 'stairs', frame); }
+  sign(frame, o = {}) { const g = new THREE.Group(); g.add(this._box(o.width ?? 3, o.height ?? .7, .12, 0, o.y ?? 3.4, (o.out ?? .12) + .06, o.material)); return this._add(g, 'sign', frame); }
+
+  // ---- rooftop equipment (frames from b.at; height defaults to the roof there) -------
+  mechanical(frame, o = {}) {
+    const w = o.width ?? 3, d = o.depth ?? 2, h = o.height ?? 1.6, y = o.y ?? this.roofY(frame.x, frame.z) - .05, g = new THREE.Group();
+    g.add(this._box(w, h, d, 0, y, 0, o.material));
+    if (o.louvers) for (let i = 0; i < 5; i++) for (const s of [-1, 1]) g.add(this._box(w * .8, .05, .05, 0, y + h * (.2 + .14 * i), s * (d / 2 + .02), o.louvers));
+    return this._add(g, 'mechanical', frame);
+  }
+  tank(frame, o = {}) { const r = o.radius ?? 1.2, h = o.height ?? 2.2, y = o.y ?? this.roofY(frame.x, frame.z), g = new THREE.Group(), legs = o.legs ?? .8; const body = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 20), this._material(o.material)); body.position.y = y + legs + h / 2; g.add(body); for (let i = 0; i < 4; i++) g.add(this._box(.12, legs, .12, Math.cos(Math.PI / 4 + i * Math.PI / 2) * r * .7, y, Math.sin(Math.PI / 4 + i * Math.PI / 2) * r * .7, o.legMaterial ?? o.material)); return this._add(g, 'tank', frame); }
+  antenna(frame, o = {}) { const h = o.height ?? 6, y = o.y ?? this.roofY(frame.x, frame.z), g = new THREE.Group(); const mast = new THREE.Mesh(new THREE.CylinderGeometry(.04, .09, h, 8), this._material(o.material)); mast.position.y = y + h / 2; g.add(mast); g.add(this._box(.5, .3, .5, 0, y, 0, o.material)); return this._add(g, 'antenna', frame); }
+  skylight(frame, o = {}) { const w = o.width ?? 3, d = o.depth ?? 2, rise = o.rise ?? .6, y = o.y ?? this.roofY(frame.x, frame.z), g = new THREE.Group(); g.add(this._box(w + .2, .25, d + .2, 0, y, 0, o.frame ?? o.glass)); const r = this._prism([[-w / 2, 0], [w / 2, 0], [0, rise]], d, o.glass); r.position.set(0, y + .25, -d / 2); g.add(r); return this._add(g, 'skylight', frame); }
+  dome(frame, o = {}) { const r = o.radius ?? 3, y = o.y ?? this.roofY(frame.x, frame.z), drum = o.drum ?? 0, g = new THREE.Group(); if (drum) { const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, drum, 24), this._material(o.drumMaterial ?? o.material)); m.position.y = y + drum / 2; g.add(m); } const cap = new THREE.Mesh(new THREE.SphereGeometry(r, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), this._material(o.material)); cap.scale.y = o.rise ? o.rise / r : 1; cap.position.y = y + drum; g.add(cap); return this._add(g, 'dome', frame); }
+  spire(frame, o = {}) { const r = o.radius ?? 1, h = o.height ?? 6, y = o.y ?? this.roofY(frame.x, frame.z), m = new THREE.Mesh(new THREE.ConeGeometry(r, h, o.sides ?? 8), this._material(o.material)); m.position.y = y + h / 2; if ((o.sides ?? 8) === 4) m.rotation.y = Math.PI / 4; return this._add(m, 'spire', frame); }
+  // Guard rail along edges at roof or terrace level.
+  railing(which, o = {}) {
+    const rail = o.height ?? 1.05, parts = [];
+    for (const id of this._ids(which)) { const e = this.edge(id), L = e.length - .2, g = new THREE.Group(), y = o.y ?? this.wallTop ?? this.site.eave_m, z = -(o.inset ?? .15);
+      if (o.glass) g.add(this._box(L, rail, .04, 0, y, z, o.glass)); else { const n = Math.max(2, Math.round(L / (o.spacing ?? 1.5))); for (let i = 0; i <= n; i++) g.add(this._box(.05, rail, .05, -L / 2 + L * i / n, y, z, o.material)); g.add(this._box(L, .04, .04, 0, y + rail * .5, z, o.material)); }
+      g.add(this._box(L, .06, .06, 0, y + rail, z, o.material ?? o.glass)); parts.push(this._add(g, 'railing', e.at(.5))); }
+    return parts;
+  }
   look(o) { Object.assign(this.lookConfig, o); }
   finish() {
-    if (!this.counts.walls) throw Error('KIT_DESIGN_HAS_NO_WALLS: call b.walls(...)');
     this.root.updateMatrixWorld(true);
+    // Free-standing objects (trees, vehicles, street furniture) have no measured wall plan to protect.
+    if ((this.site.kind ?? 'building') !== 'building') { if (!this.parts.length) throw Error('KIT_DESIGN_BUILT_NOTHING'); this.root.userData.components = this.parts; this.root.userData.kitCounts = this.counts; this.root.userData.look = this.lookConfig; return this.root; }
+    if (!this.counts.walls) throw Error('KIT_DESIGN_HAS_NO_WALLS: call b.walls(...)');
     const guard = this.wallGuard, positions = guard.part.object.geometry.attributes.position.array;
     const identity = new THREE.Matrix4();
     if (!guard.part.object.matrixWorld.equals(identity) || positions.length !== guard.positions.length || guard.positions.some((v, i) => v !== positions[i]) || !guard.part.object.visible) throw Error('KIT_MEASURED_WALL_GEOMETRY_MUTATED');
@@ -359,9 +596,19 @@ class Builder {
   }
 }
 
-export function buildDesign(design, site, style) {
+// `packs` are additive part libraries: modules exporting `parts = {name(host, ...args) {...}}`.
+// A part receives the builder as its host and is exposed to design scripts as `b.name(...args)`.
+// Packs add vocabulary for any kind of object; they cannot replace a builtin part.
+export function buildDesign(design, site, style, packs = []) {
   const b = new Builder(site, style), api = {THREE};
   for (const key of Object.getOwnPropertyNames(Builder.prototype)) if (key !== 'constructor' && key !== 'finish' && !key.startsWith('_')) api[key] = b[key].bind(b);
+  const services = ['_box','_prism','_material','_surface','_add','_world','at','roofY'];
+  const host = Object.freeze(Object.fromEntries([['site',b.site],['THREE',THREE],...services.filter(name=>typeof b[name]==='function').map(name=>[name,b[name].bind(b)])]));
+  b.root.userData.packCalls = {};
+  for (const pack of packs) for (const [name, part] of Object.entries(pack.parts ?? {})) {
+    if (name in api || name.startsWith('_') || typeof part !== 'function') throw Error('KIT_PACK_PART_NAME_TAKEN_OR_INVALID:' + name);
+    api[name] = (...args) => { const before=b.parts.length,result=part(host,...args);if(b.parts.length<=before)throw Error('PACK_PART_BUILT_NOTHING:'+name);b.root.userData.packCalls[name]=(b.root.userData.packCalls[name]??0)+1;return result; };
+  }
   design(b.site, Object.freeze(api), deepFreeze(structuredClone(style ?? {})));
   return b.finish();
 }

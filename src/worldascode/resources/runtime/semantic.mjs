@@ -203,6 +203,7 @@ export function semanticProbes(root) {
     }else details={error:'MISSING_PROBE_COMPONENT'};
     reports.push({component:check.component_id,requirement:check.requirement,passed,details});
   }
+  for(const part of root.userData.components??[])if(part.node.userData.semanticChecks?.length)reports.push(...semanticProbes(part.node).map(r=>({...r,instance:part.instance,part:part.component.id})));
   for(const asset of root.userData.factoryAssets??[])reports.push(...semanticProbes(asset).map(r=>({...r,instance:asset.userData.instanceId??asset.name})));
   return reports;
 }

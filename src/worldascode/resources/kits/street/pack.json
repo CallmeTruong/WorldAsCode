@@ -1,0 +1,26 @@
+{
+  "schema": "worldascode-pack-1",
+  "id": "street",
+  "version": "1.1.0",
+  "summary": "Street furniture and ground surfaces",
+  "kinds": [
+    "street_object",
+    "road",
+    "scene"
+  ],
+  "parts": [
+    "lamp",
+    "bench",
+    "bollard",
+    "bin",
+    "hydrant",
+    "roadSign",
+    "trafficLight",
+    "busShelter",
+    "fence",
+    "road",
+    "sidewalk",
+    "crosswalk"
+  ],
+  "fixture": "b.material('metal', {color: '#4a4f55'}); b.material('wood', {color: '#8a6a4a'}); b.material('asphalt', {color: '#555a5e'}); b.material('paint', {color: '#e8e8e0'}); b.material('paving', {color: '#b5b2a8'}); b.material('light', {color: '#fff3d0', glow: '#ffd28a'});\nb.road(b.at(0, 0), {material: 'asphalt', marking: 'paint'}); b.sidewalk(b.at(0, -5), {material: 'paving'}); b.crosswalk(b.at(8, 0), {material: 'paint'});\nb.lamp(b.at(-10, -4), {material: 'metal', lightMaterial: 'light'}); b.bench(b.at(-6, -5), {material: 'wood', legMaterial: 'metal'}); b.bollard(b.at(-3, -4), {material: 'metal'}); b.bin(b.at(-1, -5), {material: 'metal'}); b.hydrant(b.at(1, -4.5), {material: 'paint'});\nb.roadSign(b.at(3, -4), {material: 'paint', poleMaterial: 'metal'}); b.trafficLight(b.at(6, -4), {material: 'metal', red: 'paint'}); b.busShelter(b.at(12, -5.5), {material: 'metal'}); b.fence(b.at(0, -7), {material: 'metal'});"
+}

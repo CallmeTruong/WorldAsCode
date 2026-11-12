@@ -1,0 +1,5 @@
+- `b.curtainWall(which, {glass, frame, spandrel, module = 1.5, floor, y = 0, top, mullionDepth, spandrelHeight})` — glazed wall with a mullion grid and optional opaque spandrel per floor. Use with `b.walls({windows: false})`.
+- `b.ribbonWindows(which, {glass, frame, storeys, sill = 0.95, height = 1.7, module = 1.8, fromStorey, toStorey})` — continuous horizontal window bands.
+- `b.fins(which, {material, spacing = 1.2, depth = 0.45, thickness, y, top, horizontal})` — vertical fins, or `horizontal: true` for louvres and sunshades.
+- `b.frameGrid(which, {material, bay = 6, storeys, columnWidth, beamHeight, out})` — expressed columns and floor beams.
+- `b.balconies(which, {material, railMaterial, rail: 'bars' | 'solid' | 'glass', depth = 1.2, spacing, width, fromStorey = 1, toStorey})` — one continuous balcony per storey, or separate ones every `spacing` metres.

@@ -1,0 +1,19 @@
+{
+  "schema": "worldascode-pack-1",
+  "id": "vehicles",
+  "version": "1.0.0",
+  "summary": "Cars, vans, buses, trucks, trams and bicycles",
+  "kinds": [
+    "vehicle",
+    "scene"
+  ],
+  "parts": [
+    "car",
+    "van",
+    "bus",
+    "truck",
+    "tram",
+    "bicycle"
+  ],
+  "fixture": "b.material('paint', {color: '#b8423a', roughness: 0.35, metalness: 0.3}); b.material('glass', {color: '#26323c', roughness: 0.15}); b.material('tyre', {color: '#1c1c1e'});\nb.car(b.at(0, 0), {material: 'paint', glass: 'glass', wheelMaterial: 'tyre'}); b.car(b.at(0, 4), {form: 'suv', material: 'paint', glass: 'glass', wheelMaterial: 'tyre'}); b.car(b.at(0, 8), {form: 'hatch', material: 'paint', glass: 'glass', wheelMaterial: 'tyre'});\nb.van(b.at(8, 0), {material: 'paint', glass: 'glass', wheelMaterial: 'tyre'}); b.bus(b.at(8, 5), {material: 'paint', glass: 'glass', wheelMaterial: 'tyre'}); b.truck(b.at(8, 10), {material: 'paint', glass: 'glass', wheelMaterial: 'tyre'});\nb.tram(b.at(8, 15), {material: 'paint', glass: 'glass', wheelMaterial: 'tyre'}); b.bicycle(b.at(0, 12), {material: 'paint', wheelMaterial: 'tyre'});"
+}

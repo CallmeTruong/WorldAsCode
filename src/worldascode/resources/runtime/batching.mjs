@@ -25,27 +25,31 @@ export function batchStaticAssets(prototype, placements) {
   const buckets=new Map(),groups=[];
   prototype.traverseVisible(node=>{
     if(!node.isMesh)return;
-    if(node.isSkinnedMesh||node.morphTargetInfluences?.length||node.isInstancedMesh)throw Error('BATCH_STATIC_MESHES_ONLY');
+    if(node.isSkinnedMesh||node.morphTargetInfluences?.length||node.userData.dynamic)throw Error('BATCH_STATIC_MESHES_ONLY');
     const materials=Array.isArray(node.material)?node.material:[node.material];
     const key=signature(node.geometry)+':'+materials.map(m=>m.uuid).join(',')+':'+[node.castShadow,node.receiveShadow,node.renderOrder,node.layers.mask].join(',');
     const bucket=buckets.get(key)??[];
     let group=bucket.find(g=>equal(g.geometry,node.geometry));
     if(!group){group={geometry:node.geometry,material:node.material,renderOrder:node.renderOrder,layers:node.layers.mask,parts:[]};bucket.push(group);groups.push(group);buckets.set(key,bucket);}
     let owner=node;while(!owner.name&&owner.parent&&owner!==prototype)owner=owner.parent;
-    group.parts.push({matrix:node.matrixWorld.clone(),component:owner.name,castShadow:node.castShadow,receiveShadow:node.receiveShadow});
+    for(let i=0;i<(node.isInstancedMesh?node.count:1);i++){
+      const local=new THREE.Matrix4();if(node.isInstancedMesh)node.getMatrixAt(i,local);
+      const colour=node.isInstancedMesh&&node.instanceColor?new THREE.Color():null;if(colour)node.getColorAt(i,colour);
+      group.parts.push({matrix:node.matrixWorld.clone().multiply(local),colour,component:owner.name,castShadow:node.castShadow,receiveShadow:node.receiveShadow});
+    }
   });
   const root=new THREE.Group();root.name='static-assets';
   root.userData.look={...(prototype.userData.look??{})};
   for(const [groupIndex,group] of groups.entries()) {
     const mesh=new THREE.InstancedMesh(group.geometry,group.material,group.parts.length*placements.length),owners=[];
-    mesh.name='batch-'+groupIndex;let index=0;
+    mesh.name='batch-'+groupIndex;let index=0;const coloured=group.parts.some(p=>p.colour);
     mesh.renderOrder=group.renderOrder;mesh.layers.mask=group.layers;
     mesh.castShadow=group.parts.some(p=>p.castShadow);mesh.receiveShadow=group.parts.some(p=>p.receiveShadow);
     for(const placement of placements) {
       const position=placement.position??[0,0,0],yaw=placement.yaw??0;
       if(!position.every(Number.isFinite)||!Number.isFinite(yaw))throw Error('BATCH_INVALID_TRANSFORM');
       const transform=new THREE.Matrix4().makeRotationY(yaw);transform.setPosition(...position);
-      for(const part of group.parts){mesh.setMatrixAt(index++,transform.clone().multiply(part.matrix));owners.push({asset:placement.id,component:part.component});}
+      for(const part of group.parts){mesh.setMatrixAt(index,transform.clone().multiply(part.matrix));if(coloured)mesh.setColorAt(index,part.colour??new THREE.Color(1,1,1));index++;owners.push({asset:placement.id,component:part.component});}
     }
     mesh.userData.instanceOwners=owners;mesh.instanceMatrix.needsUpdate=true;mesh.computeBoundingBox();mesh.computeBoundingSphere();root.add(mesh);
   }

@@ -2,8 +2,8 @@
   "schema": "worldascode-kit-package-1",
   "id": "buildings",
   "api_version": "1",
-  "source_sha256": "cfd118f838204f9cd078901d93fee3aa268481b6f2dc2e35df3f6173e68814f1",
-  "api_sha256": "c32d7b5dfe7ff0bf059bfc9166fcf10d130c5969d1727499329f7ae76369a639",
+  "source_sha256": "92d02b558eeaa371a20eeb72fabd9d0447fbcebb20339d7cf2eb44782be92089",
+  "api_sha256": "8b2f6fcfe35bcb3328d987a732f666dcb082545c9cafd0c86c77be08d5e6649a",
   "exports": [
     "material",
     "edge",
@@ -29,6 +29,30 @@
     "pilasters",
     "quoins",
     "ground",
+    "roofSections",
+    "volume",
+    "tier",
+    "parapet",
+    "cornice",
+    "curtainWall",
+    "ribbonWindows",
+    "fins",
+    "frameGrid",
+    "balconies",
+    "arcade",
+    "storefront",
+    "columns",
+    "canopy",
+    "awning",
+    "stairs",
+    "sign",
+    "mechanical",
+    "tank",
+    "antenna",
+    "skylight",
+    "dome",
+    "spire",
+    "railing",
     "look"
   ],
   "dependencies": {
@@ -50,6 +74,10 @@
       "site"
     ],
     "_material": [
+      "materials"
+    ],
+    "_surface": [
+      "_material",
       "materials"
     ],
     "_facadeMaterial": [
@@ -106,7 +134,9 @@
       "edges",
       "plan",
       "roofProfile",
+      "roofSurfaces",
       "site",
+      "tiers",
       "wallTop"
     ],
     "_world": [],
@@ -204,6 +234,171 @@
       "_material",
       "plan"
     ],
+    "_ids": [
+      "edges",
+      "site"
+    ],
+    "_mesh": [],
+    "roofSections": [
+      "_add",
+      "_material",
+      "_mesh",
+      "parts",
+      "roofMesh",
+      "roofProfile",
+      "roofSurfaces",
+      "site"
+    ],
+    "volume": [
+      "_add",
+      "_box",
+      "_material",
+      "_mesh",
+      "_prism",
+      "site",
+      "wallTop"
+    ],
+    "tier": [
+      "_add",
+      "_facadeMaterial",
+      "_loft",
+      "_material",
+      "plan",
+      "site",
+      "tiers",
+      "wallTop"
+    ],
+    "parapet": [
+      "_add",
+      "_material",
+      "plan",
+      "roofY"
+    ],
+    "cornice": [
+      "_add",
+      "_loft",
+      "_material",
+      "plan",
+      "site",
+      "wallTop"
+    ],
+    "curtainWall": [
+      "_add",
+      "_box",
+      "_ids",
+      "edge",
+      "site",
+      "wallTop"
+    ],
+    "ribbonWindows": [
+      "_add",
+      "_box",
+      "_ids",
+      "edge",
+      "site",
+      "wallTop"
+    ],
+    "fins": [
+      "_add",
+      "_box",
+      "_ids",
+      "edge",
+      "site",
+      "wallTop"
+    ],
+    "frameGrid": [
+      "_add",
+      "_box",
+      "_ids",
+      "edge",
+      "site",
+      "wallTop"
+    ],
+    "balconies": [
+      "_add",
+      "_box",
+      "_ids",
+      "edge",
+      "site",
+      "wallTop"
+    ],
+    "arcade": [
+      "_add",
+      "_box",
+      "_ids",
+      "_material",
+      "edge"
+    ],
+    "storefront": [
+      "_add",
+      "_box",
+      "_ids",
+      "edge"
+    ],
+    "columns": [
+      "_add",
+      "_box",
+      "_material",
+      "along",
+      "site"
+    ],
+    "canopy": [
+      "_add",
+      "_box"
+    ],
+    "awning": [
+      "_add",
+      "_prism"
+    ],
+    "stairs": [
+      "_add",
+      "_box"
+    ],
+    "sign": [
+      "_add",
+      "_box"
+    ],
+    "mechanical": [
+      "_add",
+      "_box",
+      "roofY"
+    ],
+    "tank": [
+      "_add",
+      "_box",
+      "_material",
+      "roofY"
+    ],
+    "antenna": [
+      "_add",
+      "_box",
+      "_material",
+      "roofY"
+    ],
+    "skylight": [
+      "_add",
+      "_box",
+      "_prism",
+      "roofY"
+    ],
+    "dome": [
+      "_add",
+      "_material",
+      "roofY"
+    ],
+    "spire": [
+      "_add",
+      "_material",
+      "roofY"
+    ],
+    "railing": [
+      "_add",
+      "_box",
+      "_ids",
+      "edge",
+      "site",
+      "wallTop"
+    ],
     "look": [
       "lookConfig"
     ],
@@ -212,6 +407,7 @@
       "lookConfig",
       "parts",
       "root",
+      "site",
       "wallGuard"
     ]
   },
@@ -227,7 +423,7 @@
         "walls"
       ],
       "path": "api/core.md",
-      "sha256": "0d28045251f411b709ccc550984fafdc929f77df589ceb4d34dd8fa8304bf2b4"
+      "sha256": "608a5ac00c9a09aafc3ae00252aa70dcc968630dff2d81f2e29ca135bed7862c"
     },
     {
       "id": "shell",
@@ -237,7 +433,7 @@
         "walls"
       ],
       "path": "api/shell.md",
-      "sha256": "6f18fd157a2402b273c83dcc0668a367c761ce9b5382bd2d8ade01a9b12d5df0"
+      "sha256": "d081d391543a4b7ad70a63499c9cf19b86f6c830baa582240054181679ec768f"
     },
     {
       "id": "roofs",
@@ -248,7 +444,7 @@
         "roofY"
       ],
       "path": "api/roofs.md",
-      "sha256": "1c6ccfc3530d2843356c2ee53e3dcbd229219b505173c5d6edddaf3266378de8"
+      "sha256": "efe50afcf751f7db9d262818480455db66d3e8d6f21affbc9b661f3c175ed03b"
     },
     {
       "id": "facades",
@@ -270,6 +466,58 @@
       ],
       "path": "api/details.md",
       "sha256": "c6693063b6827fc6f040f5743065c456c553aac46be271cf219a14589097c27e"
+    },
+    {
+      "id": "massing",
+      "methods": [
+        "cornice",
+        "parapet",
+        "roofSections",
+        "tier",
+        "volume"
+      ],
+      "path": "api/massing.md",
+      "sha256": "8464dd587d477a445b3630c7b4242aea35a2d8a571c6f16e5ec4764aaa4e7cd3"
+    },
+    {
+      "id": "systems",
+      "methods": [
+        "balconies",
+        "curtainWall",
+        "fins",
+        "frameGrid",
+        "ribbonWindows"
+      ],
+      "path": "api/systems.md",
+      "sha256": "d06e8b713bdd2b998c400ec92b040c139086c1d5a6c865b9a9bc841d09091037"
+    },
+    {
+      "id": "street",
+      "methods": [
+        "arcade",
+        "awning",
+        "canopy",
+        "columns",
+        "sign",
+        "stairs",
+        "storefront"
+      ],
+      "path": "api/street.md",
+      "sha256": "7893f06d67498ef38cb5e7ead78d23aeef42bb8120d596d8e8a95ee44f9710f8"
+    },
+    {
+      "id": "rooftop",
+      "methods": [
+        "antenna",
+        "dome",
+        "mechanical",
+        "railing",
+        "skylight",
+        "spire",
+        "tank"
+      ],
+      "path": "api/rooftop.md",
+      "sha256": "b54470f8afe0957409ad5784ce0a31d0536d48b17f626afdeff2f8025724dc06"
     },
     {
       "id": "geometry",

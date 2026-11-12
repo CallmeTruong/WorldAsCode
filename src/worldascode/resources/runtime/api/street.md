@@ -1,0 +1,5 @@
+- `b.arcade(which, {material, roofMaterial, height = 4.5, depth = 2.4, spacing = 4, bays, pier, arch = true})` — arcade or colonnade in front of the facade.
+- `b.storefront(which, {glass, frame, fasciaMaterial, height = 3.6, bay = 3, base, fascia})` — glazed shopfront with stall riser and fascia.
+- `b.columns(which, {material, count | spacing, radius, height, out = 1.2})` — free-standing columns.
+- `b.canopy(frame, {width, depth, y = 3.2, thickness, material, posts})`, `b.awning(frame, {width, depth, y, drop, material})` — entrance cover.
+- `b.stairs(frame, {width, steps, rise, tread, material})`, `b.sign(frame, {width, height, y, material})`.

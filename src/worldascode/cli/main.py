@@ -30,6 +30,50 @@ def main(argv=None):
     p = sub.add_parser("demo")
     p.add_argument("--run", type=Path, default=paths().runs_dir / "semantic-demo")
     p = sub.add_parser(
+        "object",
+        help="Author, render, review and refine a non-building object or small scene",
+    )
+    p.add_argument("--brief", type=Path, required=True)
+    p.add_argument("--run", type=Path, required=True)
+    p.add_argument(
+        "--initial-pack",
+        type=Path,
+        help="Let the developer repair a previous candidate using fresh fixture diagnostics",
+    )
+    p.add_argument("--references", type=Path, nargs="*", default=[])
+    p.add_argument("--styles", type=Path)
+    p.add_argument("--pack", type=Path, action="append", default=[])
+    p.add_argument(
+        "--initial-design",
+        type=Path,
+        help="Review and refine an existing script without paying to regenerate it",
+    )
+    p.add_argument(
+        "--max-revisions", type=int, default=defaults.get("max_revisions", 1)
+    )
+    p.add_argument("--max-tokens", type=int, default=defaults.get("max_tokens", 100000))
+    p.add_argument(
+        "--max-pack-cycles", type=int, default=defaults.get("max_kit_cycles", 1)
+    )
+    p.add_argument("--require-quality", action="store_true")
+    p = sub.add_parser(
+        "object-scale",
+        help="Measure static replication of a pinned object, preserving nested foliage instances",
+    )
+    p.add_argument("--source-run", type=Path, required=True)
+    p.add_argument("--run", type=Path, required=True)
+    p.add_argument("--count", type=int, default=16)
+    p = sub.add_parser(
+        "packs", help="Discover, validate and explicitly publish additive part packs"
+    )
+    p.add_argument("action", choices=["list", "validate", "publish", "publish-run"])
+    p.add_argument("--path", type=Path)
+    p.add_argument("--out", type=Path)
+    p.add_argument("--token")
+    p.add_argument("--subject", default="workflow")
+    p.add_argument("--channel", choices=["incubating", "stable"], default="incubating")
+    p.add_argument("--heldout-runs", type=Path, nargs="*", default=[])
+    p = sub.add_parser(
         "evidence",
         help="Build a georeferenced evidence bundle from an OSM outline and a capture folder",
     )
@@ -180,6 +224,81 @@ def main(argv=None):
         "doctor", help="Check installed runtime dependencies without provider requests"
     )
     args = parser.parse_args(argv)
+    if args.command == "object-scale":
+        from worldascode.workflows.scale_probe import probe_object
+
+        result = probe_object(args.source_run, args.run, args.count)
+        print(json.dumps(result))
+        return 0 if result["passed"] else 2
+    if args.command == "packs":
+        from worldascode.kits import packs
+
+        if args.action == "list":
+            print(
+                json.dumps(
+                    packs.discover(channel=args.channel), ensure_ascii=False, indent=2
+                )
+            )
+            return 0
+        if args.path is None:
+            parser.error("--path required")
+        if args.action == "publish-run":
+            from worldascode.workflows.objects import publish_candidates
+
+            print(
+                json.dumps(
+                    publish_candidates(
+                        args.path,
+                        args.token,
+                        args.subject,
+                        args.channel,
+                        args.heldout_runs,
+                    )
+                )
+            )
+            return 0
+        if args.action == "validate":
+            if args.out is None:
+                parser.error("--out required for fresh validation artifacts")
+            result = packs.validate(args.path, args.out)
+            print(json.dumps(result))
+            return 0 if result["passed"] else 2
+        result = packs.promote(
+            args.path, args.token, args.subject, args.channel, args.heldout_runs
+        )
+        print(
+            json.dumps({k: v for k, v in result.items() if k not in {"api", "fixture"}})
+        )
+        return 0
+    if args.command == "object":
+        from worldascode.workflows.objects import run_object
+
+        styles = (
+            sorted(
+                p
+                for p in args.styles.iterdir()
+                if p.suffix.lower() in {".png", ".jpg", ".jpeg"}
+            )
+            if args.styles
+            else []
+        )
+        if len(styles) > 6:
+            parser.error("At most six style references per object run")
+        result = run_object(
+            json.loads(args.brief.read_text(encoding="utf-8")),
+            args.run,
+            Settings.load(),
+            args.references,
+            styles,
+            args.pack,
+            args.max_revisions,
+            args.max_tokens,
+            args.max_pack_cycles,
+            args.initial_design,
+            args.initial_pack,
+        )
+        print(json.dumps(result, ensure_ascii=False))
+        return RunOutcome.model_validate(result).exit_code(args.require_quality)
     if args.command == "config":
         document, _ = configuration()
         settings = Settings.load()

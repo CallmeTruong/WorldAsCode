@@ -220,6 +220,37 @@ def site_brief(evidence, program, heights=None):
             "small roof planes in the height field; counts and sizes approximate"
         )
         brief["confidence"]["heights"]["status"] = "sampled_photogrammetry_not_surveyed"
+        from worldascode.evidence.roof_structure import roof_structure
+
+        structure = roof_structure(
+            grid, layout, plan, brief["wings"], measured["eave"], evidence["height_m"]
+        )
+        if structure and structure["sections"]:
+            brief["roof"]["sections"] = structure["sections"]
+            brief["roof"]["volumes"] = structure["volumes"]
+            brief["roof"]["section_fit_mae_m"] = structure["section_fit_mae_m"]
+            # Large proud masses are now typed volumes with a measured base and
+            # cap; the untyped "tower" blobs they replace would double-count them.
+            brief["features"].pop("towers", None)
+
+            def in_volume(x, z):
+                return any(
+                    math.hypot(x - v["x"], z - v["z"])
+                    <= 0.6 * max(v["width_m"], v["depth_m"])
+                    for v in structure["volumes"]
+                )
+
+            brief["features"]["chimneys"] = [
+                c
+                for c in brief["features"]["chimneys"]
+                if not in_volume(c["x"], c["z"])
+            ]
+            brief["confidence"]["feature_identity"] = {
+                "status": "measured_geometry_typed_by_shape",
+                "note": "Sections and volumes are measured shapes. Their architectural name (tower, cross gable, plant room) is your reading of the views; their position, base and height are not.",
+            }
+        elif structure:
+            brief["roof"]["structure_note"] = structure["note"]
     return brief
 
 

@@ -8,8 +8,15 @@ import worldascode.geometry.massing as massing
 from worldascode.config import ACCEPT, LIMITS
 
 
-def measure(run, evidence, site, report, browser):
-    """Tolerant metric checks; they catch a wrong building, not a stylised one."""
+def measure(run, evidence, site, report, browser, inspection=None):
+    """Tolerant metric checks; they catch a wrong building, not a stylised one.
+
+    ``inspection`` may carry the roof height comparison and the structural scan.
+    Both are deterministic and both name the place that is wrong.
+    """
+    inspection = inspection or {}
+    roof = inspection.get("roof_shape")
+    structure = inspection.get("structure") or {"checked": 0, "issues": []}
     oblique = [v["id"] for v in evidence["views"] if not massing.is_plan_view(v)]
     plan = [v["id"] for v in evidence["views"] if massing.is_plan_view(v)]
     mean = float(np.mean([browser[v]["iou"] for v in oblique])) if oblique else None
@@ -25,10 +32,15 @@ def measure(run, evidence, site, report, browser):
         "height": ratio is not None
         and LIMITS["height_ratio"][0] <= ratio <= LIMITS["height_ratio"][1],
         "triangles": triangles <= LIMITS["max_triangles"],
+        "structure": not structure["issues"],
     }
+    if roof and roof.get("available"):
+        checks["roof_shape"] = bool(roof["passed"])
     return {
         "passed": all(checks.values()),
         "checks": checks,
+        "roof_shape": roof,
+        "structure": structure,
         "mean_oblique_iou": None if mean is None else round(mean, 4),
         "plan_iou": plan_iou,
         "height_m": None if height is None else round(height, 2),
