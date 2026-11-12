@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "building-workflow"
+version = "0.1.0"
+description = "Evidence-first procedural building reconstruction research"
+requires-python = ">=3.11"
+dependencies = ["langgraph>=1.0,<2", "langgraph-checkpoint-sqlite>=3,<4", "httpx>=0.28,<1", "python-dotenv>=1,<2", "pydantic>=2,<3", "pillow>=11", "numpy>=2", "playwright>=1.50", "psutil>=7", "shapely>=2,<3", "pyproj>=3,<4"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+building-workflow = "building_workflow.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

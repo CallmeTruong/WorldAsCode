@@ -1,0 +1,9 @@
+# Global-provider measured reconstruction experiment
+
+User steering: use broadly available major providers; PLATEAU is not a pipeline dependency. Google Photorealistic 3D Tiles through the configured Cesium ion account and OSM remain the active inputs. Coverage and quality must be checked for each AOI; global service availability is not uniform detailed coverage.
+
+Implement and compare a source-guided compiler against the previous free-code result. The compiler samples roof/ground geometry, records calibrated source views, generates editable building surface meshes from measured parameters, assigns source-projected appearance only where depth/visibility checks support it, and requests extra object views only when shared-view coverage is insufficient. This is an explicit representation change from free-form LLM-only code generation. Source measurements and imagery are retained with provenance; do not present streamed original tiles as newly reconstructed procedural geometry.
+
+Experiments: raw measured roof field versus locally regularized roof geometry; captured appearance versus diagnostic relighting. Keep source camera, object IDs and area comparable. Use held-out imagery only for final validation. Preserve the prior run and report real latency, calls, geometric/texture coverage, visual defects and frame resources. Baked photographed appearance cannot be called intrinsic PBR albedo; relighting that layer can double shadows. Unknown faces and original source blur remain limitations.
+
+The stopping criterion is the best observed quality/time tradeoff among tested candidates, with unresolved defects disclosed. No finite experiment proves a global optimum. Broad-provider adapters and a reproducible local experiment are required, not a Tokyo-specific data replacement or a single hand-edited landmark fix.

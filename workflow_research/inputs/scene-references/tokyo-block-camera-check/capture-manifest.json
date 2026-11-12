@@ -1,0 +1,99 @@
+{
+  "target": {
+    "longitude": 139.7631,
+    "latitude": 35.67845,
+    "height": 40.0
+  },
+  "views": [
+    {
+      "view": "overhead",
+      "heading_deg": 0,
+      "pitch_deg": -89.8,
+      "range_m": 370.0,
+      "depth_quality": {
+        "sample_count": 5,
+        "median_surface_distance_m": 364.12420372529897,
+        "note": "Depth-based occlusion heuristic, not a semantic or visual quality acceptance."
+      },
+      "adapted_for_occlusion": false,
+      "sha256": "fa9f3b5fe15eeeb3e054cbbc79aa0c1821cfc8b98bca0d0fa626b7b15d64698f",
+      "stats": {
+        "tileLoads": 676,
+        "tileFailures": 0,
+        "renderErrors": 0,
+        "selectedTiles": 217,
+        "tilesLoaded": true,
+        "source": "Google Photorealistic 3D Tiles via Cesium ion",
+        "sdk": "1.147.0",
+        "camera": {
+          "longitude": 139.7631,
+          "latitude": 35.67843836038919,
+          "height": 409.99774599209803,
+          "position_ecef": [
+            -3959822.775717291,
+            3350683.5137950755,
+            3699507.0235141567
+          ],
+          "direction_ecef": [
+            0.6216463290556832,
+            -0.526018517533478,
+            -0.5803967270613054
+          ],
+          "up_ecef": [
+            0.4430633570537275,
+            -0.37490695168235916,
+            0.8143338622558456
+          ],
+          "view_matrix": [
+            -0.6459494587101036,
+            0.4430633570537275,
+            -0.6216463290556832,
+            0,
+            -0.7633801784118608,
+            -0.37490695168235916,
+            0.526018517533478,
+            0,
+            1.2823075934420558e-14,
+            0.8143338622558456,
+            0.5803967270613054,
+            0,
+            -5.995204912055419e-09,
+            -1986.9283445500769,
+            -6371312.635074019,
+            1
+          ],
+          "projection_matrix": [
+            1.7320508075688772,
+            0,
+            0,
+            0,
+            0,
+            2.309401076758503,
+            0,
+            0,
+            0,
+            0,
+            -1.00000000002,
+            -1,
+            0,
+            0,
+            -0.200000000002,
+            0
+          ],
+          "viewport": [
+            1440,
+            1080
+          ],
+          "origin": {
+            "longitude": 139.7631,
+            "latitude": 35.67845,
+            "height": 0
+          }
+        }
+      }
+    }
+  ],
+  "source": "Google Photorealistic 3D Tiles via Cesium ion",
+  "isolated_object_id": null,
+  "uncertainty": "Rendered photogrammetry; clipping uses an approximate OSM footprint. Occlusion, texture artifacts, acquisition age and mesh error remain. View names indicate camera heading, not verified building face identity."
+}

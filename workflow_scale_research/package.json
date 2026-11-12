@@ -1,0 +1,7 @@
+{
+  "name": "worldscale-research",
+  "private": true,
+  "type": "module",
+  "dependencies": {"three":"0.183.2"},
+  "devDependencies": {"@types/three":"0.183.1","esbuild":"0.28.2","typescript":"5.9.3"}
+}

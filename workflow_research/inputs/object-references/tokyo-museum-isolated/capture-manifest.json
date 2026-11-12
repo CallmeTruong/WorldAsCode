@@ -1,0 +1,117 @@
+{
+  "target": {
+    "longitude": 139.763222397,
+    "latitude": 35.678411028,
+    "height": 40.0
+  },
+  "views": [
+    {
+      "view": "north",
+      "heading_deg": 0,
+      "pitch_deg": -25,
+      "range_m": 95.0,
+      "sha256": "4b7383a1d1af10fdef7e656a5e50727a182bab609510d8c1dae1fac50d1b25b7",
+      "stats": {
+        "tileLoads": 1045,
+        "tileFailures": 0,
+        "renderErrors": 0,
+        "selectedTiles": 342,
+        "tilesLoaded": true,
+        "source": "Google Photorealistic 3D Tiles via Cesium ion",
+        "sdk": "1.147.0",
+        "camera": {
+          "longitude": 139.763222397,
+          "latitude": 35.67763504069119,
+          "height": 80.14931963144443
+        }
+      }
+    },
+    {
+      "view": "east",
+      "heading_deg": 90,
+      "pitch_deg": -25,
+      "range_m": 95.0,
+      "sha256": "25322942003f4e9f1f3485e0e28e78378beea741918cea3bfdb06beac9ee1d95",
+      "stats": {
+        "tileLoads": 1709,
+        "tileFailures": 0,
+        "renderErrors": 0,
+        "selectedTiles": 359,
+        "tilesLoaded": true,
+        "source": "Google Photorealistic 3D Tiles via Cesium ion",
+        "sdk": "1.147.0",
+        "camera": {
+          "longitude": 139.76227133382935,
+          "latitude": 35.678411024250984,
+          "height": 80.1493153281002
+        }
+      }
+    },
+    {
+      "view": "south",
+      "heading_deg": 180,
+      "pitch_deg": -25,
+      "range_m": 95.0,
+      "sha256": "09535c7a34afd2daf18c998d66e61365ae9047d8a5743a97b6e1288ff31cfdb8",
+      "stats": {
+        "tileLoads": 2628,
+        "tileFailures": 0,
+        "renderErrors": 0,
+        "selectedTiles": 431,
+        "tilesLoaded": true,
+        "source": "Google Photorealistic 3D Tiles via Cesium ion",
+        "sdk": "1.147.0",
+        "camera": {
+          "longitude": 139.763222397,
+          "latitude": 35.67918701522306,
+          "height": 80.14931618571978
+        }
+      }
+    },
+    {
+      "view": "west",
+      "heading_deg": 270,
+      "pitch_deg": -25,
+      "range_m": 95.0,
+      "sha256": "110aa5eb54d1850b792cf1e9a58d7e1227080a930e7e7d1462592c74f82cc1d9",
+      "stats": {
+        "tileLoads": 3171,
+        "tileFailures": 0,
+        "renderErrors": 0,
+        "selectedTiles": 327,
+        "tilesLoaded": true,
+        "source": "Google Photorealistic 3D Tiles via Cesium ion",
+        "sdk": "1.147.0",
+        "camera": {
+          "longitude": 139.76417346017064,
+          "latitude": 35.678411024250984,
+          "height": 80.14931532822366
+        }
+      }
+    },
+    {
+      "view": "overhead",
+      "heading_deg": 0,
+      "pitch_deg": -89.8,
+      "range_m": 95.0,
+      "sha256": "e260c23ff9f6d0ee1e06b0d10f4181dd8ca41eb4449bc7e64b972ee92eefd670",
+      "stats": {
+        "tileLoads": 3199,
+        "tileFailures": 0,
+        "renderErrors": 0,
+        "selectedTiles": 51,
+        "tilesLoaded": true,
+        "source": "Google Photorealistic 3D Tiles via Cesium ion",
+        "sdk": "1.147.0",
+        "camera": {
+          "longitude": 139.763222397,
+          "latitude": 35.67840803932199,
+          "height": 134.9994212427566
+        }
+      }
+    }
+  ],
+  "source": "Google Photorealistic 3D Tiles via Cesium ion",
+  "isolated_object_id": "way/306116935/0",
+  "uncertainty": "Rendered photogrammetry; clipping uses an approximate OSM footprint. Occlusion, texture artifacts, acquisition age and mesh error remain. View names indicate camera heading, not verified building face identity."
+}

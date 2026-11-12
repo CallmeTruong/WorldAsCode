@@ -1,0 +1,14 @@
+{
+  "center": [
+    139.7631,
+    35.67845
+  ],
+  "bbox": [
+    139.76172,
+    35.67733,
+    139.76448000000002,
+    35.67957
+  ],
+  "source": "OpenStreetMap small map API snapshot, not bulk city backend",
+  "attribution": "OpenStreetMap contributors / ODbL"
+}

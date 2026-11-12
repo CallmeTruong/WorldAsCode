@@ -1,0 +1,19 @@
+{
+  "objects": [{
+    "object_id": "way/306116935/0",
+    "label": "Mitsubishi Ichigokan Museum / Tokyo Marunouchi",
+    "images": ["tokyo-museum-isolated/north.png", "tokyo-museum-isolated/east.png", "tokyo-museum-isolated/south.png", "tokyo-museum-isolated/west.png", "tokyo-museum-isolated/overhead.png"],
+    "source_page": "https://cesium.com/platform/cesium-ion/content/",
+    "author": "Google Maps / imagery streamed through Cesium ion",
+    "license": "Provider imagery, user-authorized research capture; preserve attribution",
+    "license_url": "https://developers.google.com/maps/documentation/tile/policies",
+    "use": "Multi-angle rendered photogrammetry reference, separate from style; not a surveyed orthophoto",
+    "image_notes": [
+      "First four images: cardinal camera headings, not verified facade names. Last image: overhead roof view.",
+      "Target is ONLY the low red-brick museum. Ignore clipped fragments of tall neighboring buildings.",
+      "OSM footprint clipping removes surrounding buildings for visibility; edges may be incomplete. Do not reconstruct clipping artifacts or fused texture noise.",
+      "Use all views to model the L-shaped mass, gables/dormers, brick walls and different side facades. Local ground is Y=0; absolute mesh altitude is not building height."
+    ],
+    "camera_hint": {"evidence": "Cardinal camera headings in capture-manifest. Infer front direction from all views; no hardcoded city-specific normal."}
+  }]
+}

@@ -1,0 +1,55 @@
+{
+  "checked_date_local": "2026-11-11",
+  "timezone": "Asia/Saigon",
+  "source": "https://modelapi.vn/api/pricing",
+  "ui_verified": "https://modelapi.vn/pricing",
+  "pricing_version": "a42d372ccf0b5dd13ecf71203521f9d2",
+  "default_group_ratio": 0.9,
+  "models": [
+    {
+      "model_name": "gpt-6-sol",
+      "vendor_id": 1,
+      "quota_type": 0,
+      "model_ratio": 2.5,
+      "model_price": 0,
+      "owner_by": "",
+      "completion_ratio": 2,
+      "enable_groups": [
+        "codex_không_lag",
+        "default",
+        "codex_peak_2",
+        "codex_siêu_nhanh",
+        "codex_peak_3",
+        "codex_peak_1"
+      ],
+      "supported_endpoint_types": [
+        "openai"
+      ],
+      "billing_mode": "tiered_expr",
+      "billing_expr": "len > 272000 ? tier(\"long\", p * 4 + c * 15 + cr * 0.4 + cc * 5) : tier(\"standard\", p * 2 + c * 10 + cr * 0.2 + cc * 2.5)"
+    },
+    {
+      "model_name": "gpt-6-luna",
+      "vendor_id": 1,
+      "quota_type": 0,
+      "model_ratio": 2.5,
+      "model_price": 0,
+      "owner_by": "",
+      "completion_ratio": 2,
+      "enable_groups": [
+        "codex_không_lag",
+        "default",
+        "codex_peak_2",
+        "codex_siêu_nhanh",
+        "codex_peak_3",
+        "codex_peak_1"
+      ],
+      "supported_endpoint_types": [
+        "openai"
+      ],
+      "billing_mode": "tiered_expr",
+      "billing_expr": "len > 272000 ? tier(\"long\", p * 4 + c * 18 + cr * 0.4 + cc * 5) : tier(\"standard\", p * 2 + c * 12 + cr * 0.2 + cc * 2.5)"
+    }
+  ],
+  "interpretation": "UI model-details verifies USD/1M tokens. Standard tier default group: Sol input 1.8/output 9; Luna input 1.8/output 10.8. Estimates only; no billing ledger reconciliation or recharge discounts."
+}

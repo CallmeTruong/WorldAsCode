@@ -1,0 +1,182 @@
+{
+  "schema": "worldscale-evidence-1",
+  "object_id": "way/306116935",
+  "label": "Mitsubishi Ichigokan Museum",
+  "source": "Google Photorealistic 3D Tiles via Cesium ion",
+  "frame": {
+    "origin": {
+      "longitude": 139.7632223976866,
+      "latitude": 35.678411027644096
+    },
+    "ground_height_m": 38.85,
+    "axes": "X east, Y up, Z south; metres"
+  },
+  "footprint": [
+    [
+      -36.437442763974346,
+      11.86394829007367
+    ],
+    [
+      10.926978667984345,
+      24.07987914473335
+    ],
+    [
+      25.7917301961125,
+      -33.01656061735833
+    ],
+    [
+      12.855232064835402,
+      -36.35624743552725
+    ],
+    [
+      1.8288816632254297,
+      6.005627226415489
+    ],
+    [
+      -32.599041640029135,
+      -2.8817121152499774
+    ]
+  ],
+  "footprint_source": "OpenStreetMap way outline (ODbL); approximate",
+  "wings": [
+    {
+      "centre_xz": [
+        -10.84380362490859,
+        10.629467226886902
+      ],
+      "length_m": 48.91455293054004,
+      "width_m": 15.237047277517625,
+      "rotation_y_rad": -0.2536951415551801
+    },
+    {
+      "centre_xz": [
+        13.803210750478826,
+        -13.480455112306059
+      ],
+      "length_m": 13.359479392782067,
+      "width_m": 43.811298193399594,
+      "rotation_y_rad": -0.2536951415551801
+    }
+  ],
+  "height_m": 19.34,
+  "height_source": "Sparse photogrammetry roof samples minus sampled ground; not surveyed",
+  "tags": {
+    "building:levels": "3",
+    "roof:shape": "gabled",
+    "building:architecture": "queen_anne"
+  },
+  "scope": {
+    "below_m": 1.0,
+    "above_m": 6.768999999999999,
+    "grow_px": 14
+  },
+  "views": [
+    {
+      "id": "north",
+      "image": "north.png",
+      "source_sha256": "4b7383a1d1af10fdef7e656a5e50727a182bab609510d8c1dae1fac50d1b25b7",
+      "camera": {
+        "position": [
+          -6.215780553575509e-05,
+          41.299319631444426,
+          86.09811953430393
+        ],
+        "target": [
+          -6.215780553575509e-05,
+          1.1499999999999986,
+          -3.948860683077347e-05
+        ],
+        "fov_deg": 60.0,
+        "width": 1440,
+        "height": 1080
+      },
+      "calibration": "Reconstructed from recorded camera cartographic position, look-at target and the capture SDK's default frustum; verify with the footprint overlay."
+    },
+    {
+      "id": "east",
+      "image": "east.png",
+      "source_sha256": "25322942003f4e9f1f3485e0e28e78378beea741918cea3bfdb06beac9ee1d95",
+      "camera": {
+        "position": [
+          -86.09822122708495,
+          41.2993153281002,
+          0.00037647607915418363
+        ],
+        "target": [
+          -6.215780553575509e-05,
+          1.1499999999999986,
+          -3.948860683077347e-05
+        ],
+        "fov_deg": 60.0,
+        "width": 1440,
+        "height": 1080
+      },
+      "calibration": "Reconstructed from recorded camera cartographic position, look-at target and the capture SDK's default frustum; verify with the footprint overlay."
+    },
+    {
+      "id": "south",
+      "image": "south.png",
+      "source_sha256": "09535c7a34afd2daf18c998d66e61365ae9047d8a5743a97b6e1288ff31cfdb8",
+      "camera": {
+        "position": [
+          -6.215780553575509e-05,
+          41.29931618571978,
+          -86.09818899748244
+        ],
+        "target": [
+          -6.215780553575509e-05,
+          1.1499999999999986,
+          -3.948860683077347e-05
+        ],
+        "fov_deg": 60.0,
+        "width": 1440,
+        "height": 1080
+      },
+      "calibration": "Reconstructed from recorded camera cartographic position, look-at target and the capture SDK's default frustum; verify with the footprint overlay."
+    },
+    {
+      "id": "west",
+      "image": "west.png",
+      "source_sha256": "110aa5eb54d1850b792cf1e9a58d7e1227080a930e7e7d1462592c74f82cc1d9",
+      "camera": {
+        "position": [
+          86.09809691147387,
+          41.29931532822366,
+          0.00037647607915418363
+        ],
+        "target": [
+          -6.215780553575509e-05,
+          1.1499999999999986,
+          -3.948860683077347e-05
+        ],
+        "fov_deg": 60.0,
+        "width": 1440,
+        "height": 1080
+      },
+      "calibration": "Reconstructed from recorded camera cartographic position, look-at target and the capture SDK's default frustum; verify with the footprint overlay."
+    },
+    {
+      "id": "overhead",
+      "image": "overhead.png",
+      "source_sha256": "e260c23ff9f6d0ee1e06b0d10f4181dd8ca41eb4449bc7e64b972ee92eefd670",
+      "camera": {
+        "position": [
+          -6.215780553575509e-05,
+          96.1494212427566,
+          0.33156345370847917
+        ],
+        "target": [
+          -6.215780553575509e-05,
+          1.1499999999999986,
+          -3.948860683077347e-05
+        ],
+        "fov_deg": 60.0,
+        "width": 1440,
+        "height": 1080
+      },
+      "calibration": "Reconstructed from recorded camera cartographic position, look-at target and the capture SDK's default frustum; verify with the footprint overlay."
+    }
+  ],
+  "primary_view": "north",
+  "uncertainty": "Rendered photogrammetry; clipping uses an approximate OSM footprint. Occlusion, texture artifacts, acquisition age and mesh error remain. View names indicate camera heading, not verified building face identity."
+}

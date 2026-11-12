@@ -1,0 +1,17 @@
+{
+  "name": "building-workflow-renderer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "bundle": "node runtime/bundle.mjs"
+  },
+  "dependencies": {
+    "cesium": "1.147.0",
+    "three": "0.183.2"
+  },
+  "devDependencies": {
+    "@types/three": "0.183.1",
+    "esbuild": "0.28.2",
+    "typescript": "5.9.3"
+  }
+}

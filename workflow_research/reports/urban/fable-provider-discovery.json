@@ -1,0 +1,455 @@
+{
+  "endpoint_candidate": 1,
+  "models": [
+    {
+      "id": "claude-fable-5-1",
+      "type": "model",
+      "display_name": "claude-fable-5-1",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-fable-5",
+      "type": "model",
+      "display_name": "claude-fable-5",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-5-5",
+      "type": "model",
+      "display_name": "claude-opus-5-5",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-5",
+      "type": "model",
+      "display_name": "claude-opus-5",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-4-8",
+      "type": "model",
+      "display_name": "claude-opus-4-8",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-4-7",
+      "type": "model",
+      "display_name": "claude-opus-4-7",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-4-6",
+      "type": "model",
+      "display_name": "claude-opus-4-6",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-sonnet-5-5",
+      "type": "model",
+      "display_name": "claude-sonnet-5-5",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-sonnet-5",
+      "type": "model",
+      "display_name": "claude-sonnet-5",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "type": "model",
+      "display_name": "claude-sonnet-4-6",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-haiku-5-5",
+      "type": "model",
+      "display_name": "claude-haiku-5-5",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-haiku-4-5",
+      "type": "model",
+      "display_name": "claude-haiku-4-5",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-fable-5-2-max",
+      "type": "model",
+      "display_name": "claude-fable-5-2-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-fable-5-1-max",
+      "type": "model",
+      "display_name": "claude-fable-5-1-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-fable-5-max",
+      "type": "model",
+      "display_name": "claude-fable-5-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-5-5-max",
+      "type": "model",
+      "display_name": "claude-opus-5-5-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 1000000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-5-max",
+      "type": "model",
+      "display_name": "claude-opus-5-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 1000000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-4-8-max",
+      "type": "model",
+      "display_name": "claude-opus-4-8-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 1000000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-4-7-max",
+      "type": "model",
+      "display_name": "claude-opus-4-7-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 1000000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-opus-4-6-max",
+      "type": "model",
+      "display_name": "claude-opus-4-6-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 1000000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-sonnet-5-5-max",
+      "type": "model",
+      "display_name": "claude-sonnet-5-5-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 1000000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-sonnet-5-max",
+      "type": "model",
+      "display_name": "claude-sonnet-5-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 1000000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-sonnet-4-6-max",
+      "type": "model",
+      "display_name": "claude-sonnet-4-6-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 1000000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-haiku-5-5-max",
+      "type": "model",
+      "display_name": "claude-haiku-5-5-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    },
+    {
+      "id": "claude-haiku-4-5-max",
+      "type": "model",
+      "display_name": "claude-haiku-4-5-max",
+      "created_at": "2026-06-14T09:38:18.000Z",
+      "context_length": 200000,
+      "max_completion_tokens": 128000,
+      "object": "model",
+      "owned_by": "anthropic",
+      "thinking": true,
+      "extended_thinking": {
+        "dynamic_allowed": false,
+        "max": 128000,
+        "min": 1024,
+        "supported": true,
+        "zero_allowed": true
+      }
+    }
+  ]
+}

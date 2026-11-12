@@ -1,0 +1,16 @@
+{
+  "plain_listed": false,
+  "has_more": false,
+  "checks": [
+    {
+      "requested": "claude-fable-5-2",
+      "status": 404,
+      "returned_id": null
+    },
+    {
+      "requested": "claude-fable-5-2-max",
+      "status": 200,
+      "returned_id": "claude-fable-5-2-max"
+    }
+  ]
+}

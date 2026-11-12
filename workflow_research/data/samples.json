@@ -1,0 +1,45 @@
+[
+  {
+    "id": "rietveld",
+    "title": "Rietveld Schröder House",
+    "image": "data\\rietveld.jpg",
+    "split": "development-smoke",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Rietveld_Schr%C3%B6derhuis_HayKranen-20.JPG",
+    "source_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Rietveld_Schr%C3%B6derhuis_HayKranen-20.JPG/1280px-Rietveld_Schr%C3%B6derhuis_HayKranen-20.JPG",
+    "author": "Hay Kranen (User:Husky)",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "crop": "none",
+    "sha256": "374879dd321a7801a6488c1c333c63c9367a542fe074793764e005e97b82008b",
+    "metadata": "No measured dimensions supplied; target is the named building, not surrounding structures.",
+    "attribution": "Picture by Hay Kranen / CC-BY, https://www.haykranen.nl/; original photographer permission on the linked Commons source page."
+  },
+  {
+    "id": "bauhaus",
+    "title": "Bauhaus Dessau",
+    "image": "data\\bauhaus.jpg",
+    "split": "development-smoke",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Dessau_Bauhaus-Geb%C3%A4ude_asv2024-06_img1.jpg",
+    "source_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Dessau_Bauhaus-Geb%C3%A4ude_asv2024-06_img1.jpg/1280px-Dessau_Bauhaus-Geb%C3%A4ude_asv2024-06_img1.jpg",
+    "author": "A.Savin",
+    "license": "FAL",
+    "license_url": "http://artlibre.org/licence/lal/en",
+    "crop": "none",
+    "sha256": "3054ab48a20c42c4b7c6263a532461e90cd8010f8427a492ef4fa4d2c730b5a2",
+    "metadata": "No measured dimensions supplied; target is the named building, not surrounding structures."
+  },
+  {
+    "id": "fallingwater",
+    "title": "Fallingwater",
+    "image": "data\\fallingwater.jpg",
+    "split": "development-smoke",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Fallingwater3.jpg",
+    "source_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Fallingwater3.jpg/1280px-Fallingwater3.jpg",
+    "author": "lachrimae72",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "crop": "none",
+    "sha256": "37bafbc73901ac6ce3b39a731158fb82c2d76a2eeee7880453918a286477f942",
+    "metadata": "No measured dimensions supplied; target is the named building, not surrounding structures."
+  }
+]

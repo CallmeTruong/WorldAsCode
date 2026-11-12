@@ -1,0 +1,24 @@
+{
+  "objects": [
+    {
+      "object_id": "way/801710792/0",
+      "label": "Ho Chi Minh City Opera House",
+      "images": [
+        "opera/reference.jpg"
+      ],
+      "source_page": "https://commons.wikimedia.org/wiki/File:Lascar_Municipal_Theatre_(4608017466).jpg",
+      "author": "Jorge Láscar from Australia",
+      "license": "CC BY 2.0",
+      "license_url": "https://creativecommons.org/licenses/by/2.0",
+      "sha256": "4f0a511dce94208947094a6cd585df29a5b0721cf272e03884bf63f01123b77f",
+      "use": "factual building reference; separate from user style references",
+      "camera_hint": {
+        "front_normal_xz": [
+          -0.67,
+          0.74
+        ],
+        "evidence": "approximate footprint/front-entrance orientation; not calibrated camera"
+      }
+    }
+  ]
+}

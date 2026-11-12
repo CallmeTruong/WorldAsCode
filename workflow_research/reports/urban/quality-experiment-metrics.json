@@ -1,0 +1,84 @@
+{
+  "runs": [
+    {
+      "run": "district1-quality-v6",
+      "calls": 9,
+      "input_tokens": 46635,
+      "output_tokens": 23855,
+      "cache_hits": 0,
+      "active_seconds": 550.7866024000105,
+      "cost_usd": null,
+      "latest_runtime_resources": {
+        "seconds": 2.392140200128779,
+        "peak_process_tree_rss_mb": 182.421875,
+        "memory_limit_mb": 3500,
+        "timeout_seconds": 240
+      }
+    },
+    {
+      "run": "district1-quality-v7",
+      "calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_hits": 2,
+      "active_seconds": 7.110893700039014,
+      "cost_usd": null
+    },
+    {
+      "run": "district1-quality-v8",
+      "calls": 2,
+      "input_tokens": 27309,
+      "output_tokens": 5821,
+      "cache_hits": 2,
+      "active_seconds": 144.92489919997752,
+      "cost_usd": null,
+      "latest_runtime_resources": {
+        "seconds": 4.739814500091597,
+        "peak_process_tree_rss_mb": 451.7421875,
+        "memory_limit_mb": 3500,
+        "timeout_seconds": 240
+      }
+    },
+    {
+      "run": "district1-quality-v9",
+      "calls": 9,
+      "input_tokens": 74983,
+      "output_tokens": 14362,
+      "cache_hits": 6,
+      "active_seconds": 627.464394000126,
+      "cost_usd": null,
+      "latest_runtime_resources": {
+        "seconds": 159.44925609999336,
+        "peak_process_tree_rss_mb": 1217.33984375,
+        "memory_limit_mb": 3500,
+        "timeout_seconds": 240
+      }
+    },
+    {
+      "run": "district1-quality-v10",
+      "calls": 4,
+      "input_tokens": 31782,
+      "output_tokens": 3252,
+      "cache_hits": 6,
+      "active_seconds": 525.3436048999429,
+      "cost_usd": null,
+      "latest_runtime_resources": {
+        "seconds": 189.3862668001093,
+        "peak_process_tree_rss_mb": 1167.21875,
+        "memory_limit_mb": 3500,
+        "timeout_seconds": 240
+      }
+    }
+  ],
+  "totals": {
+    "api_attempts": 24,
+    "input_tokens": 180709,
+    "output_tokens": 47290
+  },
+  "caveats": [
+    "API actual usage excludes replayed cache tokens.",
+    "Active_seconds is checkpointed provider time; failed render elapsed may be missing. Use runtime watchdog records for failed stages, not a naive total.",
+    "Latest resources in a rerendered run are not its whole experiment wall time.",
+    "USD unverified; no pricing inferred from model name."
+  ]
+}

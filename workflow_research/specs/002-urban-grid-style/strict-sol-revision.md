@@ -1,0 +1,28 @@
+# GPT Sol: bounded evidence-driven refinement
+
+Requested 2026-11-12: stop Fable spending, use GPT Sol through the existing configured OpenAI-compatible base URL. This experiment explicitly selects `gpt-6-sol` for critique and code. Anthropic credentials and historical usage are preserved; no additional Anthropic requests are part of this workflow.
+
+## Problem and hypotheses
+
+The current procedural scene remains recognizable only in part. Whole-scene, approximate-camera criticism obscures object-specific roof, facade and texture mistakes. A single code revision and a successful geometry gate do not establish photographic or stylistic fidelity. Dense roof picks can include trees or adjacent geometry; photo projection onto such surfaces produces torn roofs and uncovered walls. More images or more expensive models alone do not resolve those representation errors.
+
+Keep Google Photorealistic 3D Tiles via Cesium ion and OSM as the source of factual evidence. Existing calibrated overhead and oblique images are reused, with acquisition camera matrices and explicit uncertainty. No PLATEAU dependency. Poly Haven assets are substitutes for surface appearance, not evidence that the building uses that exact material. Style references remain arbitrary images from a folder, separate from factual observations; do not impose a palette.
+
+## Implemented experiment
+
+1. Fork an immutable parent scene; reuse factual images, material maps, style extraction and unaffected component code.
+2. Select a target by stable OSM identity. Render in the original source cameras, in the same 1440x1080 aspect. Apply the same projected footprint crop to source and output. Evaluate three training views and reserve a fourth view for final validation. Supply actual local footprint coordinates, edge lengths, height and camera positions/directions to the code-repair agent; source code containing an unknown `b` argument is not sufficient numerical context. Record crop coordinates in `pairs.json`. Existing camera datum differs slightly from older sparse heights; this is approximate local registration, not surveyed alignment.
+3. Independent GPT Sol critic scores massing, roof, facade, materials, detail and style, each 0..5. Every dimension must be >=4; major/critical defects and insufficient evidence block acceptance. No averaged score can conceal a bad roof.
+4. Ask for small exact source patches for the target alone. Preserve world placement, footprint holes, other objects and required material bindings. Prioritize form and identity over ornaments.
+5. Compile and rerender the complete scene; run geometry, placement, texture-binding and style-preservation gates. One bounded text-only technical correction receives validator diagnostics before a failed candidate is rejected. Invalid patches are rolled back. Reassess matched training views. Retain only a score or blocker-count improvement with no per-dimension regression and no increase in major/critical blockers; stagnation stops spending rather than granting acceptance. Runtime checkpoints restore the exact accepted source, scene, bundle, checks and screenshots instead of rerendering that same source; the restored source hash must match its validated runtime metrics.
+6. Evaluate a reserved source angle after refinement. Both training and held-out checks must pass. One successful target never implies acceptance of the full block.
+
+Default pilot: at most two visual repair attempts, one technical correction per candidate, 12 HTTP attempts, 250k recorded/reserved tokens, 1800 seconds provider-active budget. New strict runs disable automatic transport retries to avoid duplicate spending after ambiguous failures. Actual provider usage and configured custom-gateway rates determine cost; without rates, dollar cost remains unknown. A missing-evidence decision stops the pilot and records the needed view/measurement; automated evidence fulfillment is future work. Independent model scoring is qualitative and does not replace human inspection or calibrated geometry metrics. Ordinal model scores vary between calls and must not be presented as measured geometric accuracy.
+
+Implementation: `urban/strict_loop.py`, `scripts/run_strict_urban.py`, CLI `urban-refine`; optional `capture-plan.json.evidence_views` adds calibrated runtime captures. The runner takes configurable parent/evidence folders and object ID; Tokyo defaults are only the repeatable pilot configuration. It deliberately does not regenerate the full neighborhood on each attempt. Material registry roles are read from the actual validated asset manifest; a surface may opt out of a mismatched library albedo while retaining normal/roughness and an evidence-informed tint. Such tints are visual estimates, not calibrated reflectance.
+
+## Scaling and remaining work
+
+Run a cheap scene-wide defect/visibility pass, prioritize high-impact failures, then queue independent target jobs against cached shared evidence. Keep roads and boundaries as shared topology, not per-building code. Cache observations by source/view/camera hash, geometry by factual evidence and component hash, and style/material treatment separately. Schedule browser/GPU work serially on this 8GB machine; model work may later run with bounded concurrency on a worker fleet. No measured large-area throughput or globally optimal quality claim follows from this pilot.
+
+Still required: automate targeted acquisition on `request_evidence`, fit part-level roofs without contaminated picks, infer road direction/UV layout and lane topology, measure pairwise geometric fidelity, and demonstrate successful acceptance across all objects and adjacent grid boundaries. Strict rejection is useful evidence, not a completed reconstruction.

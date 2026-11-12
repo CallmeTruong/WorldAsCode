@@ -1,0 +1,6 @@
+{
+  "native_material_color": "c31d22",
+  "material_fingerprint_equal_after_style_switch": true,
+  "shader_errors": [],
+  "scope": "Synthetic renderer regression: native material with plaster PBR maps, not building fidelity evaluation."
+}

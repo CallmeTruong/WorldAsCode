@@ -1,0 +1,26 @@
+{
+  "created_at": "2026-11-11T20:19:58.032746+00:00",
+  "bbox_wsen": [
+    139.7618,
+    35.6774,
+    139.7644,
+    35.6795
+  ],
+  "scope": "bounded metadata discovery; no paid orders",
+  "providers": [
+    {
+      "provider": "mapillary",
+      "status": "missing_credentials",
+      "required_variable": "MAPILLARY_ACCESS_TOKEN",
+      "assets": []
+    },
+    {
+      "provider": "planet",
+      "status": "missing_credentials",
+      "required_variable": "PLANET_API_KEY",
+      "assets": []
+    }
+  ],
+  "cesium_role": "Visualization/context and user-owned licensed assets; account access alone is not a reconstruction/analysis license for third-party imagery.",
+  "acceptance": "Do not call an AOI reconstruction-ready until per-facade visibility, overhead resolution/age/clouds, georegistration and derivative rights are verified."
+}

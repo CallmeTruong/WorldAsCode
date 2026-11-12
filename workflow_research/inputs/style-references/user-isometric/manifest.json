@@ -1,0 +1,6 @@
+{
+  "source": "User attachment in this conversation, preserved unchanged",
+  "file": "reference.png",
+  "usage": "Style analysis only, not factual Qu?n 1 geometry or source texture copying",
+  "pipeline": "Folder can contain arbitrary user style references; extraction goes through vision API, not a preset palette."
+}

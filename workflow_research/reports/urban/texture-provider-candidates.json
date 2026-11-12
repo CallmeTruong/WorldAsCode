@@ -1,0 +1,2064 @@
+{
+  "aerial_asphalt_01": {
+    "type": 1,
+    "tags": [
+      "road",
+      "flat",
+      "cracked"
+    ],
+    "date_published": 1597061145,
+    "name": "Aerial Asphalt 01",
+    "categories": [
+      "asphalt",
+      "outdoor",
+      "floor",
+      "road",
+      "man made",
+      "aerial"
+    ],
+    "dimensions": [
+      30000,
+      30000
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "cdf3c8f091b3589407bdf0697a2deb2c6b40650d",
+    "description": "Free 8K asphalt texture of a flat, worn road with subtle cracks, faint tire marks and gritty surface - ideal for aerial, outdoor, road and floor scenes.",
+    "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+    "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "cracked",
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor",
+      "aerial": true
+    },
+    "img_version": "151f24f1",
+    "download_count": 149005,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/aerial_asphalt_01.png?width=256&height=256&format=webp&v=151f24f1"
+  },
+  "asphalt_01": {
+    "name": "Asphalt 01",
+    "categories": [
+      "asphalt",
+      "floor",
+      "outdoor",
+      "road"
+    ],
+    "type": 1,
+    "tags": [
+      "rough",
+      "dirty",
+      "asphalt",
+      "road",
+      "worn"
+    ],
+    "authors": {
+      "Dario Barresi": "Processing ",
+      "Charlotte Baglioni": "Photography"
+    },
+    "info": null,
+    "date_published": 1664841600,
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      2079.9994468688965,
+      2079.9996852874756
+    ],
+    "files_hash": "61bdb4dc064585ce3e749a4dcaf13216575ae794",
+    "description": "Free 8K asphalt texture: worn, dirty road surface with a coarse, rough aggregate, compacted bumps and subtle grime discoloration.",
+    "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+    "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "da942cee",
+    "download_count": 72582,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_01.png?width=256&height=256&format=webp&v=da942cee"
+  },
+  "asphalt_02": {
+    "type": 1,
+    "date_published": 1596694249,
+    "name": "Asphalt 02",
+    "categories": [
+      "terrain",
+      "road",
+      "man made",
+      "outdoor",
+      "floor"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "sponsors": [
+      "26820710"
+    ],
+    "dimensions": [
+      3000.000238418579,
+      3000
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "2839a331f389f6ad1e30a78f24db58369d92f742",
+    "tags": [
+      "asphalt",
+      "cracked",
+      "flat",
+      "road",
+      "asphalt road",
+      "tarmac road",
+      "gritty",
+      "weathered",
+      "grey",
+      "cracking",
+      "tar",
+      "cracks"
+    ],
+    "description": "Free 8K texture of weathered grey asphalt: gritty coarse aggregate, subtle tar cracks, rough matte surface with uneven wear.",
+    "category_id": "ae6df066-2cbf-5772-9092-3cd86ed6394e",
+    "category": "Asphalt & Bitumen/Asphalt/Cracked Asphalt",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "cracked"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "6af3d04c",
+    "download_count": 403224,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_02.png?width=256&height=256&format=webp&v=6af3d04c"
+  },
+  "asphalt_03": {
+    "name": "Asphalt 03",
+    "categories": [
+      "outdoor",
+      "man made",
+      "dirty",
+      "road",
+      "asphalt"
+    ],
+    "type": 1,
+    "tags": [
+      "rough",
+      "worn",
+      "dirty",
+      "floor",
+      "road",
+      "asphalt",
+      "city",
+      "urban"
+    ],
+    "info": null,
+    "dimensions": [
+      2049.999713897705,
+      2049.999713897705
+    ],
+    "date_published": 1675900800,
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "43fb4f1e6c03b6cff2ae0783f403d5b9e52268be",
+    "description": "Free 8K worn asphalt texture with rough, matte surface, fine granular grit and subtle dirt staining across a dark brown-black urban road material.",
+    "authors": {
+      "Dario Barresi": "processing",
+      "Charlotte Baglioni": "photography"
+    },
+    "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+    "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "277de809",
+    "download_count": 14787,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_03.png?width=256&height=256&format=webp&v=277de809"
+  },
+  "asphalt_04": {
+    "name": "Asphalt 04",
+    "categories": [
+      "man made",
+      "outdoor",
+      "road"
+    ],
+    "type": 1,
+    "tags": [
+      "rough",
+      "weathered",
+      "dry",
+      "cracked",
+      "discolored",
+      "asphalt",
+      "road",
+      "street"
+    ],
+    "info": null,
+    "dimensions": [
+      4039.9999618530273,
+      4039.9999618530273
+    ],
+    "date_published": 1700092800,
+    "max_resolution": [
+      16384,
+      16384
+    ],
+    "files_hash": "26e1e0e364666ffa6d5c90795fb911eefa08ea57",
+    "description": "Free 16K texture: weathered, rough asphalt with dry, discolored tones, fine aggregate and subtle cracks - ideal for worn roads and urban outdoor scenes.",
+    "authors": {
+      "Jenelle van Heerden": "Processing",
+      "Sergej Majboroda": "Photography"
+    },
+    "sponsors": [
+      "7934315"
+    ],
+    "category_id": "ae6df066-2cbf-5772-9092-3cd86ed6394e",
+    "category": "Asphalt & Bitumen/Asphalt/Cracked Asphalt",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "cracked"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "d7452987",
+    "download_count": 58170,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_04.png?width=256&height=256&format=webp&v=d7452987"
+  },
+  "asphalt_05": {
+    "name": "Asphalt 05",
+    "categories": [
+      "floor",
+      "asphalt"
+    ],
+    "type": 1,
+    "tags": [
+      "rough",
+      "floor",
+      "road",
+      "asphalt",
+      "coarse",
+      "brown",
+      "street",
+      "roadway"
+    ],
+    "authors": {
+      "Amal Kumar": "All"
+    },
+    "info": null,
+    "dimensions": [
+      1999.9996423721313,
+      1999.9996423721313
+    ],
+    "date_published": 1701129600,
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "469f692cdaa4323128466d4aa3d59531239e2e82",
+    "description": "Free 8K texture of coarse brown asphalt with a rough, grainy surface, subtle aggregate detail and a matte, weathered finish.",
+    "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+    "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "18fc9775",
+    "download_count": 6796,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_05.png?width=256&height=256&format=webp&v=18fc9775"
+  },
+  "asphalt_06": {
+    "type": 1,
+    "name": "Asphalt 06",
+    "categories": [
+      "asphalt",
+      "outdoor",
+      "floor",
+      "road"
+    ],
+    "tags": [
+      "rough",
+      "dirty",
+      "scuffed",
+      "driveway texture",
+      "sidewalk",
+      "hard surface",
+      "handmade",
+      "raw"
+    ],
+    "authors": {
+      "Jan Martens": "All"
+    },
+    "donated": true,
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      3000,
+      3000
+    ],
+    "date_published": 1733184000,
+    "files_hash": "5d444c0a7c2b024e98b802df57170a5ee51e631d",
+    "description": "Free 8K texture of rough, dirty, scuffed asphalt with a coarse, handmade hard-surface look, muted brown-gray tones and subtle wear and grit.",
+    "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+    "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "1f29b46a",
+    "download_count": 39124,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_06.png?width=256&height=256&format=webp&v=1f29b46a"
+  },
+  "asphalt_07": {
+    "type": 1,
+    "name": "Asphalt 07",
+    "categories": [
+      "floor",
+      "asphalt",
+      "man made",
+      "road"
+    ],
+    "tags": [
+      "rough",
+      "weathered",
+      "asphalt",
+      "chipped",
+      "granular",
+      "abrasive",
+      "road",
+      "paving"
+    ],
+    "description": "Free 8k texture of weathered asphalt with chipped, granular surface - rough, abrasive paving with subtle worn aggregate and low sheen.",
+    "authors": {
+      "Charlotte Baglioni": "All"
+    },
+    "max_resolution": [
+      16384,
+      16384
+    ],
+    "dimensions": [
+      2500,
+      2500
+    ],
+    "files_hash": "536cd04f7600bc912ccc4ed244fdff50bcd6fb2f",
+    "date_published": 1770681600,
+    "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+    "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "b7534cd2",
+    "download_count": 4232,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_07.png?width=256&height=256&format=webp&v=b7534cd2"
+  },
+  "asphalt_floor": {
+    "donated": true,
+    "name": "Asphalt Floor",
+    "type": 1,
+    "authors": {
+      "eye-candy.xyz": "All"
+    },
+    "tags": [
+      "flat",
+      "asphalt",
+      "brown",
+      "even",
+      "dry",
+      "smooth",
+      "ground"
+    ],
+    "info": null,
+    "dimensions": [
+      2349.9999046325684,
+      2349.9999046325684
+    ],
+    "date_published": 1669248000,
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "12f555317411ad74c385f67210226d20ac73c262",
+    "sponsors": [
+      "84390067"
+    ],
+    "description": "Free 8K asphalt texture with an even, dry brown surface, fine-grained aggregate, subtle roughness and a smooth, clean man-made appearance.",
+    "categories": [
+      "outdoor",
+      "man made",
+      "floor",
+      "clean",
+      "concrete",
+      "road",
+      "asphalt",
+      "plaster-concrete"
+    ],
+    "category_id": "bc174825-be31-5e80-9911-2eb9128cfee9",
+    "category": "Asphalt & Bitumen/Asphalt/Fresh Asphalt",
+    "attributes": {
+      "surface_use": "floor",
+      "origin": "man_made",
+      "setting": "outdoor",
+      "condition": [
+        "clean"
+      ]
+    },
+    "img_version": "581f44ef",
+    "download_count": 32841,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_floor.png?width=256&height=256&format=webp&v=581f44ef"
+  },
+  "asphalt_pit_lane": {
+    "name": "Asphalt Pit Lane",
+    "categories": [
+      "floor",
+      "asphalt",
+      "road"
+    ],
+    "type": 1,
+    "tags": [
+      "asphalt",
+      "asphalt road",
+      "road",
+      "roadway",
+      "tarmac road",
+      "race track",
+      "pit lane"
+    ],
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      2000,
+      2000
+    ],
+    "date_published": 1723593600,
+    "files_hash": "a04beb641ce5cbf5307a31f51f402f5a9fb675a0",
+    "description": "Free 8K asphalt texture: dark pit-lane tarmac with fine gravel aggregate, gritty roughness, subtle tire wear and a low-reflective matte surface.",
+    "category_id": "330aa03f-5063-50ab-a052-4f6b7214707e",
+    "category": "Asphalt & Bitumen/Tracks/Race Tracks",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "db57df04",
+    "download_count": 69647,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_pit_lane.png?width=256&height=256&format=webp&v=db57df04"
+  },
+  "asphalt_snow": {
+    "name": "Asphalt Snow",
+    "categories": [
+      "outdoor",
+      "man made",
+      "asphalt",
+      "snow"
+    ],
+    "type": 1,
+    "tags": [
+      "rough",
+      "asphalt",
+      "road",
+      "snow",
+      "urban",
+      "floor"
+    ],
+    "authors": {
+      "eye-candy.xyz": "All"
+    },
+    "info": null,
+    "dimensions": [
+      2000,
+      2000
+    ],
+    "date_published": 1680998400,
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "sponsors": [
+      "7934315"
+    ],
+    "files_hash": "bb9360a62044085ed02e48e6e31ca25ac36ca6dc",
+    "description": "Free 8K texture of rough urban asphalt dusted with patchy snow: gritty grey aggregate, scattered white flakes, uneven, slightly porous surface.",
+    "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+    "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "204b0c54",
+    "download_count": 12904,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_snow.png?width=256&height=256&format=webp&v=204b0c54"
+  },
+  "asphalt_track": {
+    "name": "Asphalt Track",
+    "categories": [
+      "asphalt"
+    ],
+    "type": 1,
+    "tags": [
+      "track",
+      "asphalt",
+      "racing",
+      "road",
+      "speedway",
+      "asphalt road",
+      "race track",
+      "tarmac road"
+    ],
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      2000,
+      2000
+    ],
+    "date_published": 1722470400,
+    "files_hash": "2f5841e723e9c319052d33d4273995aa679c655a",
+    "description": "Free, 8K asphalt track texture: dark, fine-grained tarmac with subtle aggregate, worn micro-roughness and a low-gloss, slightly weathered surface.",
+    "category_id": "330aa03f-5063-50ab-a052-4f6b7214707e",
+    "category": "Asphalt & Bitumen/Tracks/Race Tracks",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "fa9c2107",
+    "download_count": 57193,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_track.png?width=256&height=256&format=webp&v=fa9c2107"
+  },
+  "castle_wall_slates": {
+    "type": 1,
+    "tags": [
+      "wall",
+      "rough",
+      "blocks",
+      "stacked",
+      "old",
+      "castle",
+      "medieval"
+    ],
+    "date_published": 1568855551,
+    "name": "Castle Wall Slates",
+    "categories": [
+      "rock",
+      "outdoor",
+      "wall",
+      "clean",
+      "man made"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      2500,
+      2500
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "sponsors": [
+      "26820710"
+    ],
+    "files_hash": "aed373c9c14d89c082783202d576ee49be2a5045",
+    "description": "Free 8K texture of castle slate wall: stacked, weathered stone blocks with rough chiseled edges, mortar, beige-gray-brown colors and deep crevices.",
+    "category_id": "bc20bc70-284a-5f14-93eb-78274f6a1fa9",
+    "category": "Brick & Block/Stone Block & Paver/Ashlar & Coursed Stone",
+    "attributes": {
+      "surface_use": "wall",
+      "condition": [
+        "weathered"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "56b1ac3a",
+    "download_count": 99730,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/castle_wall_slates.png?width=256&height=256&format=webp&v=56b1ac3a"
+  },
+  "ceramic_roof_01": {
+    "type": 1,
+    "tags": [
+      "ceramic",
+      "tiles",
+      "roof",
+      "old",
+      "city",
+      "moss"
+    ],
+    "date_published": 1579412381,
+    "name": "Ceramic Roof 01",
+    "categories": [
+      "roofing",
+      "outdoor",
+      "man made",
+      "dirty"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      3500.000238418579,
+      3500.000238418579
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "d0a3e35c44e31810eb1b10d4701bc7948f164734",
+    "description": "Free 8K material. Weathered ceramic roof tiles with chipped orange-red glaze, green moss patches, dirt-filled seams and subtle surface roughness.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "cb0f49b1",
+    "download_count": 71295,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/ceramic_roof_01.png?width=256&height=256&format=webp&v=cb0f49b1"
+  },
+  "clay_roof_tiles": {
+    "name": "Clay Roof Tiles",
+    "categories": [
+      "roofing"
+    ],
+    "type": 1,
+    "tags": [
+      "weathered",
+      "rough",
+      "worn",
+      "uneven",
+      "discolored",
+      "clay",
+      "roof",
+      "roofing",
+      "tile roofing",
+      "exterior"
+    ],
+    "authors": {
+      "Amal Kumar": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      4000,
+      4000
+    ],
+    "date_published": 1718841600,
+    "files_hash": "045b0a54a86afd93f6571c76296aa2df436a4328",
+    "description": "Free 8K clay roof tile texture: weathered, rough, uneven reddish-brown tiles with dark staining, chipped edges and strong height/color variation.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "worn",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "4b1a0d7c",
+    "download_count": 16895,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/clay_roof_tiles.png?width=256&height=256&format=webp&v=4b1a0d7c"
+  },
+  "clay_roof_tiles_02": {
+    "name": "Clay Roof Tiles 02",
+    "categories": [
+      "man made",
+      "roofing",
+      "outdoor"
+    ],
+    "type": 1,
+    "tags": [
+      "weathered",
+      "old",
+      "interlocking",
+      "roof",
+      "roofing",
+      "tile roofing",
+      "clay",
+      "clay tiles",
+      "traditional",
+      "traditional roofing ",
+      "overlapping tiles"
+    ],
+    "authors": {
+      "Amal Kumar": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      2500,
+      2500
+    ],
+    "date_published": 1720051200,
+    "files_hash": "a9f30dc8f73f248bfbaeed2325690422c5c8dd1d",
+    "description": "Free 8K texture of weathered interlocking clay roof tiles with overlapping terracotta shingles, rough worn surface, dirt stains and subtle moss.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "worn",
+        "mossy"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "c3236d8d",
+    "download_count": 56025,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/clay_roof_tiles_02.png?width=256&height=256&format=webp&v=c3236d8d"
+  },
+  "clay_roof_tiles_03": {
+    "name": "Clay Roof Tiles 03",
+    "categories": [
+      "man made",
+      "outdoor",
+      "roofing"
+    ],
+    "type": 1,
+    "tags": [
+      "weathered",
+      "uneven",
+      "clay",
+      "clay tiles",
+      "roof",
+      "roofing",
+      "tile roofing",
+      "overlapping tiles",
+      "traditional",
+      "traditional roofing "
+    ],
+    "authors": {
+      "Amal Kumar": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      2599.9999046325684,
+      2599.9999046325684
+    ],
+    "date_published": 1720483200,
+    "files_hash": "431e8f1241999dcfb84781c1eea0200c3d113055",
+    "description": "Free 8K clay roof tile texture of weathered, uneven terracotta tiles with overlapping rows, chipped edges, gritty dirt in crevices and embossed diamond shaped details.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "worn",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "7240aa70",
+    "download_count": 26162,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/clay_roof_tiles_03.png?width=256&height=256&format=webp&v=7240aa70"
+  },
+  "clean_asphalt": {
+    "type": 1,
+    "name": "Clean Asphalt",
+    "categories": [
+      "floor",
+      "asphalt"
+    ],
+    "tags": [
+      "rough",
+      "asphalt",
+      "grey",
+      "gray",
+      "course",
+      "gritty",
+      "fine-grained",
+      "road",
+      "asphalt road",
+      "roadway",
+      "tarmac road",
+      "tar",
+      "scratches",
+      "racing",
+      "bitumen",
+      "speedway",
+      "race track",
+      "pit lane"
+    ],
+    "description": "Free 8k asphalt texture: clean dark-gray surface with fine rough grain, subtle micro-roughness and faint seam line, low sheen and even tonality.",
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      2099.9999046325684,
+      2099.9999046325684
+    ],
+    "files_hash": "402035bf9077d331e5de76b938c8b6d818aed6a0",
+    "date_published": 1768262400,
+    "category_id": "bc174825-be31-5e80-9911-2eb9128cfee9",
+    "category": "Asphalt & Bitumen/Asphalt/Fresh Asphalt",
+    "attributes": {
+      "surface_use": "floor",
+      "origin": "man_made",
+      "setting": "outdoor",
+      "condition": [
+        "clean"
+      ]
+    },
+    "img_version": "547f00f6",
+    "download_count": 31678,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/clean_asphalt.png?width=256&height=256&format=webp&v=547f00f6"
+  },
+  "cobblestone_embedded_asphalt": {
+    "name": "Cobblestone Embedded Asphalt",
+    "categories": [
+      "floor",
+      "man made",
+      "asphalt"
+    ],
+    "type": 1,
+    "tags": [
+      "rocks",
+      "asphalt",
+      "rocky",
+      "stone",
+      "coarse",
+      "gravelly",
+      "gravelly ground",
+      "gritty texture",
+      "rough",
+      "gravelly texture",
+      "rugged"
+    ],
+    "authors": {
+      "Amal Kumar": "All"
+    },
+    "max_resolution": [
+      16384,
+      16384
+    ],
+    "dimensions": [
+      1899.999976158142,
+      1899.999976158142
+    ],
+    "date_published": 1710969949,
+    "files_hash": "149d271ee8b5d3d09e518cec5ff37ed8c643fa12",
+    "description": "Free 16K texture of rough uneven cobblestones embedded in a grimy asphalt surface.",
+    "category_id": "e9a8aa14-832b-50b9-bda6-23df093c0caa",
+    "category": "Asphalt & Bitumen/Asphalt/Aggregate-Embedded Asphalt",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "1313a5f7",
+    "download_count": 8351,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/cobblestone_embedded_asphalt.png?width=256&height=256&format=webp&v=1313a5f7"
+  },
+  "flower_scattered_asphalt": {
+    "type": 1,
+    "name": "Flower Scattered Asphalt",
+    "categories": [
+      "floor",
+      "asphalt"
+    ],
+    "tags": [
+      "asphalt",
+      "asphalt road",
+      "petals",
+      "plant debris",
+      "outdoor",
+      "cracked",
+      "driveway",
+      "sticks",
+      "twigs",
+      "leaf litter"
+    ],
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      1800.0000715255737,
+      1800.0000715255737
+    ],
+    "date_published": 1738627200,
+    "files_hash": "28abac59b1ec10866501f2af682ff52bb9e5bbe5",
+    "description": "Free 8K texture of weathered asphalt with cracked, gritty surface scattered with purple flower petals, twigs and leaf litter, rough, matte and worn.",
+    "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+    "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+    "attributes": {
+      "surface_use": "ground",
+      "condition": [
+        "weathered",
+        "cracked",
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "4c63ccc2",
+    "download_count": 3196,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/flower_scattered_asphalt.png?width=256&height=256&format=webp&v=4c63ccc2"
+  },
+  "grey_roof_01": {
+    "type": 1,
+    "date_published": 1529359200,
+    "name": "Grey Roof 01",
+    "categories": [
+      "roofing",
+      "outdoor",
+      "man made",
+      "clean"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      8000,
+      8000
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "9d1e617805bddce7359cc0d3a57c1aec0c117074",
+    "tags": [
+      "modern",
+      "tiles",
+      "roofing material",
+      "gray",
+      "gray roof",
+      "tiled roofing",
+      "interlocking tiles",
+      "slate roofing",
+      "roof tiles",
+      "traditional roof tiles"
+    ],
+    "description": "Free 8K texture. Clean dark-gray interlocking roof tiles with subtle satin sheen, fine surface grain, and crisp, slightly weathered tile edges.",
+    "category_id": "ce781525-aa20-5d90-9d19-8530e8e243ba",
+    "category": "Ceramic/Glazed Tiles/Glossy Glazed",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "03d0466a",
+    "download_count": 72679,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/grey_roof_01.png?width=256&height=256&format=webp&v=03d0466a"
+  },
+  "grey_roof_tiles": {
+    "type": 1,
+    "date_published": 1530078110,
+    "name": "Grey Roof Tiles",
+    "categories": [
+      "roofing",
+      "outdoor",
+      "man made",
+      "clean"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      3000,
+      3000
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "92e23429a38512689bd3b9746f0605897eda345e",
+    "tags": [
+      "grey",
+      "moss",
+      "damp",
+      "mosscovered",
+      "ceramic tiles",
+      "overlapping",
+      "weathered",
+      "overlapping tiles",
+      "roofing material",
+      "roof tiles",
+      "traditional roof tiles"
+    ],
+    "sponsors": [
+      "4714267"
+    ],
+    "description": "Free 8K texture of grey ceramic overlapping roof tiles, weathered and damp with moss patches, chipped edges and a gritty, low-gloss ceramic surface.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "6977cacb",
+    "download_count": 39365,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/grey_roof_tiles.png?width=256&height=256&format=webp&v=6977cacb"
+  },
+  "grey_roof_tiles_02": {
+    "type": 1,
+    "date_published": 1569380636,
+    "name": "Grey Roof Tiles 02",
+    "categories": [
+      "roofing",
+      "outdoor",
+      "man made",
+      "clean"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      1500,
+      1500
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "0d58629280076ff11838d7a458bcb24f2c105590",
+    "tags": [
+      "slates",
+      "moss",
+      "tiles",
+      "cottage",
+      "roofing material",
+      "lichen",
+      "housing material",
+      "gray",
+      "traditional roof tiles",
+      "tiled roofing",
+      "gray roof",
+      "storm clips "
+    ],
+    "description": "Free 8K texture of weathered grey slate roof tiles with moss and lichen in seams, chipped rough surfaces and subtle storm clips and fastening details.",
+    "category_id": "0dc6c67b-4dfa-5355-ad12-9918fc376459",
+    "category": "Stone/Slabs & Tiles/Slate",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "ea6fa28c",
+    "download_count": 57366,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/grey_roof_tiles_02.png?width=256&height=256&format=webp&v=ea6fa28c"
+  },
+  "patterned_slate_tiles": {
+    "type": 1,
+    "name": "Patterned Slate Tiles",
+    "categories": [
+      "floor",
+      "man made"
+    ],
+    "tags": [
+      "weathered",
+      "rough",
+      "tiles",
+      "slates",
+      "slate",
+      "exterior",
+      "tiled",
+      "outdoor",
+      "natural",
+      "stone",
+      "patterned",
+      "stonework"
+    ],
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      2200.000047683716,
+      2200.000047683716
+    ],
+    "date_published": 1737590400,
+    "files_hash": "3fec1755f38d89630db44f6788e2b64e6b3ac223",
+    "description": "Free 8K texture of patterned, weathered slate tiles: dark, rough stone slabs with irregular edges, worn cracks, gritty mortar joints and a low, natural surface sheen.",
+    "category_id": "0dc6c67b-4dfa-5355-ad12-9918fc376459",
+    "category": "Stone/Slabs & Tiles/Slate",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "eb6d0110",
+    "download_count": 6045,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/patterned_slate_tiles.png?width=256&height=256&format=webp&v=eb6d0110"
+  },
+  "red_slate_roof_tiles_01": {
+    "type": 1,
+    "date_published": 1564097957,
+    "name": "Red Slate Roof Tiles 01",
+    "categories": [
+      "roofing",
+      "outdoor",
+      "man made",
+      "dirty"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      2500,
+      2500
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "f7c4d721e73ad96bebece3750dea9ed4992a359a",
+    "tags": [
+      "old",
+      "slate",
+      "moss",
+      "roofing material",
+      "roof tiles",
+      "tiled roofing",
+      "overlapping",
+      "weathered",
+      "mosscovered",
+      "overlapping tiles",
+      "green",
+      "roof",
+      "roofing"
+    ],
+    "description": "Free 8K texture of weathered red slate roof tiles - overlapping, moss-covered with green patches, rough chipped edges, dirt streaks and aged color variation.",
+    "category_id": "0dc6c67b-4dfa-5355-ad12-9918fc376459",
+    "category": "Stone/Slabs & Tiles/Slate",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "116eab24",
+    "download_count": 31237,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/red_slate_roof_tiles_01.png?width=256&height=256&format=webp&v=116eab24"
+  },
+  "reed_roof_03": {
+    "type": 1,
+    "tags": [
+      "reed",
+      "rough",
+      "village",
+      "thatch",
+      "hay",
+      "straw",
+      "hut",
+      "medieval"
+    ],
+    "date_published": 1579148562,
+    "name": "Reed Roof 03",
+    "categories": [
+      "roofing",
+      "outdoor",
+      "man made"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      2500,
+      2500
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "c9d3085a4f2194f7996a65b2211fa5280319427e",
+    "description": "Free 8K texture of weathered reed thatch: coarse, fibrous straw with compacted layers, muted brown tones and patches of moss and dirt, rough matte finish.",
+    "category_id": "bcbf4ed7-38ce-5284-bedf-ccb701b9ceb0",
+    "category": "Organic/Thatch & Reed/Thatched Roofing",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "2ee592e5",
+    "download_count": 28039,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/reed_roof_03.png?width=256&height=256&format=webp&v=2ee592e5"
+  },
+  "reed_roof_04": {
+    "type": 1,
+    "tags": [
+      "reed",
+      "rough",
+      "village",
+      "thatch",
+      "hay",
+      "straw",
+      "hut",
+      "medieval"
+    ],
+    "date_published": 1558061157,
+    "name": "Reed Roof 04",
+    "categories": [
+      "roofing",
+      "outdoor",
+      "man made"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      2500,
+      2500
+    ],
+    "sponsors": [
+      "9910225"
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "e258384d228299d4606ccbe38dd2e815047b5271",
+    "description": "Free 8K texture of weathered reed thatch - dense, rough straw bundles with fibrous surface, muted brown tones and subtle mossy highlights.",
+    "category_id": "bcbf4ed7-38ce-5284-bedf-ccb701b9ceb0",
+    "category": "Organic/Thatch & Reed/Thatched Roofing",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "04c4a71a",
+    "download_count": 35947,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/reed_roof_04.png?width=256&height=256&format=webp&v=04c4a71a"
+  },
+  "roof_07": {
+    "type": 1,
+    "date_published": 1529359200,
+    "name": "Roof 07",
+    "categories": [
+      "roofing",
+      "man made",
+      "outdoor",
+      "dirty"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      2000,
+      2000
+    ],
+    "sponsors": [
+      "77433244"
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "82a641040fa1751c01910adf60e6f3cf6728c4db",
+    "tags": [
+      "ceramic",
+      "tiles",
+      "old",
+      "worn",
+      "damaged",
+      "discolored",
+      "roofing material",
+      "roof",
+      "roofing",
+      "tile roofing",
+      "clay tiles",
+      "weathered",
+      "mossy",
+      "rustic",
+      "overlapping tiles"
+    ],
+    "description": "Free 8K texture of weathered clay roof tiles, overlapping and rustic with chipped, discolored ceramic surfaces, moss, dirt and damaged/peeling areas.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "767f9b61",
+    "download_count": 37582,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/roof_07.png?width=256&height=256&format=webp&v=767f9b61"
+  },
+  "roof_09": {
+    "type": 1,
+    "date_published": 1529359200,
+    "name": "Roof 09",
+    "categories": [
+      "roofing",
+      "man made",
+      "outdoor",
+      "dirty"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      4000,
+      4000
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "3266fb10021af18ef9b383b65c707237fda3073a",
+    "tags": [
+      "ceramic",
+      "old",
+      "worn",
+      "tiles",
+      "roofing material",
+      "roofing",
+      "roof",
+      "clay tiles",
+      "overlapping tiles",
+      "discolored",
+      "traditional roofing ",
+      "tile roofing",
+      "weather-beaten"
+    ],
+    "description": "Free 8K texture of old weather-beaten clay roof tiles: overlapping curved ceramic tiles with faded terracotta, gray staining, chipped edges and gritty dirt.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "847771cd",
+    "download_count": 92277,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/roof_09.png?width=256&height=256&format=webp&v=847771cd"
+  },
+  "roof_3": {
+    "type": 1,
+    "tags": [
+      "ceramic",
+      "old",
+      "worn",
+      "tiles",
+      "moss"
+    ],
+    "date_published": 1529359200,
+    "name": "Roof 3",
+    "categories": [
+      "roofing",
+      "man made",
+      "outdoor",
+      "dirty"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      2000,
+      2000
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "617b7f95ae137f2942a9ee09295b2db2a01ac61e",
+    "description": "Free 8K texture of weathered ceramic roof tiles - moss-streaked, chipped and dirt-darkened, with rough glazed surfaces and recessed mortar lines.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "03ae9a1c",
+    "download_count": 32180,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/roof_3.png?width=256&height=256&format=webp&v=03ae9a1c"
+  },
+  "roof_planks": {
+    "type": 1,
+    "name": "Roof Planks",
+    "tags": [
+      "weathered",
+      "wood",
+      "wooden",
+      "wooden flooring ",
+      "wooden planks",
+      "wooden floor",
+      "planks",
+      "plank",
+      "varnished",
+      "pine",
+      "timber",
+      "beams",
+      "lumber"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      1500.0001192092896,
+      1500.0001192092896
+    ],
+    "files_hash": "af0dd0eed9b11db1b861e998934d819e59d2deea",
+    "description": "Free 8K texture of varnished weathered pine roof planks - realistic timber grain, knots and narrow seams; ideal for wooden floors, beams and rustic exteriors.",
+    "category_id": "a7bb33c4-8575-586e-a502-7094517b10c5",
+    "category": "Wood/Boards & Planks/Finished & Varnished",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "date_published": 1786448942,
+    "categories": [
+      "wood"
+    ],
+    "vault": "wood",
+    "img_version": "d1bbc812",
+    "download_count": 3134,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/roof_planks.png?width=256&height=256&format=webp&v=d1bbc812"
+  },
+  "roof_slates_02": {
+    "type": 1,
+    "date_published": 1563492542,
+    "name": "Roof Slates 02",
+    "categories": [
+      "roofing",
+      "man made",
+      "outdoor"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      3000,
+      3000
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "747e15373011aa8372cdd7524f5da06130839f8f",
+    "tags": [
+      "slates",
+      "uneven",
+      "old",
+      "tiles",
+      "weathered",
+      "discolored",
+      "slate roofing",
+      "slate",
+      "roofing material",
+      "roof",
+      "roofing",
+      "tile roofing",
+      "housing material",
+      "flat tiles"
+    ],
+    "description": "Free 8K texture of a weathered slate roof: uneven overlapping flat tiles, rough chipped edges, subtle discoloration and moss staining across gray-brown surfaces.",
+    "category_id": "0dc6c67b-4dfa-5355-ad12-9918fc376459",
+    "category": "Stone/Slabs & Tiles/Slate",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "7c21979b",
+    "download_count": 50945,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/roof_slates_02.png?width=256&height=256&format=webp&v=7c21979b"
+  },
+  "roof_slates_03": {
+    "type": 1,
+    "date_published": 1568080540,
+    "name": "Roof Slates 03",
+    "categories": [
+      "roofing",
+      "man made",
+      "outdoor",
+      "clean"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      3000,
+      3000
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "6204617ef742eae58702d256650233ef5629d4ef",
+    "tags": [
+      "slates",
+      "even",
+      "tiles",
+      "slate",
+      "roof tiles",
+      "overlapping",
+      "roofing material",
+      "aged",
+      "durable roofing",
+      "slate roofing",
+      "traditional roof tiles"
+    ],
+    "description": "Free 8K texture of traditional overlapping slate roof tiles, even aged gray slates with chipped edges, subtle dirt and a rough stone surface with low sheen.",
+    "category_id": "0dc6c67b-4dfa-5355-ad12-9918fc376459",
+    "category": "Stone/Slabs & Tiles/Slate",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "2e9176ac",
+    "download_count": 82489,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/roof_slates_03.png?width=256&height=256&format=webp&v=2e9176ac"
+  },
+  "roof_tiles": {
+    "type": 1,
+    "name": "Roof Tiles",
+    "categories": [
+      "roofing",
+      "man made"
+    ],
+    "authors": {
+      "Stephan Seeliger": "All"
+    },
+    "max_resolution": [
+      16384,
+      16384
+    ],
+    "dimensions": [
+      2000,
+      2000
+    ],
+    "donated": true,
+    "date_published": 1741996800,
+    "files_hash": "9be0342a471bf04a52dcf336b9b19876f214afcb",
+    "tags": [
+      "roofing material",
+      "roof tiles",
+      "durable roofing",
+      "ceramic tiles",
+      "tiled roofing",
+      "traditional roof tiles",
+      "clay roof tiles",
+      "roofing",
+      "tile roofing",
+      "terracotta",
+      "interlocking tiles",
+      "overlapping tiles",
+      "weather-beaten",
+      "housing material",
+      "outdoor roof material"
+    ],
+    "description": "Free 16K texture of weathered terracotta roof tiles: overlapping ceramic tiles with chipped edges, dirt streaks and subtle mossy patina, rough.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "2db1678b",
+    "download_count": 12927,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/roof_tiles.png?width=256&height=256&format=webp&v=2db1678b"
+  },
+  "roof_tiles_14": {
+    "type": 1,
+    "tags": [
+      "ceramic",
+      "tiles",
+      "moss",
+      "old",
+      "discolored",
+      "weathered"
+    ],
+    "date_published": 1529359200,
+    "name": "Roof Tiles 14",
+    "categories": [
+      "roofing",
+      "man made",
+      "outdoor",
+      "dirty"
+    ],
+    "authors": {
+      "Rob Tuytel": "All"
+    },
+    "dimensions": [
+      1500,
+      1500
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "dce6e15b50cbe1517a4f974b468e5ece533180b5",
+    "description": "Free 8K texture of old ceramic roof tiles, weathered, discolored and moss-streaked with chipped edges, grime and subtle surface roughness.",
+    "category_id": "6165a492-c53c-5b5f-96df-20c96a7763df",
+    "category": "Ceramic/Terracotta",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered",
+        "mossy",
+        "damaged"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "f3da798a",
+    "download_count": 54431,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/roof_tiles_14.png?width=256&height=256&format=webp&v=f3da798a"
+  },
+  "slate_driveway": {
+    "name": "Slate Driveway",
+    "type": 1,
+    "tags": [
+      "rough",
+      "old",
+      "worn",
+      "concrete",
+      "slate",
+      "slates",
+      "rock",
+      "exterior",
+      "driveway",
+      "stone",
+      "stonework",
+      "cracked cement"
+    ],
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "info": null,
+    "dimensions": [
+      2090.0001525878906,
+      2090.0001525878906
+    ],
+    "date_published": 1689206400,
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "77614f52692fd140d58e0ac13d47c062b0b01709",
+    "description": "Free 8K texture of a worn slate driveway: dark irregular slate slabs set in rough, cracked cement mortar with weathered edges and soil-filled joints.",
+    "categories": [
+      "man made",
+      "outdoor",
+      "floor"
+    ],
+    "category_id": "0dc6c67b-4dfa-5355-ad12-9918fc376459",
+    "category": "Stone/Slabs & Tiles/Slate",
+    "attributes": {
+      "surface_use": "paving",
+      "condition": [
+        "weathered",
+        "worn",
+        "cracked"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "821d2f9b",
+    "download_count": 17942,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/slate_driveway.png?width=256&height=256&format=webp&v=821d2f9b"
+  },
+  "slate_floor": {
+    "type": 1,
+    "tags": [
+      "slates",
+      "slate",
+      "shiny",
+      "coated",
+      "polished",
+      "reflective",
+      "stone",
+      "flooring",
+      "interior design",
+      "stone tile"
+    ],
+    "date_published": 1690416000,
+    "name": "Slate Floor",
+    "categories": [
+      "floor",
+      "man made"
+    ],
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "info": null,
+    "dimensions": [
+      2289.9999618530273,
+      2290.0002002716064
+    ],
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "a32f79680e8da88837ab9b12e1bc76dcc38ceb64",
+    "description": "Free 8K texture of polished dark slate flooring with a coated, glossy finish, visible grout and subtle scratches, rich stone grain and reflective highlights.",
+    "category_id": "0dc6c67b-4dfa-5355-ad12-9918fc376459",
+    "category": "Stone/Slabs & Tiles/Slate",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "worn"
+      ],
+      "origin": "man_made"
+    },
+    "img_version": "7e58c77d",
+    "download_count": 16961,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/slate_floor.png?width=256&height=256&format=webp&v=7e58c77d"
+  },
+  "slate_floor_02": {
+    "name": "Slate Floor 02",
+    "categories": [
+      "floor",
+      "cobblestone",
+      "rock"
+    ],
+    "type": 1,
+    "tags": [
+      "old",
+      "weathered",
+      "worn",
+      "slates",
+      "slate",
+      "floor",
+      "vintage",
+      "rustic",
+      "rustic architecture",
+      "natural",
+      "traditional",
+      "stone floor"
+    ],
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "dimensions": [
+      2000,
+      2000
+    ],
+    "date_published": 1712275200,
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "758e581165d13c5ae4d65a74ebfd1143af550db7",
+    "description": "Free 8K texture of weathered reddish-brown slate floor with irregular stone slabs, worn edges, mortar joints and subtle glossy wear that reveals natural veining.",
+    "category_id": "0dc6c67b-4dfa-5355-ad12-9918fc376459",
+    "category": "Stone/Slabs & Tiles/Slate",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "weathered",
+        "worn"
+      ],
+      "origin": "man_made"
+    },
+    "img_version": "87259e4a",
+    "download_count": 15856,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/slate_floor_02.png?width=256&height=256&format=webp&v=87259e4a"
+  },
+  "slate_floor_03": {
+    "type": 1,
+    "name": "Slate Floor 03",
+    "categories": [
+      "floor",
+      "man made",
+      "indoor"
+    ],
+    "tags": [
+      "slates",
+      "slate",
+      "floor",
+      "rustic architecture",
+      "vintage",
+      "stone floor",
+      "rustic",
+      "mosaic",
+      "stone",
+      "stone tile"
+    ],
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "dimensions": [
+      2000,
+      2000
+    ],
+    "date_published": 1751500800,
+    "files_hash": "ee507a4fc019173222b0d90bdbb6f9034b2b0578",
+    "description": "Free 8K slate floor texture with worn, rustic stone tiles, rough relief and patched mosaic look - ideal for vintage indoor flooring.",
+    "category_id": "0dc6c67b-4dfa-5355-ad12-9918fc376459",
+    "category": "Stone/Slabs & Tiles/Slate",
+    "attributes": {
+      "surface_use": "floor",
+      "condition": [
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "indoor"
+    },
+    "img_version": "002cbde9",
+    "download_count": 3814,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/slate_floor_03.png?width=256&height=256&format=webp&v=002cbde9"
+  },
+  "thatch_roof_angled": {
+    "name": "Thatch Roof Angled",
+    "categories": [
+      "outdoor",
+      "man made",
+      "roofing"
+    ],
+    "type": 1,
+    "authors": {
+      "Rob Tuytel": "Processing",
+      "Dimitrios Savva": "Photography"
+    },
+    "tags": [
+      "rough",
+      "thatch",
+      "reed",
+      "roof",
+      "roofing",
+      "structure",
+      "structural",
+      "weathered",
+      "straw",
+      "grass",
+      "hut",
+      "medieval",
+      "village",
+      "house",
+      "hay"
+    ],
+    "dimensions": [
+      539.9999618530273,
+      539.9999618530273
+    ],
+    "date_published": 1653523200,
+    "max_resolution": [
+      8192,
+      8192
+    ],
+    "files_hash": "ae272743c3e50cfb1bbb4a74783700a67aef44da",
+    "description": "Free 8K texture: weathered thatch roof material with dense vertical reed bundles, rough fibrous straw, deep creases and subtle dry, aged color variation.",
+    "category_id": "bcbf4ed7-38ce-5284-bedf-ccb701b9ceb0",
+    "category": "Organic/Thatch & Reed/Thatched Roofing",
+    "attributes": {
+      "surface_use": "roof",
+      "condition": [
+        "weathered"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "2c56e6f8",
+    "download_count": 48395,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/thatch_roof_angled.png?width=256&height=256&format=webp&v=2c56e6f8"
+  },
+  "worn_asphalt": {
+    "type": 1,
+    "name": "Worn Asphalt",
+    "categories": [
+      "floor",
+      "asphalt"
+    ],
+    "tags": [
+      "asphalt",
+      "asphalt road",
+      "petals",
+      "plant debris",
+      "outdoor",
+      "cracked",
+      "driveway",
+      "sticks",
+      "twigs",
+      "leaf litter",
+      "worn",
+      "coarse",
+      "gritty",
+      "gravelly"
+    ],
+    "authors": {
+      "Amal Kumar": "All"
+    },
+    "max_resolution": [
+      16384,
+      16384
+    ],
+    "dimensions": [
+      2000,
+      2000
+    ],
+    "files_hash": "06968c4bb0fdac2b16f83c0e21cf35bc6f752bb6",
+    "date_published": 1759363200,
+    "description": "Free 16K worn asphalt texture: coarse, gritty, gravelly surface with cracks, leaf litter, twigs and petals - great for outdoor roads, driveways and ground props.",
+    "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+    "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+    "attributes": {
+      "surface_use": "ground",
+      "condition": [
+        "weathered",
+        "cracked",
+        "worn"
+      ],
+      "origin": "man_made",
+      "setting": "outdoor"
+    },
+    "img_version": "9b7fdfa7",
+    "download_count": 6230,
+    "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/worn_asphalt.png?width=256&height=256&format=webp&v=9b7fdfa7"
+  }
+}

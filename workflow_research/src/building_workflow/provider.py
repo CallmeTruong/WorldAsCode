@@ -25,9 +25,13 @@ class BudgetExceeded(RuntimeError):
 
 
 class Provider:
-    def __init__(self, settings, run: Path, max_calls=12, max_tokens=100000, max_seconds=900):
+    def __init__(self, settings, run: Path, max_calls=12, max_tokens=100000, max_seconds=900, max_attempts=3, request_timeout=150):
         self.settings, self.run = settings, run
         self.max_calls, self.max_tokens, self.max_seconds = max_calls, max_tokens, max_seconds
+        if not 1 <= max_attempts <= 3:raise ValueError('INVALID_PROVIDER_ATTEMPTS')
+        self.max_attempts = max_attempts
+        if not 1<=request_timeout<=300:raise ValueError('INVALID_REQUEST_TIMEOUT')
+        self.request_timeout=request_timeout
         self.started = time.monotonic()
         path = run / "usage.json"
         self.usage = json.loads(path.read_text()) if path.exists() else {"calls": 0, "input_tokens": 0, "output_tokens": 0, "cache_hits": 0, "elapsed_api_seconds": 0, "cost_usd": None, "attempts": []}
@@ -82,7 +86,7 @@ class Provider:
             return cached_data["parsed"]
         # Image requests reserve a conservative 8k/image + text/output tokens.
         reserve = len(prompt) // 2 + 8000 * len(images) + max_output
-        for attempt in range(3):
+        for attempt in range(self.max_attempts):
             self.check(reserve)
             self.usage["calls"] += 1
             self.save_usage()  # attempted requests survive process interruption
@@ -91,9 +95,9 @@ class Provider:
             try:
                 remaining = self.max_seconds - self.elapsed()
                 response = self.client.post(self.settings.base_url + "/chat/completions", json=body,
-                                            timeout=max(1, min(150, remaining)))
+                                            timeout=max(1, min(self.request_timeout, remaining)))
                 record["http_status"] = response.status_code
-                if response.status_code in (429, 500, 502, 503, 504) and attempt < 2:
+                if response.status_code in (429, 500, 502, 503, 504) and attempt < self.max_attempts-1:
                     self.trace("api_retry", **record)
                     time.sleep(1 + attempt * 2)
                     continue
@@ -125,7 +129,7 @@ class Provider:
                 record["error"] = type(exc).__name__
                 self.usage["unmetered_attempts"] = self.usage.get("unmetered_attempts", 0) + 1
                 self.usage["unmetered_token_reserve"] = self.usage.get("unmetered_token_reserve",0) + reserve
-                if attempt == 2:
+                if attempt == self.max_attempts-1:
                     raise RuntimeError("API_TRANSPORT_FAILURE") from None
             finally:
                 record["seconds"] = round(time.monotonic() - start, 3)

@@ -1,0 +1,31 @@
+# Tasks
+
+- [X] T001 Document upstream audit, architecture, contracts and limitations; update constitution/SpecKit.
+- [X] T002 Bootstrap independent Python/Node package, configuration, budgets and secret-free artifact ledger.
+- [ ] T003 Integrate pinned upstream state/next/admission/assessment/spec validation/generation/pass/review commands with honest capability reporting.
+- [X] T004 Implement typed semantic World/Asset/Component IR, deterministic seed channels and immutable cache keys.
+- [X] T005 Implement hollow-shaft, roof and facade generators and geometric semantic probes; demo fixture proves an open center ray and material wall hit.
+- [X] T006 Implement runtime day/night/wetness/wind bindings with fixed geometry/anchor invariants.
+- [X] T007 Implement network stationing, tile owner/reference and seam validation fixtures.
+- [X] T008 Implement isolated multi-view browser capture, mesh export and source/render identity gates.
+- [ ] T009 Implement observer/spec-author/native-gate/generator/critic/refinement workflow nodes and resumable ledger.
+- [X] T010 Execute native reference experiment and semantic/state browser demo; inspect actual images and preserve failures.
+- [X] T011 Run negative/regression/native integration tests and document measured results and outstanding quality gates.
+- [ ] T012 Complete all required native passes and demonstrate accepted visual fidelity on the selected real subject.
+- [ ] T013 Demonstrate city-scale throughput and complete traffic/rail/animal simulation.
+- [X] T014 Audit the pinned generator's consumed geometry fields; normalize only identity scale that overrides explicit dimensions and test native pass-scoped part coverage.
+- [X] T015 Route deterministic hard-gate failures through the pinned correction-loop function and preserve the bounded `refine-code` action.
+- [X] T016 Audit material crop resolution, record source-vs-generated contact sheets, and direct critic/coder nodes to treat raw crops as material cues and author style-aware procedural texture corrections.
+- [ ] T017 Add a first-class `stylePbr` runtime material override and prove it through a bounded Tokyo render/review loop; keep source PBR evidence separate from synthetic maps.
+- [X] T018 Add a non-accepting visual diagnosis node for failed renders; include factual context and source views in code corrections.
+- [X] T019 Add fixed-frame footprint and height diagnostics; preserve source aspect in camera fitting, and capture blockout clay evidence.
+- [X] T020 Fix evidence hashing after PNG re-encoding and empty carrier mesh export.
+- [ ] T021 Demonstrate an improved evidence-grounded diagnostic candidate and complete all native visual passes; document unresolved defects.
+- [X] T023 Compile building massing from evidence: calibrated evidence cameras in the browser, silhouette-fitted programme, `loft` generator, whitelisted detail parameters. See docs/08.
+- [X] T024 Sample a height field and fit roof planes; compile `roof_planes`; museum mean IoU 0.923 over four calibrated views (massing only, not visual acceptance).
+- [X] T025 District draft from an OSM snapshot in one metric frame with zero model calls (14 buildings, 1 fitted).
+- [ ] T026 Polygonal plane boundaries, per-face material classification, facade structure from rectified views; calibrate massing thresholds on several building types.
+- [ ] T027 Bridge compiled massing into the native img2threejs spec as locked macro components.
+- [X] T028 Agent design route: site brief, style sheet, building kit, tolerant metric checks, vision critic, bounded revision; museum pilot built twice without errors for 38.5k tokens, not accepted by the critic. See docs/09.
+- [ ] T029 Reuse one design script on a second site of the same type; grow the kit from recurring critic fixes (wall gables, dormer variants, window surrounds); compare the critic with human judgement.
+- [X] T022 Bind macro wing poses before rendering and demonstrate footprint overlap improvement from 0.4352 to 0.9950. Full appearance acceptance remains T012/T021.

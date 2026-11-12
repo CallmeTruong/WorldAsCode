@@ -1,0 +1,28 @@
+{
+  "calls": 1,
+  "input_tokens": 3477,
+  "output_tokens": 840,
+  "cache_hits": 0,
+  "elapsed_api_seconds": 18.726,
+  "cost_usd": null,
+  "attempts": [
+    {
+      "stage": "independent-pair",
+      "model": "gpt-6-luna",
+      "attempt": 1,
+      "cache_key": "03c64a3b38ff1894cedff35381c6a8d5730544a137e7dbd960903471e5d1006f",
+      "http_status": 200,
+      "response_model": "gpt-6-luna",
+      "usage": {
+        "prompt_tokens": 3477,
+        "completion_tokens": 840,
+        "total_tokens": 4317,
+        "completion_tokens_details": {
+          "reasoning_tokens": 195
+        }
+      },
+      "seconds": 18.726
+    }
+  ],
+  "active_seconds": 19.02799059986137
+}

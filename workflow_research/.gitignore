@@ -1,0 +1,10 @@
+.env*
+!.env.example
+.venv/
+node_modules/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+vendor/
+.cache/
+runs/

@@ -1,0 +1,7 @@
+{
+  "selected_run": "district1-quality-v10",
+  "status": "partial",
+  "visual_accepted": false,
+  "reason": "Native object materials and descriptive style; three photo-backed targets, eight context proxies. Final material/occlusion correction inspected; remaining identity defects disclosed.",
+  "baseline": "district1-final-v4"
+}

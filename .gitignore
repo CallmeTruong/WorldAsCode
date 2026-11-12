@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+**/.venv/
+**/node_modules/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/*.egg-info/
+workflow_research/vendor/
+workflow_research/.cache/
+workflow_research/runs/

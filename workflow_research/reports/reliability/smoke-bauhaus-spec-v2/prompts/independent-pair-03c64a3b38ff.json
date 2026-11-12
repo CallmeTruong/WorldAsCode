@@ -1,0 +1,16 @@
+{
+  "stage": "independent-pair",
+  "prompt": "Independently review two reference/render comparison images for the same real building. Image FIRST and image SECOND are two candidates; order does not indicate quality. Ignore background and photograph lighting; evaluate architectural correspondence only. Hidden sides are unknown. A high average cannot excuse missing landmark structure. Return JSON {\"first\":REVIEW,\"second\":REVIEW,\"preferred\":\"first\"|\"second\"|\"tie\",\"reason\":\"concrete visual evidence\"}. Each REVIEW has: scores object (mass,facade,roof,details,materials,proportions; all 0..1), critical_defects array, defects array of {component,severity,cause,fix}, matched_features array, inferred_regions array, confidence 0..1. Do not invent image metrics or exact dimensions. This is a small evaluator reliability check, not a fidelity certification.",
+  "model": "gpt-6-luna",
+  "prompt_version": "building-v1",
+  "images": [
+    {
+      "name": "comparison.jpg",
+      "sha256": "a36f183e929e6f7568b69047cbf73eb446b9643f7231aefd12822c9df9ee4d03"
+    },
+    {
+      "name": "comparison.jpg",
+      "sha256": "9135963c6a95e383dafdac147b085dfa802547dc9c594a2ad929f26f86b07ac5"
+    }
+  ]
+}

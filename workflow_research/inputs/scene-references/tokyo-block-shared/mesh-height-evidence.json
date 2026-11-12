@@ -1,0 +1,581 @@
+{
+  "source": "Google Photorealistic 3D Tiles via Cesium ion",
+  "not_surveyed": true,
+  "ground_samples": 20,
+  "ground_height_m": 38.85190055411398,
+  "ground_range_m": [
+    38.3357848431239,
+    52.48276871010143
+  ],
+  "buildings": [
+    {
+      "object_id": "relation/3816427/0",
+      "samples": 6,
+      "absolute_surface_heights_m": [
+        47.82314576519673,
+        47.8231457680033,
+        69.68633973261691,
+        70.12240439158778,
+        72.87231619067269,
+        73.56252773018146
+      ],
+      "estimated_height_m": 34.710627176067476,
+      "uncertainty": "Sparse roof mesh samples may hit podiums, vegetation or rooftop equipment; compare with OSM/visual evidence."
+    },
+    {
+      "object_id": "way/145394382/0",
+      "samples": 4,
+      "absolute_surface_heights_m": [
+        56.99099124944982,
+        56.990991265260924,
+        56.99101092313397,
+        57.10997431059396
+      ],
+      "estimated_height_m": 18.25807375647998,
+      "uncertainty": "Sparse roof mesh samples may hit podiums, vegetation or rooftop equipment; compare with OSM/visual evidence."
+    },
+    {
+      "object_id": "way/306116935/0",
+      "samples": 3,
+      "absolute_surface_heights_m": [
+        57.835992699196524,
+        58.08983305704964,
+        58.1909368906351
+      ],
+      "estimated_height_m": 19.33903633652112,
+      "uncertainty": "Sparse roof mesh samples may hit podiums, vegetation or rooftop equipment; compare with OSM/visual evidence."
+    },
+    {
+      "object_id": "way/363563886/0",
+      "samples": 6,
+      "absolute_surface_heights_m": [
+        203.76372110135398,
+        206.1954044054671,
+        206.57162890144335,
+        208.46020033671815,
+        208.4602028063558,
+        208.72902487591398
+      ],
+      "estimated_height_m": 169.8771243218,
+      "uncertainty": "Sparse roof mesh samples may hit podiums, vegetation or rooftop equipment; compare with OSM/visual evidence."
+    },
+    {
+      "object_id": "way/768823601/0",
+      "samples": 4,
+      "absolute_surface_heights_m": [
+        53.945240611794965,
+        54.20029302199122,
+        55.119737555705,
+        57.743321460792416
+      ],
+      "estimated_height_m": 18.891420906678434,
+      "uncertainty": "Sparse roof mesh samples may hit podiums, vegetation or rooftop equipment; compare with OSM/visual evidence."
+    }
+  ],
+  "probes": [
+    {
+      "kind": "ground",
+      "position": [
+        75.85959,
+        37.36369
+      ],
+      "longitude": 139.76394329995472,
+      "latitude": 35.67812179996717,
+      "height": 42.42273814491186,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        73.4107,
+        45.67515
+      ],
+      "longitude": 139.76391740002418,
+      "latitude": 35.67804659997506,
+      "height": 38.69785553424578,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -6.00466,
+        57.78787
+      ],
+      "longitude": 139.76304170005523,
+      "latitude": 35.677928399961004,
+      "height": 39.583908722358714,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -74.44725,
+        15.09224
+      ],
+      "longitude": 139.76227959995364,
+      "latitude": 35.678305499987154,
+      "height": 38.59427216645392,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -64.7339,
+        17.86597
+      ],
+      "longitude": 139.76238730000279,
+      "latitude": 35.67828160000223,
+      "height": 38.64961921040923,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        10.77299,
+        39.38431
+      ],
+      "longitude": 139.7632245000282,
+      "latitude": 35.678096200025564,
+      "height": 38.55889767898882,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        17.06819,
+        41.18306
+      ],
+      "longitude": 139.76329429999518,
+      "latitude": 35.678080700022214,
+      "height": 38.77734572094838,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        30.81309,
+        45.1057
+      ],
+      "longitude": 139.76344670005406,
+      "latitude": 35.67804689999248,
+      "height": 38.7752982090604,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -74.44725,
+        15.09224
+      ],
+      "longitude": 139.76227959995364,
+      "latitude": 35.678305499987154,
+      "height": 38.59427216645392,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -71.14375,
+        3.61885
+      ],
+      "longitude": 139.76231450003763,
+      "latitude": 35.67840930001556,
+      "height": 38.78192499400801,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -38.67702,
+        -111.31083
+      ],
+      "longitude": 139.76265720001,
+      "latitude": 35.679449000037216,
+      "height": 38.81399137293781,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -35.10555,
+        -123.94566
+      ],
+      "longitude": 139.76269489999467,
+      "latitude": 35.67956329997525,
+      "height": 38.99517142491242,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -32.4821,
+        -133.17566
+      ],
+      "longitude": 139.7627225999652,
+      "latitude": 35.67964680003191,
+      "height": 39.078740511470855,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -1.78626,
+        -241.23872
+      ],
+      "longitude": 139.76304669999925,
+      "latitude": 35.68062439996196,
+      "height": 38.90274641974761,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        1.03849,
+        -251.36476
+      ],
+      "longitude": 139.76307650004316,
+      "latitude": 35.68071599997908,
+      "height": 52.48276871010143,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        28.4074,
+        -349.00869
+      ],
+      "longitude": 139.76336530002456,
+      "latitude": 35.6815993000186,
+      "height": 38.889818761255036,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        29.63621,
+        -353.15327
+      ],
+      "longitude": 139.76337830002527,
+      "latitude": 35.681636800045126,
+      "height": 38.88980973529015,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        30.91878,
+        -357.97387
+      ],
+      "longitude": 139.7633917999662,
+      "latitude": 35.6816804000303,
+      "height": 39.20859796299821,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        33.1067,
+        -365.68956
+      ],
+      "longitude": 139.76341490000468,
+      "latitude": 35.681750200026215,
+      "height": 39.145362775132014,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "ground",
+      "position": [
+        -72.40899,
+        414.37152
+      ],
+      "longitude": 139.7623577000473,
+      "latitude": 35.67470649996941,
+      "height": 38.3357848431239,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "relation/3816427/0",
+      "position": [
+        -42.31538871557864,
+        102.91890982395243
+      ],
+      "longitude": 139.76264681892326,
+      "latitude": 35.677517451661394,
+      "height": 47.8231457680033,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "relation/3816427/0",
+      "position": [
+        -68.15181093007703,
+        74.69628375931013
+      ],
+      "longitude": 139.7623574499305,
+      "latitude": 35.67776892522873,
+      "height": 69.68633973261691,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "relation/3816427/0",
+      "position": [
+        -16.482646919458176,
+        74.69628375931013
+      ],
+      "longitude": 139.76292829156836,
+      "latitude": 35.67777479257774,
+      "height": 73.56252773018146,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "relation/3816427/0",
+      "position": [
+        -68.15181093007703,
+        131.1418765912658
+      ],
+      "longitude": 139.76236530746735,
+      "latitude": 35.677260106623024,
+      "height": 72.87231619067269,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "relation/3816427/0",
+      "position": [
+        -16.482646919458176,
+        131.1418765912658
+      ],
+      "longitude": 139.76293614548328,
+      "latitude": 35.677265973862724,
+      "height": 70.12240439158778,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "relation/3816427/0",
+      "position": [
+        -42.317228924767605,
+        102.91908017528797
+      ],
+      "longitude": 139.76264679861634,
+      "latitude": 35.677517449916834,
+      "height": 47.82314576519673,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/145394382/0",
+      "position": [
+        81.86088939085047,
+        -42.716913786058036
+      ],
+      "longitude": 139.76399846945287,
+      "latitude": 35.678844353199295,
+      "height": 56.99099124944982,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/145394382/0",
+      "position": [
+        92.5779083321047,
+        -64.26217835504514
+      ],
+      "longitude": 139.76411387774795,
+      "latitude": 35.679039784802605,
+      "height": 56.99101092313397,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/145394382/0",
+      "position": [
+        71.14911242515642,
+        -21.18136715361426
+      ],
+      "longitude": 139.76388311827267,
+      "latitude": 35.67864900968567,
+      "height": 57.10997431059396,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/145394382/0",
+      "position": [
+        81.86351037863055,
+        -42.7217727543297
+      ],
+      "longitude": 139.76399849773446,
+      "latitude": 35.67884439729691,
+      "height": 56.990991265260924,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/306116935/0",
+      "position": [
+        25.745129719915823,
+        -11.595034472449857
+      ],
+      "longitude": 139.76338282220655,
+      "latitude": 35.67855744351673,
+      "height": 58.08983305704964,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/306116935/0",
+      "position": [
+        -8.629915615056035,
+        12.347421821064895
+      ],
+      "longitude": 139.76300637374234,
+      "latitude": 35.67833771671302,
+      "height": 58.1909368906351,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/306116935/0",
+      "position": [
+        20.298691380628657,
+        12.347421821064895
+      ],
+      "longitude": 139.7633259797181,
+      "latitude": 35.67834100038884,
+      "height": 57.835992699196524,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/363563886/0",
+      "position": [
+        0.32155365024412674,
+        -60.558927264681
+      ],
+      "longitude": 139.76309512707556,
+      "latitude": 35.67899593406027,
+      "height": 208.4602028063558,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/363563886/0",
+      "position": [
+        -21.74500677931659,
+        -82.5813634506174
+      ],
+      "longitude": 139.7628482670489,
+      "latitude": 35.679191946122096,
+      "height": 206.1954044054671,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/363563886/0",
+      "position": [
+        21.97386333150461,
+        -82.5813634506174
+      ],
+      "longitude": 139.76333128238397,
+      "latitude": 35.67919690904435,
+      "height": 206.57162890144335,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/363563886/0",
+      "position": [
+        -21.74500677931659,
+        -43.759406453747104
+      ],
+      "longitude": 139.76285366943975,
+      "latitude": 35.678841992622495,
+      "height": 208.72902487591398,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/363563886/0",
+      "position": [
+        21.97386333150461,
+        -43.759406453747104
+      ],
+      "longitude": 139.76333668266696,
+      "latitude": 35.678846955481156,
+      "height": 203.76372110135398,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/363563886/0",
+      "position": [
+        0.11442827609401007,
+        -63.17038495218225
+      ],
+      "longitude": 139.76309247538177,
+      "latitude": 35.679019451062295,
+      "height": 208.46020033671815,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/768823601/0",
+      "position": [
+        -47.210410595548,
+        -5.920404466449571
+      ],
+      "longitude": 139.7625775902598,
+      "latitude": 35.67849800814582,
+      "height": 57.743321460792416,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/768823601/0",
+      "position": [
+        -47.31626689093498,
+        -14.857223810278478
+      ],
+      "longitude": 139.76257517686167,
+      "latitude": 35.678578555461634,
+      "height": 54.20029302199122,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/768823601/0",
+      "position": [
+        -47.31626689093498,
+        2.8097914874895196
+      ],
+      "longitude": 139.76257763586915,
+      "latitude": 35.67841929935504,
+      "height": 55.119737555705,
+      "evidence": "streamed mesh surface height, not survey"
+    },
+    {
+      "kind": "roof",
+      "object_id": "way/768823601/0",
+      "position": [
+        -33.201090841431174,
+        2.8097914874895196
+      ],
+      "longitude": 139.7627335817911,
+      "latitude": 35.67842090222804,
+      "height": 53.945240611794965,
+      "evidence": "streamed mesh surface height, not survey"
+    }
+  ],
+  "origin": {
+    "longitude": 139.7631,
+    "latitude": 35.67845,
+    "projection": "EPSG:32654",
+    "local_x": "east",
+    "local_z": "south",
+    "up": "y"
+  }
+}

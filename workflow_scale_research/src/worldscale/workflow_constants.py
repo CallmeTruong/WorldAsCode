@@ -1,0 +1,16 @@
+PROTECTED = {
+    "schemaVersion",
+    "targetName",
+    "targetId",
+    "sourceImage",
+    "qualityContract",
+    "buildPasses",
+    "sculptPipeline",
+    "selfCorrectLoop",
+    "reviewHistory",
+    "qualityTargets",
+    "diagnostics",
+    "tier1Results",
+    "visualEvidence",
+    "builtGeometry",
+}

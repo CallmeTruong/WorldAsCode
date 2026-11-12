@@ -1,0 +1,69 @@
+{
+  "objects": [
+    {
+      "object_id": "way/801710792/0",
+      "label": "Ho Chi Minh City Opera House",
+      "images": [
+        "opera/reference.jpg",
+        "caravelle/reference.jpg"
+      ],
+      "source_page": "https://commons.wikimedia.org/wiki/File:Lascar_Municipal_Theatre_(4608017466).jpg",
+      "author": "Jorge Láscar from Australia",
+      "license": "CC BY 2.0",
+      "license_url": "https://creativecommons.org/licenses/by/2.0",
+      "sha256": "4f0a511dce94208947094a6cd585df29a5b0721cf272e03884bf63f01123b77f",
+      "use": "factual building reference; separate from user style references",
+      "camera_hint": {
+        "front_normal_xz": [
+          -0.67,
+          0.74
+        ],
+        "evidence": "approximate footprint/front-entrance orientation; not calibrated camera"
+      },
+      "image_notes": [
+        "Frontal daylight identity",
+        "Oblique night context: Opera House is the LOW foreground building; tower behind belongs to Caravelle. Roof lighting is blue/green; do not treat night light as albedo."
+      ]
+    },
+    {
+      "object_id": "relation/2204742/0",
+      "label": "continental",
+      "images": [
+        "continental/reference.jpg"
+      ],
+      "source_page": "https://commons.wikimedia.org/wiki/File:Hotel_Continental_Saigon_P1310949.jpg",
+      "author": "FredTC",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "sha256": "294b2b16cf9788a7de91deac3909beb4fdc05ecd95f97b46eb3680eb8ed87769",
+      "use": "factual photo; viewpoint and hidden geometry uncalibrated",
+      "camera_hint": {
+        "front_normal_xz": [
+          0.89,
+          0.46
+        ],
+        "evidence": "inferred street-facing direction towards Opera square; not calibrated"
+      }
+    },
+    {
+      "object_id": "way/39598465/0",
+      "label": "caravelle",
+      "images": [
+        "caravelle/reference.jpg"
+      ],
+      "source_page": "https://commons.wikimedia.org/wiki/File:Caravelle_Hotel_Saigon_2013.jpg",
+      "author": "BaonguyenCaravelas",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "sha256": "07f2ece035f370fa34585d59f4b102467f8588dca4ad895d63cbdea1dd819daf",
+      "use": "factual photo; viewpoint and hidden geometry uncalibrated",
+      "camera_hint": {
+        "front_normal_xz": [
+          -0.655,
+          -0.755
+        ],
+        "evidence": "inferred street-facing direction towards Opera; not calibrated"
+      }
+    }
+  ]
+}

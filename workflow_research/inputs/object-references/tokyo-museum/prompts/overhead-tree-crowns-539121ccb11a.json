@@ -1,0 +1,12 @@
+{
+  "stage": "overhead-tree-crowns",
+  "prompt": "Inspect this real rendered overhead urban scene. Identify individual tree CANOPY centers, including autumn yellow/brown trees. Exclude cars, shadows, roof HVAC and grass. Return JSON {crowns:[{id:string,x:number,y:number,radius_px:number,confidence:number}],uncertainty:[strings]}. x,y are NORMALIZED image coordinates 0..1, origin top left. Mark only visible trees, no invented filling. Max 70 centers. Radius estimated in pixels. This is oblique photogrammetry at almost top-down, not a surveyed orthophoto; exact trunk positions and species are unknown. No style colors or forced tree shapes.",
+  "model": "gpt-6-sol",
+  "prompt_version": "building-v1",
+  "images": [
+    {
+      "name": "overhead.png",
+      "sha256": "7b4800a2f2a96a6cb8a60fe119f3a0a10808e911060b48f66184d693884a3753"
+    }
+  ]
+}

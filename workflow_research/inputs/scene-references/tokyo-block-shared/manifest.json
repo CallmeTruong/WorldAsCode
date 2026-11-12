@@ -1,0 +1,102 @@
+{
+  "source": "Google Photorealistic 3D Tiles via Cesium ion",
+  "attribution": "Google Maps / Cesium ion",
+  "views": [
+    {
+      "id": "overview",
+      "image": "overview.png",
+      "held_out": false,
+      "camera": {
+        "longitude": 139.76489502182386,
+        "latitude": 35.6799145451278,
+        "height": 207.84042628072447
+      },
+      "calibration": "legacy position only; not matched projection"
+    },
+    {
+      "id": "overhead",
+      "image": "overhead.png",
+      "held_out": false,
+      "camera": {
+        "longitude": 139.7631,
+        "latitude": 35.67843961858218,
+        "height": 344.99798964112125
+      },
+      "calibration": "legacy position only; not matched projection"
+    },
+    {
+      "id": "north",
+      "image": "north.png",
+      "held_out": false,
+      "camera": {
+        "longitude": 139.7631,
+        "latitude": 35.67657130318582,
+        "height": 112.20561925755649
+      },
+      "calibration": "legacy position only; not matched projection"
+    },
+    {
+      "id": "east",
+      "image": "east.png",
+      "held_out": false,
+      "camera": {
+        "longitude": 139.76079743644766,
+        "latitude": 35.67844997798949,
+        "height": 112.20560256260019
+      },
+      "calibration": "legacy position only; not matched projection"
+    },
+    {
+      "id": "south",
+      "image": "south.png",
+      "held_out": false,
+      "camera": {
+        "longitude": 139.7631,
+        "latitude": 35.68032869623987,
+        "height": 112.20561612993677
+      },
+      "calibration": "legacy position only; not matched projection"
+    },
+    {
+      "id": "west",
+      "image": "west.png",
+      "held_out": true,
+      "camera": {
+        "longitude": 139.76540256355239,
+        "latitude": 35.67844997798949,
+        "height": 112.20560256244808
+      },
+      "calibration": "legacy position only; not matched projection"
+    },
+    {
+      "id": "museum-north",
+      "image": "museum-north.png",
+      "object_id": "way/306116935/0",
+      "notes": "Clipped target detail; ignore cut neighbor fragments and artificial boundaries."
+    },
+    {
+      "id": "museum-east",
+      "image": "museum-east.png",
+      "object_id": "way/306116935/0",
+      "notes": "Clipped target detail; ignore cut neighbor fragments and artificial boundaries."
+    },
+    {
+      "id": "museum-south",
+      "image": "museum-south.png",
+      "object_id": "way/306116935/0",
+      "notes": "Clipped target detail; ignore cut neighbor fragments and artificial boundaries."
+    },
+    {
+      "id": "museum-west",
+      "image": "museum-west.png",
+      "object_id": "way/306116935/0",
+      "notes": "Clipped target detail; ignore cut neighbor fragments and artificial boundaries."
+    },
+    {
+      "id": "museum-overhead",
+      "image": "museum-overhead.png",
+      "object_id": "way/306116935/0",
+      "notes": "Clipped target detail; ignore cut neighbor fragments and artificial boundaries."
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "type": "bldg",
+    "lod": "2",
+    "texture": true,
+    "url": "https://assets.cms.plateau.reearth.io/assets/28/07d0a1-b6be-46ef-bd87-4f0683b5ef6e/13101_chiyoda-ku_pref_2025_citygml_1_op_bldg_3dtiles_13101_chiyoda-ku_lod2/tileset.json",
+    "status": 200,
+    "bytes": 375304,
+    "asset": {
+      "version": "1.0"
+    },
+    "root_bounds": {
+      "region": [
+        2.4387514680776667,
+        0.6225417170957137,
+        2.439669520160431,
+        0.6231729322194112,
+        35.34513696854919,
+        252.17505591219268
+      ]
+    },
+    "root_bounds_cover_test_center": true
+  },
+  {
+    "type": "tran",
+    "lod": "3",
+    "texture": true,
+    "url": "https://assets.cms.plateau.reearth.io/assets/c6/9e8877-46d9-45a4-aebf-aa8d6105d698/13101_chiyoda-ku_pref_2025_citygml_1_op_tran_3dtiles_lod3/tileset.json",
+    "status": 200,
+    "bytes": 190569,
+    "asset": {
+      "version": "1.0"
+    },
+    "root_bounds": {
+      "region": [
+        2.4383007790589546,
+        0.6223486314282558,
+        2.4396420508161847,
+        0.6232302822214202,
+        36.26739555324047,
+        66.27943133303745
+      ]
+    },
+    "root_bounds_cover_test_center": true
+  }
+]

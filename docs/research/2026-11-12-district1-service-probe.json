@@ -1,0 +1,194 @@
+{
+  "date_local": "2026-11-12",
+  "timezone": "Asia/Saigon",
+  "scope": "read-only bounded service probes; no inference, no rendering, no upload",
+  "aoi": {
+    "label": "Nguyen Hue / City Hall vicinity, central HCMC (historical District 1)",
+    "bbox_south_west_north_east": [
+      10.773,
+      106.7,
+      10.777,
+      106.704
+    ],
+    "administrative_boundary": false,
+    "approx_width_m": 437.42923169099885,
+    "approx_height_m": 445.279999999951
+  },
+  "checks": [
+    {
+      "service": "Cesium asset list",
+      "http_status": 200,
+      "assets": [
+        {
+          "id": 1,
+          "name": "Cesium World Terrain",
+          "type": "TERRAIN",
+          "status": "COMPLETE"
+        },
+        {
+          "id": 96188,
+          "name": "Cesium OSM Buildings",
+          "type": "3DTILES",
+          "status": "COMPLETE"
+        },
+        {
+          "id": 2275207,
+          "name": "Google Photorealistic 3D Tiles",
+          "type": "3DTILES",
+          "status": "COMPLETE"
+        }
+      ]
+    },
+    {
+      "service": "Cesium asset endpoint",
+      "asset_id": 1,
+      "http_status": 200,
+      "seconds": 0.804,
+      "type": "TERRAIN",
+      "external_type": null,
+      "endpoint_host": "assets.ion.cesium.com",
+      "temporary_credential_returned": true,
+      "root_metadata_status": 200,
+      "metadata_keys": [
+        "attribution",
+        "available",
+        "bounds",
+        "description",
+        "extensions",
+        "format",
+        "maxzoom",
+        "metadataAvailability",
+        "minzoom",
+        "name",
+        "projection",
+        "scheme"
+      ],
+      "terrain_bounds": [
+        -180,
+        -90,
+        180,
+        90
+      ]
+    },
+    {
+      "service": "Cesium asset endpoint",
+      "asset_id": 96188,
+      "http_status": 200,
+      "seconds": 0.759,
+      "type": "3DTILES",
+      "external_type": null,
+      "endpoint_host": "assets.ion.cesium.com",
+      "temporary_credential_returned": true,
+      "root_metadata_status": 200,
+      "metadata_keys": [
+        "asset",
+        "properties",
+        "extensionsUsed",
+        "geometricError",
+        "root"
+      ]
+    },
+    {
+      "service": "Cesium asset endpoint",
+      "asset_id": 2275207,
+      "http_status": 200,
+      "seconds": 1.051,
+      "type": "3DTILES",
+      "external_type": "3DTILES",
+      "endpoint_host": null,
+      "temporary_credential_returned": false
+    },
+    {
+      "service": "OSM Overpass AOI",
+      "endpoint": "https://overpass-api.de/api/interpreter",
+      "http_status": 502,
+      "seconds": 1.162
+    },
+    {
+      "service": "OSM Overpass AOI",
+      "endpoint": "https://overpass.kumi.systems/api/interpreter",
+      "error": "ReadTimeout"
+    },
+    {
+      "service": "LLM gateway model discovery",
+      "http_status": 200,
+      "configured_model_available": true
+    },
+    {
+      "service": "Poly Haven material catalog",
+      "http_status": 200,
+      "matching_texture_asset_ids": [
+        "aerial_asphalt_01",
+        "anti_slip_concrete",
+        "asphalt_01",
+        "asphalt_02",
+        "asphalt_03",
+        "asphalt_04",
+        "asphalt_05",
+        "asphalt_06",
+        "asphalt_07",
+        "asphalt_floor",
+        "asphalt_pit_lane",
+        "asphalt_snow"
+      ],
+      "catalog_entries": 869
+    },
+    {
+      "service": "OSM Overpass AOI count fallback",
+      "endpoint": "https://overpass.private.coffee/api/interpreter",
+      "error": "ReadTimeout"
+    },
+    {
+      "service": "OSM small map bbox fallback",
+      "endpoint": "https://api.openstreetmap.org/api/0.6/map",
+      "bbox_west_south_east_north": [
+        106.7,
+        10.773,
+        106.704,
+        10.777
+      ],
+      "http_status": 200,
+      "seconds": 1.998,
+      "counts": {
+        "nodes": 1997,
+        "ways": 309,
+        "relations": 55,
+        "building_tagged_elements": 55,
+        "buildings_with_height": 5,
+        "buildings_with_levels": 6,
+        "highway_ways": 198,
+        "highway_ways_with_width": 0,
+        "highway_ways_with_lanes": 37,
+        "tree_nodes": 16,
+        "street_lamp_nodes": 6
+      },
+      "named_highways": [
+        "Công trường Lam Sơn",
+        "Huỳnh Thúc Kháng",
+        "Hẻm 144 Pasteur",
+        "Hẻm 63 Pasteur",
+        "Hồ Tùng Mậu",
+        "Lê Lợi",
+        "Lê Thánh Tôn",
+        "Mạc Thị Bưởi",
+        "Nam Kỳ Khởi Nghĩa",
+        "Nguyễn Huệ",
+        "Nguyễn Thiệp",
+        "Pasteur",
+        "Tôn Thất Thiệp",
+        "Tôn Thất Đạm",
+        "Đông Du",
+        "Đồng Khởi"
+      ],
+      "bytes": 851594,
+      "saved_snapshot": "docs/research/2026-11-12-district1-osm.osm",
+      "caveat": "Returned map includes crossing ways and referenced elements; counts are raw returned features, not deduplicated physical objects or a completeness estimate. Relations can be partial.",
+      "sha256": "b8dcc85999966a87e62d28fb6fc18634f4427558f47bbce7ccae6abf56977225"
+    }
+  ],
+  "limitations": [
+    "No visual coverage inspection of Google tiles or terrain/building streaming in a viewer.",
+    "Endpoint success alone does not prove detailed AOI coverage or permission for derivatives.",
+    "No LLM inference; service usage may still consume provider metadata/session quota."
+  ]
+}

@@ -1,0 +1,511 @@
+{
+  "batchcomplete": "",
+  "continue": {
+    "cmcontinue": "file|534149474f4e204f5045524120484f55534520564945544e414d204a414e2032303132202836393832313733393139292e4a5047|26364399",
+    "continue": "-||"
+  },
+  "query": {
+    "categorymembers": [
+      {
+        "pageid": 158100126,
+        "ns": 6,
+        "title": "File:04-12-24 Saigon Opera House 1.jpg"
+      },
+      {
+        "pageid": 158100146,
+        "ns": 6,
+        "title": "File:04-12-24 Saigon Opera House 2.jpg"
+      },
+      {
+        "pageid": 1887477,
+        "ns": 6,
+        "title": "File:2005-08-18 Th\u00e9\u00e2tre de Saigon.jpg"
+      },
+      {
+        "pageid": 142877942,
+        "ns": 6,
+        "title": "File:2023-12-10 Saigon Opera House (Nh\u00e0 h\u00e1t Th\u00e0nh ph\u1ed1, S\u00e0i G\u00f2n) 01.jpg"
+      },
+      {
+        "pageid": 142878037,
+        "ns": 6,
+        "title": "File:2023-12-10 Saigon Opera House (Nh\u00e0 h\u00e1t Th\u00e0nh ph\u1ed1, S\u00e0i G\u00f2n) 02.jpg"
+      },
+      {
+        "pageid": 142878039,
+        "ns": 6,
+        "title": "File:2023-12-10 Saigon Opera House (Nh\u00e0 h\u00e1t Th\u00e0nh ph\u1ed1, S\u00e0i G\u00f2n) 03.jpg"
+      },
+      {
+        "pageid": 142878038,
+        "ns": 6,
+        "title": "File:2023-12-10 Saigon Opera House (Nh\u00e0 h\u00e1t Th\u00e0nh ph\u1ed1, S\u00e0i G\u00f2n) 04.jpg"
+      },
+      {
+        "pageid": 140574353,
+        "ns": 6,
+        "title": "File:A night at the opera (16633939759).jpg"
+      },
+      {
+        "pageid": 130863955,
+        "ns": 6,
+        "title": "File:Another view of the Opera House (3158084517).jpg"
+      },
+      {
+        "pageid": 53624384,
+        "ns": 6,
+        "title": "File:B\u1ebfn Ngh\u00e9, District 1, Ho Chi Minh, Vietnam - panoramio (1).jpg"
+      },
+      {
+        "pageid": 54891182,
+        "ns": 6,
+        "title": "File:B\u1ebfn Ngh\u00e9, District 1, Ho Chi Minh, Vietnam - panoramio (20).jpg"
+      },
+      {
+        "pageid": 60159979,
+        "ns": 6,
+        "title": "File:B\u1ebfn Ngh\u00e9, District 1, Ho Chi Minh, Vietnam - panoramio (39).jpg"
+      },
+      {
+        "pageid": 50427882,
+        "ns": 6,
+        "title": "File:B\u1ebfn Ngh\u00e9, District 1, Ho Chi Minh, Vietnam - panoramio.jpg"
+      },
+      {
+        "pageid": 17529773,
+        "ns": 6,
+        "title": "File:Caravelle Hotel.jpg"
+      },
+      {
+        "pageid": 43913003,
+        "ns": 6,
+        "title": "File:Caravelle Saigon on Lam Son Square.jpg"
+      },
+      {
+        "pageid": 59145515,
+        "ns": 6,
+        "title": "File:Cong truong lam son-B\u1ebfn Ngh\u00e9, Qu\u1eadn 1, TPHCM, Vi\u1ec7t Nam- Nh\u00e0 h\u00e1t Th\u00e0nh ph\u1ed1 - panoramio.jpg"
+      },
+      {
+        "pageid": 145033764,
+        "ns": 6,
+        "title": "File:Couple in front of Saigon Opera House.jpg"
+      },
+      {
+        "pageid": 15788703,
+        "ns": 6,
+        "title": "File:C\u00f4ng vi\u00ean Lam S\u01a1n, Tp.HCM.jpg"
+      },
+      {
+        "pageid": 66993997,
+        "ns": 6,
+        "title": "File:DGJ 0594 - Saigon Opera House (3374065140).jpg"
+      },
+      {
+        "pageid": 56231635,
+        "ns": 6,
+        "title": "File:Duong pho trung tam sai gon Vietnam - panoramio.jpg"
+      },
+      {
+        "pageid": 31661960,
+        "ns": 6,
+        "title": "File:Gilliland IMG 0825 (12110237904).jpg"
+      },
+      {
+        "pageid": 31661958,
+        "ns": 6,
+        "title": "File:Gilliland IMG 0826 (12110158243).jpg"
+      },
+      {
+        "pageid": 120611,
+        "ns": 6,
+        "title": "File:HCM-City Oper.jpg"
+      },
+      {
+        "pageid": 5853724,
+        "ns": 6,
+        "title": "File:HCMC Opera House by night.jpg"
+      },
+      {
+        "pageid": 3943289,
+        "ns": 6,
+        "title": "File:HCMC Opera House roof.jpg"
+      },
+      {
+        "pageid": 5199547,
+        "ns": 6,
+        "title": "File:HCMC Opera House.jpg"
+      },
+      {
+        "pageid": 195932556,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City - Saigon1351.jpg"
+      },
+      {
+        "pageid": 48290395,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City Collage 2016.png"
+      },
+      {
+        "pageid": 47256166,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City Collage.JPG"
+      },
+      {
+        "pageid": 130863937,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City Opera House (3157990551).jpg"
+      },
+      {
+        "pageid": 178393568,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City Opera House (53668610660).jpg"
+      },
+      {
+        "pageid": 155559956,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City Opera House 07-11-2024.jpg"
+      },
+      {
+        "pageid": 57926508,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City Opera House 2012 - panoramio.jpg"
+      },
+      {
+        "pageid": 53974422,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City Opera House.jpg"
+      },
+      {
+        "pageid": 110751265,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City, Saigon, Vietnam (49579093048).jpg"
+      },
+      {
+        "pageid": 86056477,
+        "ns": 6,
+        "title": "File:Ho Chi Minh City, Vietnam.jpg"
+      },
+      {
+        "pageid": 1780815,
+        "ns": 6,
+        "title": "File:Immeubles Saigon.jpg"
+      },
+      {
+        "pageid": 56231621,
+        "ns": 6,
+        "title": "File:Kien truc saigon vietnam - panoramio.jpg"
+      },
+      {
+        "pageid": 122475676,
+        "ns": 6,
+        "title": "File:Lam Son Park and Saigon Municipal Theatre.jpg"
+      },
+      {
+        "pageid": 31951047,
+        "ns": 6,
+        "title": "File:Lascar Municipal Theatre (4608017466).jpg"
+      },
+      {
+        "pageid": 156919575,
+        "ns": 6,
+        "title": "File:Le th\u00e9\u00e2tre mulnicipale de Saigon.jpg"
+      },
+      {
+        "pageid": 50998564,
+        "ns": 6,
+        "title": "File:LUNE Saigon Opera House 01.jpg"
+      },
+      {
+        "pageid": 50998567,
+        "ns": 6,
+        "title": "File:LUNE Saigon Opera House 02.jpg"
+      },
+      {
+        "pageid": 50998568,
+        "ns": 6,
+        "title": "File:LUNE Saigon Opera House 03.jpg"
+      },
+      {
+        "pageid": 98670899,
+        "ns": 6,
+        "title": "File:Municipa teatro de Ho-\u0108i-Min-urbo 01.jpg"
+      },
+      {
+        "pageid": 46753267,
+        "ns": 6,
+        "title": "File:Municipal Theatre (Opera House ) Ho Chi Minh City - panoramio.jpg"
+      },
+      {
+        "pageid": 129546151,
+        "ns": 6,
+        "title": "File:Municipal Theatre of Ho Chi Minh City (52681003406).jpg"
+      },
+      {
+        "pageid": 149622343,
+        "ns": 6,
+        "title": "File:Municipal Theatre of Ho Chi Minh City, 2023 (01).jpg"
+      },
+      {
+        "pageid": 149622342,
+        "ns": 6,
+        "title": "File:Municipal Theatre of Ho Chi Minh City, 2023 (02).jpg"
+      },
+      {
+        "pageid": 149622351,
+        "ns": 6,
+        "title": "File:Municipal Theatre of Ho Chi Minh City, 2023 (03).jpg"
+      },
+      {
+        "pageid": 149622344,
+        "ns": 6,
+        "title": "File:Municipal Theatre of Ho Chi Minh City, 2023 (04).jpg"
+      },
+      {
+        "pageid": 184882349,
+        "ns": 6,
+        "title": "File:Municipal Theatre of Saigon - 39013731195.jpg"
+      },
+      {
+        "pageid": 20601143,
+        "ns": 6,
+        "title": "File:Municipal Theatre, Ho Chi Minh City, Vietnam - 20120810-01.jpg"
+      },
+      {
+        "pageid": 20601250,
+        "ns": 6,
+        "title": "File:Municipal Theatre, Ho Chi Minh City, Vietnam - 20120810-02.jpg"
+      },
+      {
+        "pageid": 20601310,
+        "ns": 6,
+        "title": "File:Municipal Theatre, Ho Chi Minh City, Vietnam - 20120810-03.jpg"
+      },
+      {
+        "pageid": 64926225,
+        "ns": 6,
+        "title": "File:Municipal Theatre, Ho Chi Minh City.jpg"
+      },
+      {
+        "pageid": 56231592,
+        "ns": 6,
+        "title": "File:Nha Hat lon saigon vietnam - panoramio.jpg"
+      },
+      {
+        "pageid": 56246436,
+        "ns": 6,
+        "title": "File:Nha hat lon saigon, vietnam - panoramio.jpg"
+      },
+      {
+        "pageid": 55847895,
+        "ns": 6,
+        "title": "File:Nha hat lon saion- vietnam- Dyt - panoramio.jpg"
+      },
+      {
+        "pageid": 56130517,
+        "ns": 6,
+        "title": "File:Nha hat lon Thanh Pho , hcm , Dyt - panoramio.jpg"
+      },
+      {
+        "pageid": 55847874,
+        "ns": 6,
+        "title": "File:Nha hat lon tp hcm, quan 1. Dyt - panoramio.jpg"
+      },
+      {
+        "pageid": 56231613,
+        "ns": 6,
+        "title": "File:Nha hat Lon tphcm - panoramio.jpg"
+      },
+      {
+        "pageid": 56375240,
+        "ns": 6,
+        "title": "File:Nha hat saigon vietnam - panoramio.jpg"
+      },
+      {
+        "pageid": 56328143,
+        "ns": 6,
+        "title": "File:Nha hat saigon, vietnam - panoramio.jpg"
+      },
+      {
+        "pageid": 56460294,
+        "ns": 6,
+        "title": "File:Nha hat Thanh Pho, q1 tphcmvn - panoramio.jpg"
+      },
+      {
+        "pageid": 56482922,
+        "ns": 6,
+        "title": "File:Nha hat Thanh pho, quan 1 tphcmvn - panoramio.jpg"
+      },
+      {
+        "pageid": 56310568,
+        "ns": 6,
+        "title": "File:Nha hat thanh pho, trung tam saigon vietnam - panoramio.jpg"
+      },
+      {
+        "pageid": 8736887,
+        "ns": 6,
+        "title": "File:Nh\u00e0 h\u00e1t l\u1edbn Th\u00e0nh ph\u1ed1 H\u1ed3 Ch\u00ed Minh.jpg"
+      },
+      {
+        "pageid": 14870906,
+        "ns": 6,
+        "title": "File:Nh\u00e0 h\u00e1t l\u1edbn Th\u00e0nh ph\u1ed1 H\u1ed3 Ch\u00ed Minh.JPG"
+      },
+      {
+        "pageid": 93028803,
+        "ns": 6,
+        "title": "File:Nh\u00e0 h\u00e1t l\u1edbn th\u00e0nh ph\u1ed1 H\u1ed3 Ch\u00ed Minh.jpg"
+      },
+      {
+        "pageid": 139964532,
+        "ns": 6,
+        "title": "File:Nh\u00e0 h\u00e1t l\u1edbn TP. HCM (3506599122).jpg"
+      },
+      {
+        "pageid": 135610910,
+        "ns": 6,
+        "title": "File:Nh\u00e0 h\u00e1t Th\u00e0nh ph\u1ed1 (6120905886).jpg"
+      },
+      {
+        "pageid": 131286653,
+        "ns": 6,
+        "title": "File:Nh\u00e0 h\u00e1t Th\u00e0nh ph\u1ed1 (7637370526).jpg"
+      },
+      {
+        "pageid": 138384229,
+        "ns": 6,
+        "title": "File:Nh\u00e0 h\u00e1t Th\u00e0nh ph\u1ed1 H\u1ed3 Ch\u00ed Minh n\u0103m 2019.jpg"
+      },
+      {
+        "pageid": 160631911,
+        "ns": 6,
+        "title": "File:Night Scene at Opera House.jpg"
+      },
+      {
+        "pageid": 65466051,
+        "ns": 6,
+        "title": "File:Oper von Ho Chi Minh city (38834834464).jpg"
+      },
+      {
+        "pageid": 140539713,
+        "ns": 6,
+        "title": "File:Opera House (16692175410).jpg"
+      },
+      {
+        "pageid": 128234498,
+        "ns": 6,
+        "title": "File:Opera House, Ho Chi Minh City, 2015.jpg"
+      },
+      {
+        "pageid": 75234585,
+        "ns": 6,
+        "title": "File:Opera house, Saigon (5679634056).jpg"
+      },
+      {
+        "pageid": 65466054,
+        "ns": 6,
+        "title": "File:Opera of Ho Chi Minh city (24676132387).jpg"
+      },
+      {
+        "pageid": 3820687,
+        "ns": 6,
+        "title": "File:Op\u00e9ra de S\u00e0i G\u00f2n.jpg"
+      },
+      {
+        "pageid": 25785129,
+        "ns": 6,
+        "title": "File:Op\u0117ra de Saigon.JPG"
+      },
+      {
+        "pageid": 3943246,
+        "ns": 6,
+        "title": "File:Ornaments of HCMC Opera House.jpg"
+      },
+      {
+        "pageid": 113230940,
+        "ns": 6,
+        "title": "File:Saigon - Opernhaus 001.jpg"
+      },
+      {
+        "pageid": 138597905,
+        "ns": 6,
+        "title": "File:Saigon Municipal Theatre (11449494745).jpg"
+      },
+      {
+        "pageid": 138250046,
+        "ns": 6,
+        "title": "File:Saigon Municipal Theatre (13663512923).jpg"
+      },
+      {
+        "pageid": 135579325,
+        "ns": 6,
+        "title": "File:Saigon Municipal Theatre (2563769541).jpg"
+      },
+      {
+        "pageid": 135975300,
+        "ns": 6,
+        "title": "File:Saigon Municipal Theatre (37893118832).jpg"
+      },
+      {
+        "pageid": 139615297,
+        "ns": 6,
+        "title": "File:Saigon Municipal Theatre (40283846715).jpg"
+      },
+      {
+        "pageid": 140539654,
+        "ns": 6,
+        "title": "File:Saigon Opera House (16941682472).jpg"
+      },
+      {
+        "pageid": 58070874,
+        "ns": 6,
+        "title": "File:Saigon Opera House 2011 - panoramio.jpg"
+      },
+      {
+        "pageid": 38217532,
+        "ns": 6,
+        "title": "File:Saigon Opera House 2014.jpg"
+      },
+      {
+        "pageid": 91324985,
+        "ns": 6,
+        "title": "File:Saigon Opera House 20190921-1.jpg"
+      },
+      {
+        "pageid": 91770747,
+        "ns": 6,
+        "title": "File:Saigon Opera House 20190921-3.jpg"
+      },
+      {
+        "pageid": 91770749,
+        "ns": 6,
+        "title": "File:Saigon Opera House 20190921-4.jpg"
+      },
+      {
+        "pageid": 202758045,
+        "ns": 6,
+        "title": "File:Saigon Opera House acroterion.jpg"
+      },
+      {
+        "pageid": 156169638,
+        "ns": 6,
+        "title": "File:Saigon Opera House before sunrise.jpg"
+      },
+      {
+        "pageid": 202758046,
+        "ns": 6,
+        "title": "File:Saigon Opera House caryatids.jpg"
+      },
+      {
+        "pageid": 136386860,
+        "ns": 6,
+        "title": "File:Saigon Opera House Municipal Theatre of Ho Chi Minh City (14531950337).jpg"
+      },
+      {
+        "pageid": 26364590,
+        "ns": 6,
+        "title": "File:SAIGON OPERA HOUSE VIETNAM JAN 2012 (6820582672).jpg"
+      }
+    ]
+  }
+}
