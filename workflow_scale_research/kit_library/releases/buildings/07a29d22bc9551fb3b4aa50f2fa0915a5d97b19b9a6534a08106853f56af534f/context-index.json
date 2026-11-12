@@ -1,0 +1,66 @@
+{
+  "cards": [
+    {
+      "id": "core",
+      "methods": [
+        "along",
+        "at",
+        "edge",
+        "look",
+        "material",
+        "walls"
+      ]
+    },
+    {
+      "id": "shell",
+      "methods": [
+        "band",
+        "ground",
+        "walls"
+      ]
+    },
+    {
+      "id": "roofs",
+      "methods": [
+        "dormer",
+        "gable",
+        "roof",
+        "roofY"
+      ]
+    },
+    {
+      "id": "facades",
+      "methods": [
+        "bay",
+        "pilasters",
+        "portal",
+        "quoins",
+        "window"
+      ]
+    },
+    {
+      "id": "details",
+      "methods": [
+        "chimney",
+        "turret"
+      ]
+    },
+    {
+      "id": "geometry",
+      "methods": [
+        "add",
+        "box",
+        "cone",
+        "cylinder",
+        "loft",
+        "prism"
+      ]
+    },
+    {
+      "id": "materials",
+      "methods": [
+        "material"
+      ]
+    }
+  ]
+}

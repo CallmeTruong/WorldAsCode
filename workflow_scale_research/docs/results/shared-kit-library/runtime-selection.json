@@ -1,0 +1,50 @@
+{
+  "master_sha256": "d43abe5d5468636786109e33581894dbc0c0cf00ba6ea3a4ea9fcda21c3eb657",
+  "selected_methods": [
+    "_add",
+    "_box",
+    "_edgeFrame",
+    "_facadeMaterial",
+    "_loft",
+    "_material",
+    "_multiWingRoof",
+    "_prism",
+    "_world",
+    "along",
+    "at",
+    "band",
+    "box",
+    "chimney",
+    "constructor",
+    "dormer",
+    "edge",
+    "finish",
+    "gable",
+    "look",
+    "material",
+    "portal",
+    "roof",
+    "roofY",
+    "turret",
+    "walls",
+    "window"
+  ],
+  "omitted_methods": [
+    "add",
+    "bay",
+    "cone",
+    "cylinder",
+    "ground",
+    "loft",
+    "pilasters",
+    "prism",
+    "quoins"
+  ],
+  "master_characters": 35789,
+  "selected_characters": 33460,
+  "modules": {
+    "kit.mjs": "8f5b693344257c6f567eb5a2f87f3c65fde53f8fbdd845ae2ca09f5fe511c824",
+    "surfaces.mjs": "97c5f0fe708a36957b23d408669d80a7e5c2f9d57da613adf62167c29a29fdad",
+    "roof-openings.mjs": "6357d179e48de83bcdba01469bbfd87ba94f9f91fddfb8da0d9ccada086ce24d"
+  }
+}

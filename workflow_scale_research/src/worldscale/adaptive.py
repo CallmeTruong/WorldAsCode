@@ -45,7 +45,7 @@ def regressions(kit, folder, exercise=None):
     return result
 
 
-def _evolve_design(source_run, run, settings, max_cycles=1, max_tokens=220000, provider=None):
+def _evolve_design(source_run, run, settings, max_cycles=1, max_tokens=220000, provider=None, publish_kit=False, kit_grant=None):
     source_run, run = Path(source_run).resolve(), Path(run).resolve()
     if not 1 <= max_cycles <= 3:
         raise ValueError('KIT_CYCLE_LIMIT_MUST_BE_1_TO_3')
@@ -53,7 +53,7 @@ def _evolve_design(source_run, run, settings, max_cycles=1, max_tokens=220000, p
         raise ValueError('USE_NEW_KIT_EVOLUTION_RUN')
     run.mkdir(parents=True)
     with run_lock(run):
-        provider = provider or Provider(settings, run, max_calls=3+5*max_cycles, max_tokens=max_tokens, max_seconds=2400)
+        provider = provider or Provider(settings, run, max_calls=3+8*max_cycles, max_tokens=max_tokens, max_seconds=2400)
         original = read(source_run/'result.json')
         best = original.get('best_attempt')
         if best is None:
@@ -236,14 +236,27 @@ def _evolve_design(source_run, run, settings, max_cycles=1, max_tokens=220000, p
                 'acceptance_basis':'metric checks plus automated critic; no human acceptance',
                 'status':'kit-evolution-complete','cycles':cycles,'selected_render':str(selected_folder),
                 'active_kit':str(active),'shared_runtime_unchanged':unchanged,'scores':scores,'usage':provider.usage}
+        if publish_kit and (run/'active-kit.json').exists():
+            from .kit_library import Library
+
+            try:
+                library=Library()
+                submission=library.submit(run/'active-kit.json','buildings',kit_grant)
+                validation=library.validate(submission['id'])
+                if validation['incubating_eligible']:
+                    result['shared_publication']=library.promote(submission['id'],'incubating',kit_grant,set_default=True)
+                else:
+                    result['shared_publication']={'status':'validation-failed','submission':submission['id']}
+            except Exception as exc:
+                result['shared_publication']={'status':'not-published','error':type(exc).__name__+': '+str(exc)}
         write_json(run/'result.json',result)
         return result
 
 
-def evolve_design(source_run, run, settings, max_cycles=1, max_tokens=220000, provider=None):
+def evolve_design(source_run, run, settings, max_cycles=1, max_tokens=220000, provider=None, publish_kit=False, kit_grant=None):
     existed = Path(run).exists()
     try:
-        return _evolve_design(source_run,run,settings,max_cycles,max_tokens,provider)
+        return _evolve_design(source_run,run,settings,max_cycles,max_tokens,provider,publish_kit,kit_grant)
     except Exception as exc:
         if existed:
             raise

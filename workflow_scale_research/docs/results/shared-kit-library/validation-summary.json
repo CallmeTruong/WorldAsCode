@@ -1,0 +1,159 @@
+{
+  "incubating_eligible": true,
+  "stable_eligible": false,
+  "compatibility": [
+    {
+      "case": 0,
+      "passed": true,
+      "triangles": 346,
+      "height": 14.140000000596046,
+      "flue": {
+        "centre": 0,
+        "wall": 2
+      },
+      "errors": [],
+      "denied_requests": [],
+      "roof_audit": {
+        "count": 216,
+        "outside": 0,
+        "fraction": 0,
+        "uv": true,
+        "uvSpan": 36.60000038146973
+      },
+      "exercise": null
+    },
+    {
+      "case": 1,
+      "passed": true,
+      "triangles": 360,
+      "height": 15.889141199530407,
+      "flue": {
+        "centre": 0,
+        "wall": 2
+      },
+      "errors": [],
+      "denied_requests": [],
+      "roof_audit": {
+        "count": 240,
+        "outside": 0,
+        "fraction": 0,
+        "uv": true,
+        "uvSpan": 41.23500061035156
+      },
+      "exercise": null
+    },
+    {
+      "case": 2,
+      "passed": true,
+      "triangles": 388,
+      "height": 18.140000000596046,
+      "flue": {
+        "centre": 0,
+        "wall": 2
+      },
+      "errors": [],
+      "denied_requests": [],
+      "roof_audit": {
+        "count": 342,
+        "outside": 0,
+        "fraction": 0,
+        "uv": true,
+        "uvSpan": 21.63080620765686
+      },
+      "exercise": null
+    }
+  ],
+  "capability": [
+    {
+      "case": 0,
+      "passed": true,
+      "triangles": 322,
+      "height": 14.140000000596046,
+      "flue": {
+        "centre": 0,
+        "wall": 2
+      },
+      "errors": [],
+      "denied_requests": [],
+      "roof_audit": {
+        "count": 144,
+        "outside": 0,
+        "fraction": 0,
+        "uv": true,
+        "uvSpan": 24.600000381469727
+      },
+      "exercise": {
+        "method": "roof",
+        "options": {
+          "form": "hip",
+          "material": "brick",
+          "wings": {
+            "$fixture": "wing-corners"
+          },
+          "overhang": 0.3
+        }
+      }
+    },
+    {
+      "case": 1,
+      "passed": true,
+      "triangles": 389,
+      "height": 15.827500000596046,
+      "flue": {
+        "centre": 0,
+        "wall": 2
+      },
+      "errors": [],
+      "denied_requests": [],
+      "roof_audit": {
+        "count": 327,
+        "outside": 0,
+        "fraction": 0,
+        "uv": true,
+        "uvSpan": 30.600000381469727
+      },
+      "exercise": {
+        "method": "roof",
+        "options": {
+          "form": "hip",
+          "material": "brick",
+          "wings": {
+            "$fixture": "wing-corners"
+          },
+          "overhang": 0.3
+        }
+      }
+    },
+    {
+      "case": 2,
+      "passed": true,
+      "triangles": 322,
+      "height": 18.140000000596046,
+      "flue": {
+        "centre": 0,
+        "wall": 2
+      },
+      "errors": [],
+      "denied_requests": [],
+      "roof_audit": {
+        "count": 144,
+        "outside": 0,
+        "fraction": 0,
+        "uv": true,
+        "uvSpan": 18.690929412841797
+      },
+      "exercise": {
+        "method": "roof",
+        "options": {
+          "form": "hip",
+          "material": "brick",
+          "wings": {
+            "$fixture": "wing-corners"
+          },
+          "overhang": 0.3
+        }
+      }
+    }
+  ],
+  "scope": "Fresh synthetic regression execution; no new visual acceptance claim"
+}

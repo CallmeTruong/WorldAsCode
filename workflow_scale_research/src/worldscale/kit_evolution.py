@@ -4,25 +4,33 @@ import json
 import re
 import shutil
 import subprocess
-from collections import Counter
 from pathlib import Path
 
 from .artifacts import digest, file_hash, write_json
 from .config import ROOT
+from .kit_context import METHOD, context, methods
 from .patches import text_edits
 
 PATCHABLE = {"roof", "roofY", "gable", "dormer", "window", "turret", "chimney", "material"}
-METHOD = re.compile(r"^  ([A-Za-z_]\w*)\([^\n]*\) \{", re.M)
 FORBIDDEN = re.compile(r"\b(?:import|require|fetch|XMLHttpRequest|WebSocket|eval|Function|globalThis|navigator|localStorage|setTimeout|setInterval)\b|(?<![\w.])window\s*[.\[]")
 PROTECTED_ACCESS = re.compile(r"\b(?:wallGuard|__proto__|prototype|constructor)\b|this\.(?:walls|finish|counts)\b")
 
 
-def methods(source):
-    matches = list(METHOD.finditer(source))
-    if any(count != 1 for count in Counter(m.group(1) for m in matches).values()):
-        raise ValueError("DUPLICATE_KIT_METHOD")
-    return {m.group(1): source[m.start():matches[i+1].start() if i+1 < len(matches) else source.index('\n}', m.start())]
-            for i, m in enumerate(matches)}
+def editable_methods(source):
+    """Allow a released extension's implementation to evolve with its API.
+
+    Core helpers remain protected; only new helpers reachable from an allowed
+    domain method can be granted by triage, never arbitrary Builder methods.
+    """
+    blocks=methods(source)
+    core={'_add','_material','_world','_box','_prism','_loft','_edgeFrame','_facadeMaterial'}
+    permitted=set(PATCHABLE)
+    while True:
+        called=set(re.findall(r'this\.(_\w+)\(', '\n'.join(blocks.get(k,'') for k in permitted)))
+        called=(called&blocks.keys())-core
+        if called<=permitted:
+            return permitted
+        permitted.update(called)
 
 
 def protected_projection(source, editable, additions=()):
@@ -38,7 +46,7 @@ def protected_projection(source, editable, additions=()):
 
 def apply_proposal(source, proposal, editable):
     editable = set(editable)
-    if not editable or not editable <= PATCHABLE:
+    if not editable or not editable <= editable_methods(source):
         raise ValueError("KIT_PERMISSION_DENIED")
     edits = proposal.get('edits', [])
     additions = proposal.get('new_methods', [])
@@ -74,6 +82,10 @@ def apply_proposal(source, proposal, editable):
 def snapshot(folder, source_folder=None):
     """Restore actual bundled runtime when available; otherwise snapshot current source."""
     folder = Path(folder)
+    if source_folder is None and (ROOT/'kit_library/registry.json').exists():
+        from .kit_library import Library
+
+        return Library().pin(folder)
     folder.mkdir(parents=True, exist_ok=False)
     for path in (ROOT / 'runtime').glob('*.mjs'):
         shutil.copy2(path, folder / path.name)
@@ -94,6 +106,7 @@ def propose(provider, folder, base_kit, history, images, site):
     folder, base_kit = Path(folder), Path(base_kit)
     folder.mkdir(parents=True, exist_ok=False)
     source = base_kit.read_text(encoding='utf-8')
+    permitted=editable_methods(source)
     words=json.dumps(history).lower()
     relevant=[name for name in ('roof','gable','dormer','window','turret','chimney','material') if re.search(r'\b'+name+r's?\b',words)][:3]
     implementation={name:methods(source)[name] for name in relevant}
@@ -106,20 +119,20 @@ def propose(provider, folder, base_kit, history, images, site):
     version=json.loads(version_path.read_text(encoding='utf-8')) if version_path.exists() else {}
     plan = provider.call('kit-gap-' + folder.name,
         'Triage rejected 3D designs. Return {"action":"develop-kit|fix-design|need-evidence", "reason":..., "capability":..., "methods":[up to 3 existing method names], "tests":[concrete geometry/visual requirements]}. Only request kit development when the API/implementation cannot express the observed architecture or repeated output defects prove a library bug. Existing permitted methods: '
-        + json.dumps(sorted(PATCHABLE)) + '. The wall footprint, measured heights, camera, style and quality thresholds are protected. Never develop a Tokyo-specific primitive. Distinguish a real missing geometric capability from incorrect usage or uncertain scan data.\nHISTORY: '
+        + json.dumps(sorted(permitted)) + '. The wall footprint, measured heights, camera, style and quality thresholds are protected. Never develop a Tokyo-specific primitive. Distinguish a real missing geometric capability from incorrect usage or uncertain scan data.\nHISTORY: '
         + json.dumps(history) + '\nSITE: ' + json.dumps(site)
         + '\nDECLARED CAPABILITIES (missing means not implemented, not a parameter issue): ' + (base_kit.parent/'capabilities.json').read_text(encoding='utf-8')
         + '\nRELEVANT ACTUAL IMPLEMENTATION: ' + json.dumps(implementation)
         + '\nPINNED VERSION EXTENSIONS: '+json.dumps(version)
         + '\nThe capability catalog can describe an older base version: its missing status must not override actual methods and extensions present in this pinned version. Do not repeatedly rebuild an operation already implemented by a versioned helper.'
         + '\nRepeated failures across designs can justify a reusable kit capability even though arbitrary custom geometry is technically possible. Do not ask to implement an operation already present; identify what its current implementation cannot express. Historical versions may differ from this pinned source.'
-        + '\nAPI INDEX: ' + (base_kit.parent / 'kit-api.md').read_text(encoding='utf-8'), images, 1800)
+        + '\nRELEVANT API: ' + context(base_kit.parent/'kit-api.md',site,feedback=history,method_names=relevant)['text'], images, 1800)
     write_json(folder / 'triage.json', plan)
     if plan.get('action') != 'develop-kit':
         write_json(folder / 'decision.json', {'activated': False, 'status': plan.get('action'), 'reason': plan.get('reason')})
         return None
     granted = set(plan.get('methods', []))
-    if not granted or len(granted) > 3 or not granted <= PATCHABLE:
+    if not granted or len(granted) > 3 or not granted <= permitted:
         raise ValueError('INVALID_KIT_PERMISSION_GRANT')
     selected = {name: methods(source)[name] for name in granted}
     # Progressive disclosure: only granted source methods, API docs and the
@@ -133,7 +146,7 @@ def propose(provider, folder, base_kit, history, images, site):
         + '\nExercise contract: fixtures declare materials brick and glass; use material="brick", never a placeholder id. Fixture dimensions vary: do not use fixed coordinates tuned to one footprint. If your API needs explicit wing polygons, use wings: {"$fixture":"wing-corners"} in exercise.options. The harness replaces that declarative marker with an array of {corners:[[east,south],...]} rectangular wings covering each footprint, with correct rotation. Implement your API to accept that documented corners schema; this marker is ONLY harness input, not part of the kit. Otherwise derive geometry from this.plan. Optional signature is options (default), frame-options, or material; optional phase is roof (replaces host roof) or part (adds after host roof).'
         + '\nInclude requires_design_update:true if using the improvement needs new options or a new call. Use false only for a backwards-compatible internal fix already exercised by the unchanged original design.'
         + '\nFormatting contract: method declarations start with exactly two spaces; method bodies use at least four spaces. Prefer replacing a complete supplied method when short snippets would not be globally unique. Keep braces inside each method balanced.'
-        + '\nAPI: ' + (base_kit.parent / 'kit-api.md').read_text(encoding='utf-8'), images, 9000)
+        + '\nRELEVANT API: ' + context(base_kit.parent/'kit-api.md',method_names=granted)['text'], images, 9000)
     write_json(folder / 'proposal.json', proposal)
     try:
         changed, additions = apply_proposal(source, proposal, granted)

@@ -56,10 +56,14 @@ def bundle(run, world=None, native=None, native_factories=None, design=None, sit
     runtime = (ROOT / "runtime/viewer.mjs").as_posix()
     if design is not None:
         source = Path(design).resolve()
+        from .kit_context import runtime_slice
+
+        selected=runtime_slice(Path(kit_path or ROOT/'runtime/kit.mjs').resolve(),
+                               source.read_text(encoding='utf-8'),run/'selected-runtime')
         write_json(run / "site.json", site)
         entry = (
             f"import {{design}} from {json.dumps(source.as_posix())};\n"
-            f"import {{buildDesign}} from {json.dumps(Path(kit_path or ROOT / 'runtime/kit.mjs').resolve().as_posix())};\n"
+            f"import {{buildDesign}} from {json.dumps(selected.as_posix())};\n"
             f"const root=buildDesign(design,{json.dumps(site)},{json.dumps(style or {})});\n"
         )
     elif world is not None:

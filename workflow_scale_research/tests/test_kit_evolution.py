@@ -127,3 +127,17 @@ def test_window_method_name_is_not_mistaken_for_browser_global():
     source=(ROOT/'runtime/kit.mjs').read_text(encoding='utf-8')
     code=methods(source)['window']
     assert apply_proposal(source,{'edits':[{'find':code,'replace':code}]},{'window'})[0]==source
+
+
+def test_released_extension_helper_can_evolve_without_unlocking_core():
+    from worldscale.kit_evolution import editable_methods
+
+    source=(ROOT/'runtime/kit.mjs').read_text(encoding='utf-8')
+    original="  roof(o = {}) {"
+    proposal={'edits':[{'find':original,'replace':original+'\n    if(o.extension)return this._extendedRoof(o);'}],
+              'new_methods':[{'name':'_extendedRoof','code':'  _extendedRoof(o={}) { return this.roof({...o,extension:false}); }'}]}
+    changed,_=apply_proposal(source,proposal,{'roof'})
+    assert '_extendedRoof' in editable_methods(changed)
+    assert '_add' not in editable_methods(changed)
+    update={'edits':[{'find':'extension:false','replace':'extension:undefined'}]}
+    assert 'extension:undefined' in apply_proposal(changed,update,{'_extendedRoof'})[0]

@@ -1,0 +1,9 @@
+{
+  "action": "rollback",
+  "package": "buildings",
+  "channel": "incubating",
+  "version": "23e3caa2e538a88edb5602edd3315f779baf97535a63e2ce3a5f122895f9f06e",
+  "previous": "07a29d22bc9551fb3b4aa50f2fa0915a5d97b19b9a6534a08106853f56af534f",
+  "subject": "operator",
+  "grant_fingerprint": "7a361ff13052d1427c02f59e35d0f9c78e4e56033243da29ae0e29ae7d927383"
+}

@@ -44,4 +44,8 @@
 - [X] T043 Recover completed design reviews after provider failure without replaying ambiguous requests; retain unknown billing and unreviewed candidates separately.
 - [X] T044 Transfer an unchanged recipe to another real site, verify identical code hashes and retain the failed likeness result; do not promote it to a reusable family.
 - [ ] T045 Implement architectural family matching, scene integration of batching, LOD/streaming and broader multi-city visual acceptance benchmarks.
+- [X] T046 Implement shared building-kit registry, immutable releases, host-held expiring/revocable grants, fresh patch/regression validation, channel promotion, stale-head conflict protection and rollback.
+- [X] T047 Retrieve bounded API cards with one optional additional context turn; slice runtime methods by static calls and transitive helpers while preserving measured-wall guards.
+- [X] T048 Promote actual v6 candidate to shared incubating after six fresh browser fixtures; pin from shared default, render and inspect unchanged geometry/metric evidence. Stable remains ineligible.
+- [ ] T049 Implement independent domain packages, semantic retrieval at library scale, AST extraction and multi-site stable release acceptance; no implicit promotion of all candidates or recipe migration.
 - [X] T022 Bind macro wing poses before rendering and demonstrate footprint overlap improvement from 0.4352 to 0.9950. Full appearance acceptance remains T012/T021.

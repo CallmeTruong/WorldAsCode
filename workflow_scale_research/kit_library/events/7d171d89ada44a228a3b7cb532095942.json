@@ -1,0 +1,10 @@
+{
+  "action": "promote",
+  "package": "buildings",
+  "channel": "incubating",
+  "version": "23e3caa2e538a88edb5602edd3315f779baf97535a63e2ce3a5f122895f9f06e",
+  "previous": null,
+  "subject": "workflow",
+  "submission": "9bb2918723e1724bb76f8658400733b17d6faac3cdb361be2fc01ec9a9b0b6b1",
+  "grant_fingerprint": "dc9e2d130ec3edc8e5f2a5543e10f3f55bbfb2862a55feb0171efaf75557036a"
+}

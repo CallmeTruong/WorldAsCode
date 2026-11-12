@@ -6,3 +6,7 @@ runs/
 __pycache__/
 .pytest_cache/
 .env
+kit_library/grants/
+kit_library/workflow-profile.json
+kit_library/submissions/
+kit_library/.run.lock

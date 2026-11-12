@@ -1,0 +1,16 @@
+{
+  "schema": "shared-kit-release-1",
+  "package": "buildings",
+  "version": "23e3caa2e538a88edb5602edd3315f779baf97535a63e2ce3a5f122895f9f06e",
+  "files": {
+    "capabilities.json": "50c08fa5ef126ba7b9e8139bdc079b3f4013dcd3c59b1c9e959a6214381fcbcb",
+    "kit-api.md": "2daa5d242f15a2cc609c992249190b6ab994594e9663dbf761772fe4c2d77360",
+    "kit.mjs": "d43abe5d5468636786109e33581894dbc0c0cf00ba6ea3a4ea9fcda21c3eb657",
+    "roof-openings.mjs": "6357d179e48de83bcdba01469bbfd87ba94f9f91fddfb8da0d9ccada086ce24d",
+    "surfaces.mjs": "97c5f0fe708a36957b23d408669d80a7e5c2f9d57da613adf62167c29a29fdad",
+    "version.json": "da743464aa61a92623ab40fa4735e910366edc15fe67c9a3b8a5fcd63a46d866"
+  },
+  "channel": "incubating",
+  "submission": "9bb2918723e1724bb76f8658400733b17d6faac3cdb361be2fc01ec9a9b0b6b1",
+  "validation_sha256": "d8a5382ac964041e7a8ce5d8e4b2dbfcfde93d92909ba6fec502c29cdfe3f21d"
+}

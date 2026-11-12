@@ -1,0 +1,85 @@
+{
+  "index": [
+    {
+      "id": "roofs",
+      "methods": [
+        "dormer",
+        "gable",
+        "roof",
+        "roofY"
+      ]
+    },
+    {
+      "id": "facades",
+      "methods": [
+        "bay",
+        "pilasters",
+        "portal",
+        "quoins",
+        "window"
+      ]
+    },
+    {
+      "id": "extension.12bdc791275c",
+      "methods": [
+        "roof",
+        "roofY"
+      ]
+    },
+    {
+      "id": "core",
+      "methods": [
+        "along",
+        "at",
+        "edge",
+        "look",
+        "material",
+        "walls"
+      ]
+    },
+    {
+      "id": "shell",
+      "methods": [
+        "band",
+        "ground",
+        "walls"
+      ]
+    },
+    {
+      "id": "details",
+      "methods": [
+        "chimney",
+        "turret"
+      ]
+    },
+    {
+      "id": "geometry",
+      "methods": [
+        "add",
+        "box",
+        "cone",
+        "cylinder",
+        "loft",
+        "prism"
+      ]
+    },
+    {
+      "id": "materials",
+      "methods": [
+        "material"
+      ]
+    }
+  ],
+  "selected": [
+    "core",
+    "shell",
+    "roofs",
+    "facades",
+    "geometry",
+    "materials",
+    "extension.12bdc791275c"
+  ],
+  "characters": 5520,
+  "api_sha256": "2daa5d242f15a2cc609c992249190b6ab994594e9663dbf761772fe4c2d77360",
+  "catalog_size": 8
+}

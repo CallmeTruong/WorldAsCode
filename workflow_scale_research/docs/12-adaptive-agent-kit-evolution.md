@@ -1,5 +1,7 @@
 # Workflow tự phát triển kit: thiết kế, quyền hạn và kiểm chứng
 
+Phạm vi ban đầu của tài liệu này là local evolution. Phần phát hành vào kho chung và retrieval đã triển khai tiếp ở [docs/14](14-shared-kit-library.md); các đoạn “chưa có global release” dưới đây mô tả mốc v6 trước extension đó. Hiện đã có kênh incubating dùng chung với quyền host; chưa có stable release hay SDK đô thị đầy đủ.
+
 ## Phạm vi đã triển khai
 
 Workflow có thể đề xuất và viết **code Three.js cho phiên bản kit riêng của lần chạy**, kiểm thử, render bằng trình duyệt, nhờ node critic đánh giá rồi quyết định giữ hay loại. Người vận hành cải thiện workflow và quan sát kết quả; phản hồi trực tiếp cho node viết code nằm trong workflow, không phụ thuộc việc người vận hành sửa tay từng mô hình.

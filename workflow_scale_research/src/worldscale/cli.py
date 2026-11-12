@@ -57,6 +57,8 @@ def main(argv=None):
     p.add_argument("--adaptive-kit", action="store_true", help="Develop isolated kit candidates after an unaccepted design")
     p.add_argument("--max-kit-cycles", type=int, default=1)
     p.add_argument("--kit-version", type=Path, help="Verified active-kit.json to pin for this run")
+    p.add_argument('--publish-kit',action=argparse.BooleanOptionalAction,default=None)
+    p.add_argument('--kit-grant')
     p = sub.add_parser('recover-design',help='Recover completed artifacts without model retries')
     p.add_argument('--run',type=Path,required=True)
     p = sub.add_parser("adapt-kit", help="Develop and evaluate isolated kit versions from an existing design run")
@@ -64,6 +66,24 @@ def main(argv=None):
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--max-cycles", type=int, default=1)
     p.add_argument("--max-tokens", type=int, default=220000)
+    p.add_argument('--publish-kit',action=argparse.BooleanOptionalAction,default=None)
+    p.add_argument('--kit-grant')
+    p=sub.add_parser('kit-library',help='Shared kit registry, host-held permissions and release lifecycle')
+    p.add_argument('action',choices=['init','grant','revoke','submit','validate','promote','rollback','search','status'])
+    p.add_argument('--library',type=Path,default=ROOT/'kit_library')
+    p.add_argument('--package',default='buildings')
+    p.add_argument('--subject',default='workflow')
+    p.add_argument('--actions',nargs='+',default=[])
+    p.add_argument('--hours',type=int,default=720)
+    p.add_argument('--token')
+    p.add_argument('--manifest',type=Path)
+    p.add_argument('--submission')
+    p.add_argument('--channel',choices=['incubating','stable'],default='incubating')
+    p.add_argument('--version')
+    p.add_argument('--heldout-runs',type=Path,nargs='*',default=[])
+    p.add_argument('--set-default',action='store_true')
+    p.add_argument('--configure-workflow',action='store_true')
+    p.add_argument('--query',default='')
     p = sub.add_parser(
         "heights",
         help="Sample a dense height grid for an evidence bundle from a running reference viewer",
@@ -87,6 +107,35 @@ def main(argv=None):
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--port", type=int, default=8770)
     args = parser.parse_args(argv)
+    if args.command=='kit-library':
+        from .kit_library import Library
+
+        library=Library(args.library)
+        registry=library.initialize()
+        action=args.action
+        if action in ('init','status'):
+            value=registry
+        elif action=='grant':
+            value={'grant':library.grant(args.subject,[args.package],args.actions,args.hours)}
+            if args.configure_workflow:
+                if args.subject!='workflow' or not {'submit','promote-incubating','set-default'}<=set(args.actions):
+                    parser.error('Workflow profile requires subject workflow and submit/promote-incubating/set-default')
+                write_json(args.library/'workflow-profile.json',{'auto_publish':True,'grant':value['grant']})
+        elif action=='revoke':
+            library.revoke(args.token)
+            value={'revoked':True}
+        elif action=='submit':
+            value=library.submit(args.manifest,args.package,args.token,args.subject)
+        elif action=='validate':
+            value=library.validate(args.submission,args.heldout_runs)
+        elif action=='promote':
+            value=library.promote(args.submission,args.channel,args.token,args.subject,args.set_default)
+        elif action=='rollback':
+            value=library.rollback(args.package,args.channel,args.version,args.token,args.subject)
+        else:
+            value=library.search(args.query)
+        print(json.dumps(value,ensure_ascii=False))
+        return 0
     if args.command=='recover-design':
         from .design import recover_design
 
@@ -95,7 +144,11 @@ def main(argv=None):
     if args.command == "adapt-kit":
         from .adaptive import evolve_design
 
-        result = evolve_design(args.source_run, args.run, Settings.load(), args.max_cycles, args.max_tokens)
+        profile_path=ROOT/'kit_library/workflow-profile.json'
+        profile=json.loads(profile_path.read_text(encoding='utf-8')) if profile_path.exists() else {}
+        result = evolve_design(args.source_run, args.run, Settings.load(), args.max_cycles, args.max_tokens,
+            publish_kit=profile.get('auto_publish',False) if args.publish_kit is None else args.publish_kit,
+            kit_grant=args.kit_grant or profile.get('grant'))
         print(json.dumps(result, ensure_ascii=False))
         return 0 if result.get("accepted") else 2
     if args.command == "demo":
@@ -163,6 +216,10 @@ def main(argv=None):
             args.evidence, styles, args.run, settings, args.max_revisions, args.max_tokens,
             adaptive_kit=args.adaptive_kit, max_kit_cycles=args.max_kit_cycles,
             kit_version=args.kit_version,
+            publish_kit=(json.loads((ROOT/'kit_library/workflow-profile.json').read_text(encoding='utf-8')).get('auto_publish',False)
+                         if args.publish_kit is None and (ROOT/'kit_library/workflow-profile.json').exists() else bool(args.publish_kit)),
+            kit_grant=args.kit_grant or (json.loads((ROOT/'kit_library/workflow-profile.json').read_text(encoding='utf-8')).get('grant')
+                                         if (ROOT/'kit_library/workflow-profile.json').exists() else None),
         )
         print(json.dumps(result, ensure_ascii=False))
         return 0 if result["status"] == "designed" else 2

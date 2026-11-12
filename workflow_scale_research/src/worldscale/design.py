@@ -131,6 +131,10 @@ def style_sheet(provider, styles, run):
 
 
 def author(provider, node, site, style, images, previous=None, feedback=None, kit_api=None):
+    from .kit_context import context
+
+    api_path=Path(kit_api or KIT_API)
+    selected=context(api_path,site,previous,feedback)
     prompt = (
         "You design ONE building as a short JavaScript script written in a building kit. "
         "Measured facts fix where the building is and how big it is; you decide what it is made "
@@ -147,7 +151,8 @@ def author(provider, node, site, style, images, previous=None, feedback=None, ki
         "No hardcoded object name, edge IDs or world coordinates for unmeasured features: select edges by semantic attributes. "
         "Derive floor loops, bay spacing and repeated geometry from site parameters so the recipe can be tested at a second site. "
         "Keep individual silhouette-defining features distinct rather than mapping every projection to the same primitive.\n"
-        + Path(kit_api or KIT_API).read_text(encoding="utf-8")
+        + selected['text']
+        + '\nKIT DOCUMENT INDEX (request IDs only if you need omitted API): '+json.dumps(selected['index'])
         + "\n\nSITE (measured): " + json.dumps(site)
         + "\n\nSTYLE SHEET: " + json.dumps(style)
         + "\n\nIMAGES: first, a sheet of rendered photogrammetry views of the real building "
@@ -168,7 +173,21 @@ def author(provider, node, site, style, images, previous=None, feedback=None, ki
         '\n\nReturn JSON {"code": the complete script as a string, "intent": one sentence, '
         '"used_measurements": [site fields you anchored to]}.'
     )
-    return provider.call(node, prompt, images, 7000)
+    if hasattr(provider,'run'):
+        write_json(provider.run/'kit-context'/f'{node}.json',{k:v for k,v in selected.items() if k!='text'})
+    reply=provider.call(node, prompt+'\nIf a required API is missing from this context, return {"request_kit_docs":[document IDs]} instead of guessing. One additional retrieval turn is allowed.', images, 7000)
+    if reply.get('request_kit_docs'):
+        requested=reply['request_kit_docs']
+        if not isinstance(requested,list) or len(requested)>3 or not all(isinstance(k,str) for k in requested):
+            raise ValueError('KIT_DOC_REQUEST_LIMIT')
+        extra=context(api_path,site,previous,feedback,requested=requested)
+        if hasattr(provider,'run'):
+            write_json(provider.run/'kit-context'/f'{node}-retrieval.json',{k:v for k,v in extra.items() if k!='text'})
+        expanded=prompt.replace(selected['text'],extra['text'],1)
+        reply=provider.call(node+'-kit-docs',expanded+'\nRequested API is included above. Return the complete code now; no more retrieval turns.',images,7000)
+    if 'code' not in reply:
+        raise ValueError('KIT_AUTHOR_DID_NOT_RETURN_CODE')
+    return reply
 
 
 def measure(run, evidence, site, report, browser):
@@ -218,7 +237,7 @@ def render_attempt(folder, code, site, style, evidence, kit_path=None):
     try:
         bundle(folder, design=folder / "design.mjs", site=site, style=style, kit_path=kit_path)
         record_runtime_snapshot(folder)
-    except RuntimeError as exc:
+    except (RuntimeError,ValueError) as exc:
         return None, str(exc)[-1500:]
     browser = {}
     report = capture(
@@ -301,7 +320,7 @@ def validated_scores(review):
     return scores
 
 
-def _run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens=220_000, adaptive_kit=False, max_kit_cycles=1, kit_version=None):
+def _run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens=220_000, adaptive_kit=False, max_kit_cycles=1, kit_version=None, publish_kit=False, kit_grant=None):
     run = Path(run).resolve()
     run.mkdir(parents=True, exist_ok=True)
     from .kit_evolution import copy_active_version, snapshot
@@ -312,7 +331,7 @@ def _run_design(evidence_path, styles, run, settings, max_revisions=1, max_token
     evidence = georef.load_evidence(evidence_path)
     if adaptive_kit and not 1 <= max_kit_cycles <= 3:
         raise ValueError("KIT_CYCLE_LIMIT_MUST_BE_1_TO_3")
-    provider = Provider(settings, run, max_calls=3 + 2 * (max_revisions + 1) + (3 + 5*max_kit_cycles if adaptive_kit else 0), max_tokens=max_tokens,
+    provider = Provider(settings, run, max_calls=3 + 3 * (max_revisions + 1) + (3 + 8*max_kit_cycles if adaptive_kit else 0), max_tokens=max_tokens,
                         max_seconds=3600 if adaptive_kit else 1800)
 
     # Facts: zero model calls, and computed once per evidence bundle and fitter version.
@@ -435,7 +454,8 @@ def _run_design(evidence_path, styles, run, settings, max_revisions=1, max_token
     if adaptive_kit and best and not result["accepted"]:
         from .adaptive import evolve_design
 
-        evolved = evolve_design(run, run / "kit-evolution", settings, max_kit_cycles, max_tokens, provider=provider)
+        evolved = evolve_design(run, run / "kit-evolution", settings, max_kit_cycles, max_tokens, provider=provider,
+                                publish_kit=publish_kit,kit_grant=kit_grant)
         result["kit_evolution"] = evolved
         result["accepted"] = evolved["accepted"]
         result["usage"] = {k: provider.usage[k] for k in ("calls", "input_tokens", "output_tokens", "unknown_token_reserve", "cache_hits")}
@@ -483,11 +503,11 @@ def recover_design(run, error='Interrupted run; recover completed evaluations on
     return result
 
 
-def run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens=220_000, adaptive_kit=False, max_kit_cycles=1, kit_version=None):
+def run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens=220_000, adaptive_kit=False, max_kit_cycles=1, kit_version=None, publish_kit=False, kit_grant=None):
     run=Path(run)
     if (run/'result.json').exists():
         raise ValueError('USE_NEW_DESIGN_RUN; recovery never resubmits requests')
     try:
-        return _run_design(evidence_path,styles,run,settings,max_revisions,max_tokens,adaptive_kit,max_kit_cycles,kit_version)
+        return _run_design(evidence_path,styles,run,settings,max_revisions,max_tokens,adaptive_kit,max_kit_cycles,kit_version,publish_kit,kit_grant)
     except Exception as exc:
         return recover_design(run,type(exc).__name__+': '+str(exc))

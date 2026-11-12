@@ -50,6 +50,10 @@ FR-017: A failed provider review must preserve previously completed evaluations 
 
 FR-018: Static scene batching must preserve geometry, UVs, transforms, material identity and instance ownership. Report draw calls and CPU geometry storage without claiming total GPU memory, device FPS or urban throughput.
 
+FR-019: Shared-kit writes require host-held expiring/revocable grants scoped by subject/package/action; a model cannot self-grant or bypass release gates. Shared releases are immutable, dependencies are hash-pinned, promotion serializes channel-head updates and rollback preserves existing jobs. Stable requires multiple distinct accepted real sites.
+
+FR-020: Select a package from a bounded index and inject only relevant API cards/source. Support at most one bounded additional documentation request. Compile static referenced kit methods and their dependency closure for rendering; retain measured-wall guards and record selected/omitted methods. Never promote a sliced runtime as the master SDK.
+
 ## Key Entities
 EvidenceBundle; WorldIR; AssetBlueprint; AssetInstance; SemanticComponent; RuntimeState; NetworkEdge/Port; NativeState; PassReview; BuildArtifact; JobLedger.
 

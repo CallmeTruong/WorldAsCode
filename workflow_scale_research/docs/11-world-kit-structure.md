@@ -49,6 +49,8 @@ First improve the real building pilot and inspect multiple views. Then run a par
 
 ## Authoring permission and kit evolution
 
+Shared release lifecycle is now implemented for the building package: host-held scoped grants, fresh validation, incubating/stable gates, pinned snapshots, rollback and bounded API/runtime selection. See [docs/14](14-shared-kit-library.md). The directory/domain layout above remains a target; road/tree/rail packages are not implemented by this release mechanism alone.
+
 The workflow now includes gap-triage and kit-developer nodes. They can propose changes to granted methods and add bounded new operations in an isolated run-local copy. They cannot write the shared kit, change measured walls or modify acceptance gates. Regression tests exercise both the old API and the new capability; a real-site render and critic must show balanced improvement before local activation. See [12-adaptive-agent-kit-evolution.md](12-adaptive-agent-kit-evolution.md) for actual permissions, commands and experiment results.
 
 The extension route distinguishes bad usage, missing evidence and a missing library capability. Existing assets pin the former version and are not silently migrated. Novel architecture can stay bespoke; only proven repeated patterns should become family code or core library operations. Ambiguous evidence must remain explicit rather than being disguised by a new primitive. Global release, broad held-out benchmarking and automatic migration remain future work; local activation does not establish those properties.

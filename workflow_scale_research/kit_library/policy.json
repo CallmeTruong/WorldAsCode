@@ -1,0 +1,11 @@
+{
+  "schema": "kit-release-policy-1",
+  "incubating": {
+    "require_local_activation": true,
+    "minimum_fixture_cases": 3
+  },
+  "stable": {
+    "minimum_distinct_accepted_sites": 2
+  },
+  "note": "Permissions do not bypass validation. Stable is not granted automatically."
+}

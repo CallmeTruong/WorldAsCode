@@ -54,6 +54,27 @@ def test_consumer_repairs_new_option_usage_before_rewriting_kit(tmp_path, monkey
     monkeypatch.setattr(adaptive.design,'author',author)
     monkeypatch.setattr(adaptive.design,'render_attempt',render)
     monkeypatch.setattr(adaptive.design,'critic',critic)
+    publications=[]
+    from worldscale.kit_library import Library as RealLibrary
+
+    class Library:
+        def pin(self,destination):
+            return RealLibrary().pin(destination)
+
+        def submit(self,manifest,package,token):
+            assert token=='host-only-grant' and manifest.is_file()
+            publications.append('submit')
+            return {'id':'submission'}
+
+        def validate(self,submission):
+            publications.append('validate')
+            return {'incubating_eligible':True}
+
+        def promote(self,submission,channel,token,set_default):
+            publications.append(channel)
+            return {'channel':channel,'default_changed':set_default}
+
+    monkeypatch.setattr('worldscale.kit_library.Library',Library)
 
     class Provider:
         usage={}
@@ -62,7 +83,7 @@ def test_consumer_repairs_new_option_usage_before_rewriting_kit(tmp_path, monkey
             pass
 
     run=tmp_path/'run'
-    result=adaptive.evolve_design(source,run,None,provider=Provider())
+    result=adaptive.evolve_design(source,run,None,provider=Provider(),publish_kit=True,kit_grant='host-only-grant')
     assert [c[0] for c in calls]==(['kit-consumer-0','kit-consumer-repair-0'] if route=='kit' else ['design-repair-0'])
     if route=='kit':
         assert calls[1][1]['build_error']=='RUNTIME: KIT_INVALID_WING_RECTANGLE'
@@ -77,5 +98,8 @@ def test_consumer_repairs_new_option_usage_before_rewriting_kit(tmp_path, monkey
         manifest=json.loads((run/'active-kit.json').read_text())
         assert manifest['scope']=='run-local'
         assert kit_evolution.copy_active_version(run/'active-kit.json',tmp_path/'reuse').exists()
+        assert publications==['submit','validate','incubating']
+        assert result['shared_publication']['default_changed']
     else:
         assert not (run/'active-kit.json').exists()
+        assert publications==[]

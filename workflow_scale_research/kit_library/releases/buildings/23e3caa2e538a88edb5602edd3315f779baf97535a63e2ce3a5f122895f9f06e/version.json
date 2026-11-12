@@ -1,0 +1,13 @@
+{
+  "state": "candidate",
+  "base_sha256": "cfd118f838204f9cd078901d93fee3aa268481b6f2dc2e35df3f6173e68814f1",
+  "kit_sha256": "d43abe5d5468636786109e33581894dbc0c0cf00ba6ea3a4ea9fcda21c3eb657",
+  "capability": "Reusable continuous multi-wing ridge-and-valley roof construction, with roofY sampling the resulting piecewise roof surfaces. No site-specific primitive.",
+  "modules": {
+    "kit.mjs": "d43abe5d5468636786109e33581894dbc0c0cf00ba6ea3a4ea9fcda21c3eb657",
+    "roof-openings.mjs": "6357d179e48de83bcdba01469bbfd87ba94f9f91fddfb8da0d9ccada086ce24d",
+    "semantic.mjs": "e6ff0e31e7e575601f747e6a2e450353c7211a6cb02318eb9aa7f3d3a0601abc",
+    "surfaces.mjs": "97c5f0fe708a36957b23d408669d80a7e5c2f9d57da613adf62167c29a29fdad",
+    "viewer.mjs": "99382e192567c508fd0f6131369ee1ea354bd2214e8b1ce9f0bfcfe24d090d01"
+  }
+}

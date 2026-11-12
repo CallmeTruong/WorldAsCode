@@ -1,0 +1,14 @@
+{
+  "schema": "shared-kit-release-1",
+  "package": "buildings",
+  "version": "07a29d22bc9551fb3b4aa50f2fa0915a5d97b19b9a6534a08106853f56af534f",
+  "files": {
+    "capabilities.json": "50c08fa5ef126ba7b9e8139bdc079b3f4013dcd3c59b1c9e959a6214381fcbcb",
+    "kit-api.md": "c32d7b5dfe7ff0bf059bfc9166fcf10d130c5969d1727499329f7ae76369a639",
+    "kit.mjs": "cfd118f838204f9cd078901d93fee3aa268481b6f2dc2e35df3f6173e68814f1",
+    "roof-openings.mjs": "6357d179e48de83bcdba01469bbfd87ba94f9f91fddfb8da0d9ccada086ce24d",
+    "surfaces.mjs": "97c5f0fe708a36957b23d408669d80a7e5c2f9d57da613adf62167c29a29fdad"
+  },
+  "origin": "builtin snapshot; no new cross-site quality claim",
+  "channel": "builtin"
+}

@@ -1,0 +1,2 @@
+# Content-addressed releases must retain identical bytes across OS checkouts.
+kit_library/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
