@@ -1,0 +1,17 @@
+{
+  "activated": false,
+  "status": "design-refined",
+  "reason": "The pinned design passes the measured outline, plan, height, and triangle checks, but its rooftop enclosures and façade remain visually oversimplified. The reference supports a flat main roof, two parallel enclosures, and localized service equipment—not a multi-wing pitched roof. Existing flat-roof, window, material, and free-geometry operations can express the needed corrections; repeated omissions do not establish a kit bug. Exact window counts, enclosure function, and obscured details remain uncertain.",
+  "selected": true,
+  "kit_modified": false,
+  "before_scores": {
+    "likeness": 0.64,
+    "style": 0.62,
+    "detail": 0.43
+  },
+  "after_scores": {
+    "likeness": 0.62,
+    "style": 0.72,
+    "detail": 0.52
+  }
+}

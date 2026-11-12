@@ -2,6 +2,8 @@
 
 ## Technical Context
 
+Held-out validation (docs/13): collect two additional Google/OSM evidence bundles; run architecture observer and component-aware critic with the same pinned kit on three real sites. Execute bounded design repair when the API is sufficient, recover completed reviews after transport failures, and compare unchanged recipe transfer with separately authored targets. Benchmark static renderer replicas with geometry/material batching and ownership mapping; report startup, warmed frame measurements and visual status separately. Broad family matching, LOD/streaming and multi-city quality remain pending.
+
 Current extension: the measured-site `design` route (docs/09–12) is the primary pilot; the native route remains separately tracked and incomplete. Pin site/style and kit dependencies, author Three.js design code through the metric kit, render calibrated views, run deterministic checks and a separate vision critic. A bounded adaptive branch triages repeated defects and permits changes only in a run-local kit copy. It tests old defaults and an explicit new-capability invocation on varied synthetic footprints before testing the real site. Per-case negative reports feed the next developer cycle. Only balanced visual gain and all metric/regression checks permit local activation; global publication and broad family reuse remain unproven.
 Python 3.11+ orchestration/IR/native subprocess bridge; TypeScript and Three.js geometry/runtime; browser worker isolation; local content-addressed artifacts; native img2threejs pinned canonical checkout. GPT Sol via existing configured provider. No need for additional paid data services for current experiments.
 

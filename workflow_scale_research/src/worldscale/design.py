@@ -136,13 +136,17 @@ def author(provider, node, site, style, images, previous=None, feedback=None, ki
         "Measured facts fix where the building is and how big it is; you decide what it is made "
         "of and how it looks, in the requested style. Be inventive with parts, rhythm and "
         "ornament where the photos are vague, and stay faithful where they are clear.\n\n"
-        "Preserve distinctive roof gables and facade composition before adding microdetail. "
+        "Use SITE.observations as an evidence-led architectural plan; distinguish confirmed features from uncertain guesses. "
+        "Prioritise observed massing, roof hierarchy, facade bays and material scale before microdetail. "
+        "Use architecture-appropriate tools: flat-roof offices must not acquire historical gables, turrets or brick by default. "
         "Features derived from height blobs have uncertain identity: confirm gable vs dormer vs turret in photos. "
-        "Use b.window for real framed panes with storey-specific pediments; use b.gable for tall wall-plane features, "
+        "Use b.window for real framed panes; add pediments only when observed. Use b.gable for tall wall-plane features, "
         "and vary dormers by observed scale and roof type. Do not turn all tall projections into turrets. "
         "Use physical brick/slate dimensions (surface.scale is tile size, not brick width). "
         "Avoid copying the style reference's ground/vegetation colours. "
-        "No hardcoded object name, edge IDs or world coordinates for unmeasured features: select edges by semantic attributes.\n"
+        "No hardcoded object name, edge IDs or world coordinates for unmeasured features: select edges by semantic attributes. "
+        "Derive floor loops, bay spacing and repeated geometry from site parameters so the recipe can be tested at a second site. "
+        "Keep individual silhouette-defining features distinct rather than mapping every projection to the same primitive.\n"
         + Path(kit_api or KIT_API).read_text(encoding="utf-8")
         + "\n\nSITE (measured): " + json.dumps(site)
         + "\n\nSTYLE SHEET: " + json.dumps(style)
@@ -221,6 +225,7 @@ def render_attempt(folder, code, site, style, evidence, kit_path=None):
         folder,
         camera_override={"azimuth": 215, "elevation": 32, "method": "free review view"},
         extra=evidence_capture(evidence, folder, browser),
+        review_only=True,
     )
     if report.get("runtime_error"):
         return None, "RUNTIME: " + str(report["runtime_error"])[:1500]
@@ -260,6 +265,9 @@ def critic(provider, node, site, style, metrics, images):
         "roof intersections, gable identity/scale, dormer embedding, window-surround relief, masonry "
         "scale and repetition. High silhouette agreement does not establish likeness. "
         "Do not reward extra ornament if its placement/type is unsupported.\n"
+        "Judge the actual architecture: gables, brick, dormers, pediments and towers are not requirements for buildings that do not have them. "
+        "Kit window surrounds, local roof openings and hollow chimneys already exist; distinguish poor use from a missing capability. "
+        "Request observable output corrections rather than assuming an API is absent.\n"
         "The goal is NOT a pixel match. Judge: would a person recognise it as this building, "
         "rendered in that style, with enough architectural detail?\n"
         "MEASURED SITE: " + json.dumps({k: site[k] for k in ("storeys", "eave_m", "ridge_m", "roof", "features", "tags")})
@@ -270,7 +278,8 @@ def critic(provider, node, site, style, metrics, images):
         '"status": "present"|"weak"|"missing"|"wrong"}] (6-12 items), '
         '"defects": [what looks broken, floating, intersecting or implausible], '
         '"fixes": [concrete instructions phrased in kit terms, most valuable first, max 8], '
-        '"keep": [what works and must not be lost]}. Score strictly; 0.7 means clearly '
+        '"keep": [what works and must not be lost], '
+        '"component_reviews": [{"component":"roof|facade|materials|attachments", "confidence":0-1, "defect":string, "correction":string}]}. Score strictly; 0.7 means clearly '
         "recognisable and coherent."
     )
     return provider.call(node, prompt, images, 2200)
@@ -292,7 +301,7 @@ def validated_scores(review):
     return scores
 
 
-def run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens=220_000, adaptive_kit=False, max_kit_cycles=1, kit_version=None):
+def _run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens=220_000, adaptive_kit=False, max_kit_cycles=1, kit_version=None):
     run = Path(run).resolve()
     run.mkdir(parents=True, exist_ok=True)
     from .kit_evolution import copy_active_version, snapshot
@@ -303,7 +312,7 @@ def run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens
     evidence = georef.load_evidence(evidence_path)
     if adaptive_kit and not 1 <= max_kit_cycles <= 3:
         raise ValueError("KIT_CYCLE_LIMIT_MUST_BE_1_TO_3")
-    provider = Provider(settings, run, max_calls=2 + 2 * (max_revisions + 1) + (3 + 5*max_kit_cycles if adaptive_kit else 0), max_tokens=max_tokens,
+    provider = Provider(settings, run, max_calls=3 + 2 * (max_revisions + 1) + (3 + 5*max_kit_cycles if adaptive_kit else 0), max_tokens=max_tokens,
                         max_seconds=3600 if adaptive_kit else 1800)
 
     # Facts: zero model calls, and computed once per evidence bundle and fitter version.
@@ -329,6 +338,19 @@ def run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens
     write_json(run / "style.json", style)
     references = reference_sheet(evidence, run / "reference-sheet.jpg")
     source_details = detail_sheet(evidence, run, run / "reference-details.jpg")
+    observation=provider.call('architecture-observer',
+        'Observe the actual building from these calibrated photogrammetry views and matching detail crops. '
+        'Return JSON {architecture:string, roof:{form:string, hierarchy:[strings], distinctive_features:[{description:string, view:string, confidence:number}]}, '
+        'facades:[{view:string, storey_rhythm:string, bay_rhythm:string, depth_and_openings:string, confidence:number}], '
+        'materials:[{region:string, identity:string, physical_pattern_scale:string}], priorities:[strings], uncertain:[strings]}. '
+        'No style image is included: describe factual structure, not a desired style. Use measured footprint/heights as anchors. '
+        'Do not identify every height blob as a turret or dormer. Describe roof-integrated shapes and facade relief; '
+        'do not copy melted mesh, baked shadows or scan artifacts. Avoid unsupported hidden-side detail. '
+        'For modern flat-roof architecture, do not impose historic ornaments. '
+        'SITE: '+json.dumps(site),[references,source_details],2600)
+    site['observations']=observation
+    write_json(run/'observations.json',observation)
+    write_json(run/'site.json',site)
     write_json(run / "input-manifest.json", {
         "evidence_sha256": file_hash(evidence["path"]),
         "height_field_sha256": file_hash(heights_path) if heights_path.is_file() else None,
@@ -386,6 +408,7 @@ def run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens
             "defects": review.get("defects"),
             "fixes": review.get("fixes"),
             "keep": review.get("keep"),
+            "component_reviews":review.get("component_reviews"),
             "failed_metric_checks": [k for k, v in metrics["checks"].items() if not v],
             "regressed_likeness": regressed,
             "base_attempt": best_so_far["attempt"] if regressed else index,
@@ -395,6 +418,7 @@ def run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens
 
     built = [a for a in attempts if "rank" in a]
     best = max(built, key=candidate_rank) if built else None
+    provider.save()
     result = {
         "accepted": bool(best and best["accepted"]),
         "acceptance_basis": "tolerant metric checks plus an automated vision critic; no human review",
@@ -418,3 +442,52 @@ def run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens
         result["selected_render"] = evolved.get("selected_render", str(run / f"attempt-{best['attempt']}"))
         write_json(run / "result.json", result)
     return result
+
+
+def recover_design(run, error='Interrupted run; recover completed evaluations only'):
+    """Recover saved artifacts without resubmitting any model request."""
+    run=Path(run)
+    def read(path,default):
+        return json.loads(path.read_text(encoding='utf-8')) if path.exists() else default
+    existing=read(run/'result.json',{})
+    if existing.get('status')=='designed':
+        return existing
+    manifest=read(run/'input-manifest.json',{})
+    site=read(run/'site.json',{})
+    records=[]
+    for folder in sorted(run.glob('attempt-*'),key=lambda p:int(p.name.split('-')[-1])):
+        if not (folder/'design.mjs').is_file():
+            continue
+        record={'attempt':int(folder.name.split('-')[-1]),'accepted':False}
+        metrics=read(folder/'metrics.json',{})
+        review=read(folder/'review.json',{})
+        try:
+            scores=validated_scores(review)
+        except ValueError:
+            record.update({'evaluation':'unreviewed','metrics_passed':metrics.get('passed',False),
+                           'error':'REVIEW_INCOMPLETE; no implicit retry'})
+        else:
+            record.update({'evaluation':'reviewed','scores':scores,'metrics_passed':metrics.get('passed',False),
+                'mean_oblique_iou':metrics.get('mean_oblique_iou'),
+                'accepted':metrics.get('passed',False) and all(scores[k]>=v for k,v in ACCEPT.items())})
+            record['rank']=candidate_rank(record)
+        records.append(record)
+    reviewed=[a for a in records if 'rank' in a]
+    best=max(reviewed,key=candidate_rank) if reviewed else None
+    result={'accepted':False,'evaluation_complete':False,'status':'incomplete-run-retained',
+        'error':error,'note':'Artifacts recovered without new model calls. Unreviewed renders are never promoted.',
+        'object_id':site.get('object_id'),'evidence_sha256':manifest.get('evidence_sha256'),
+        'best_attempt':best['attempt'] if best else None,'attempts':records,
+        'usage':read(run/'usage.json',{}),'acceptance_basis':'Completed metric/critic artifacts only; incomplete run'}
+    write_json(run/'result.json',result)
+    return result
+
+
+def run_design(evidence_path, styles, run, settings, max_revisions=1, max_tokens=220_000, adaptive_kit=False, max_kit_cycles=1, kit_version=None):
+    run=Path(run)
+    if (run/'result.json').exists():
+        raise ValueError('USE_NEW_DESIGN_RUN; recovery never resubmits requests')
+    try:
+        return _run_design(evidence_path,styles,run,settings,max_revisions,max_tokens,adaptive_kit,max_kit_cycles,kit_version)
+    except Exception as exc:
+        return recover_design(run,type(exc).__name__+': '+str(exc))

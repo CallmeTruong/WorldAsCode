@@ -121,9 +121,9 @@ def bundle(run, world=None, native=None, native_factories=None, design=None, sit
     entry += f"import {{mount}} from {json.dumps(runtime)};\nmount(root,{json.dumps(config)});\n"
     (run / "entry.mjs").write_text(entry, encoding="utf-8")
     # Invoke the JS API rather than the platform-specific npm wrapper or esbuild binary.
-    script = "require('esbuild').buildSync({entryPoints:[process.argv[1]],outfile:process.argv[2],bundle:true,format:'esm',platform:'browser',sourcemap:true,logLevel:'warning'});"
+    script = "require('esbuild').buildSync({entryPoints:[process.argv[1]],outfile:process.argv[2],nodePaths:[process.argv[3]],bundle:true,format:'esm',platform:'browser',sourcemap:true,logLevel:'warning'});"
     result = subprocess.run(
-        ["node", "-e", script, str(run / "entry.mjs"), str(run / "bundle.js")],
+        ["node", "-e", script, str(run / "entry.mjs"), str(run / "bundle.js"), str(ROOT/'node_modules')],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -193,7 +193,7 @@ def fit_camera(page, reference, run):
     return best
 
 
-def capture(run, reference=None, camera_override=None, extra=None):
+def capture(run, reference=None, camera_override=None, extra=None, review_only=False, export_geometry=True):
     """``extra(page, shots)`` may take further captures and append their file names."""
     run = Path(run).resolve()
     errors = []
@@ -265,7 +265,7 @@ def capture(run, reference=None, camera_override=None, extra=None):
         if camera_override:
             write_json(run / "camera-fit.json", camera_override)
         az, el = camera["azimuth"], camera["elevation"]
-        for name, a, e in [
+        free_views=[
             ("front", az, el),
             ("rear", az + 180, el),
             ("side", az + 90, el),
@@ -275,7 +275,10 @@ def capture(run, reference=None, camera_override=None, extra=None):
             ("orbit270", az + 270, el),
             ("orbit315", az + 315, el),
             ("top", az, 75),
-        ]:
+        ]
+        # Design reviews already capture every calibrated evidence camera.
+        # Extra orbit screenshots duplicate those views and are not consumed.
+        for name, a, e in free_views[:1] if review_only else free_views:
             page.evaluate("v=>worldscale.view(...v)", [a, e, camera.get("scale", 1.0)])
             page.locator("canvas").screenshot(path=str(run / (name + ".png")))
             shots.append(name + ".png")
@@ -294,10 +297,11 @@ def capture(run, reference=None, camera_override=None, extra=None):
         after = page.evaluate("worldscale.manifest()")
         page.locator("canvas").screenshot(path=str(run / "night.png"))
         shots.append("night.png")
-        geometry = page.evaluate("worldscale.geometry()")
-        write_json(run / "geometry.json", {"meshes": geometry["meshes"]})
-        write_json(run / "parts.json", geometry["parts"])
-        write_json(run / "measured.json", geometry["measured"])
+        if export_geometry:
+            geometry = page.evaluate("worldscale.geometry()")
+            write_json(run / "geometry.json", {"meshes": geometry["meshes"]})
+            write_json(run / "parts.json", geometry["parts"])
+            write_json(run / "measured.json", geometry["measured"])
         browser.close()
     image = Image.open(run / "front.png").convert("RGB")
     spread = max(ImageStat.Stat(image).stddev)

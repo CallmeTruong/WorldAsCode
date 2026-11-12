@@ -20,7 +20,8 @@ flowchart TD
   E[Evidence / OSM / heights / style images] --> D[Site brief + design author]
   D --> R[Render + metric gates + vision critic]
   R -->|chưa đạt| G[Kit gap triage]
-  G -->|dùng API sai| U[fix-design: bàn giao về luồng design]
+  G -->|dùng API sai| U[fix-design: node sửa design]
+  U --> R
   G -->|thiếu bằng chứng| Q[need-evidence: ghi yêu cầu dữ liệu]
   G -->|thiếu khả năng hoặc lỗi kit| K[Kit developer: patch có quyền hạn]
   K --> P[Kiểm quyền + cú pháp + snapshot riêng]
@@ -34,7 +35,7 @@ flowchart TD
   B --> G
 ```
 
-Luồng `adapt-kit` hiện ghi `fix-design`/`need-evidence` thành kết quả bàn giao rồi dừng nhánh kit. Nó chưa tự mua ảnh, thu thập provider mới hoặc tự nối lại một vòng design vô hạn. Trên lỗi patch/cú pháp/regression/render, các chu kỳ còn lại nhận chẩn đoán để thử lại trong ngân sách. Hết giới hạn thì giữ kết quả trước.
+Luồng `adapt-kit` đã thực thi `fix-design` bằng node author → render → critic → giữ hoặc loại, trong số chu kỳ cho phép; bằng chứng thực tế trên công trình mới ở [docs/13](13-heldout-quality-and-scale.md). `need-evidence` vẫn ghi yêu cầu rồi dừng; chưa tự mua ảnh hoặc tìm provider mới. Trên lỗi patch/cú pháp/regression/render, các chu kỳ còn lại nhận chẩn đoán để thử lại trong ngân sách. Hết giới hạn thì giữ kết quả trước.
 
 ## Input cho từng vai trò
 
@@ -152,7 +153,7 @@ v2 tốn 4 request thực tế + 1 cache hit, 60.951 token vào / 8.322 ra. v3 t
 
 Các lượt trên được giám sát để cải thiện workflow, không phải benchmark giữ nguyên mọi biến. Chỉ nghiệm thu chất lượng từ render và báo cáo thật; không lấy số test phần mềm làm bằng chứng hoàn thiện ngoại hình.
 
-Kiểm thử phần mềm hiện tại: 79 test qua, Ruff qua và `node --check` qua cho kit, surfaces, roof openings, viewer. Test orchestration dùng critic giả chỉ xác minh caller repair, activation/rollback và manifest; điểm giả đó tuyệt đối không tính là nghiệm thu hình ảnh hoặc một candidate thật đã được kích hoạt.
+Kiểm thử tại mốc v6: 79 test qua, Ruff qua và `node --check` qua cho kit, surfaces, roof openings, viewer. Kết quả kiểm thử mở rộng sau đó ở docs/13. Test orchestration dùng critic giả chỉ xác minh caller repair, activation/rollback và manifest; điểm giả đó tuyệt đối không tính là nghiệm thu hình ảnh hoặc một candidate thật đã được kích hoạt.
 
 Ảnh và báo cáo mẫu được lưu cùng docs để có thể xem ngoài thư mục run bị gitignore: [reference](results/kit-evolution/reference.jpg), [design giữ lại](results/kit-evolution/retained-design.jpg), [mái lệch bị loại v2](results/kit-evolution/rejected-offset-roof.jpg), [candidate v5 chưa được kích hoạt](results/kit-evolution/candidate-v5.jpg), [quyết định v5](results/kit-evolution/decision-v5.json), [critic v5](results/kit-evolution/review-v5.json).
 

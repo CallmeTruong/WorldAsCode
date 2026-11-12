@@ -1,0 +1,281 @@
+{
+  "scope": "Small real-building pilot in one city; no statistical or production-scale guarantee.",
+  "cases": [
+    {
+      "run": "runs\\quality-holdout-museum-v7",
+      "object_id": "way/306116935",
+      "buildable": true,
+      "status": "designed",
+      "evaluation_complete": true,
+      "accepted": false,
+      "metrics_passed": true,
+      "scores": {
+        "likeness": 0.55,
+        "style": 0.67,
+        "detail": 0.44
+      },
+      "metrics": {
+        "passed": true,
+        "checks": {
+          "browser": true,
+          "outline_oblique": true,
+          "outline_plan": true,
+          "height": true,
+          "triangles": true
+        },
+        "mean_oblique_iou": 0.8811,
+        "plan_iou": 0.906,
+        "height_m": 26.35,
+        "height_ratio": 1.063,
+        "triangles": 31813,
+        "per_view_iou": {
+          "north": 0.906,
+          "east": 0.8881,
+          "south": 0.8412,
+          "west": 0.8893,
+          "overhead": 0.906
+        },
+        "limits": {
+          "mean_oblique_iou": 0.7,
+          "plan_iou": 0.75,
+          "height_ratio": [
+            0.8,
+            1.3
+          ],
+          "max_triangles": 200000
+        }
+      },
+      "performance": {
+        "meshCount": 1002,
+        "uniqueGeometries": 1002,
+        "uniqueMaterials": 35,
+        "geometryBytes": 2629328,
+        "drawCalls": 1003,
+        "textures": 13,
+        "note": "One rendered frame; geometryBytes counts CPU attribute buffers, not total GPU memory or city throughput."
+      },
+      "attempts": 3,
+      "attempt_errors": [],
+      "unreviewed_attempts": [],
+      "usage": {
+        "calls": 7,
+        "input_tokens": 94842,
+        "output_tokens": 13153,
+        "unknown_token_reserve": 0,
+        "cache_hits": 1,
+        "active_seconds": 541.802414299993,
+        "cost_usd": null
+      },
+      "render": "runs\\quality-holdout-museum-v7\\attempt-2\\render-sheet.jpg"
+    },
+    {
+      "run": "runs\\quality-holdout-office-low-v1",
+      "object_id": "way/145394389",
+      "buildable": true,
+      "status": "designed",
+      "evaluation_complete": true,
+      "accepted": false,
+      "metrics_passed": true,
+      "scores": {
+        "likeness": 0.64,
+        "style": 0.62,
+        "detail": 0.43
+      },
+      "metrics": {
+        "passed": true,
+        "checks": {
+          "browser": true,
+          "outline_oblique": true,
+          "outline_plan": true,
+          "height": true,
+          "triangles": true
+        },
+        "mean_oblique_iou": 0.9092,
+        "plan_iou": 0.9842,
+        "height_m": 42.04,
+        "height_ratio": 0.996,
+        "triangles": 56880,
+        "per_view_iou": {
+          "north": 0.9193,
+          "east": 0.9055,
+          "south": 0.9231,
+          "west": 0.8887,
+          "overhead": 0.9842
+        },
+        "limits": {
+          "mean_oblique_iou": 0.7,
+          "plan_iou": 0.75,
+          "height_ratio": [
+            0.8,
+            1.3
+          ],
+          "max_triangles": 200000
+        }
+      },
+      "performance": {
+        "meshCount": 1450,
+        "uniqueGeometries": 1450,
+        "uniqueMaterials": 12,
+        "geometryBytes": 5378256,
+        "drawCalls": 1451,
+        "textures": 19,
+        "note": "One rendered frame; geometryBytes counts CPU attribute buffers, not total GPU memory or city throughput."
+      },
+      "attempts": 2,
+      "attempt_errors": [],
+      "unreviewed_attempts": [],
+      "usage": {
+        "calls": 5,
+        "input_tokens": 58848,
+        "output_tokens": 9264,
+        "unknown_token_reserve": 0,
+        "cache_hits": 1,
+        "active_seconds": 385.8720673999924,
+        "cost_usd": null
+      },
+      "render": "runs\\quality-holdout-office-low-v1\\attempt-1\\render-sheet.jpg"
+    },
+    {
+      "run": "runs\\quality-holdout-office-high-v1",
+      "object_id": "way/145394367",
+      "buildable": true,
+      "status": "incomplete-run-retained",
+      "evaluation_complete": false,
+      "accepted": false,
+      "metrics_passed": true,
+      "scores": {
+        "likeness": 0.52,
+        "style": 0.63,
+        "detail": 0.35
+      },
+      "metrics": {
+        "passed": true,
+        "checks": {
+          "browser": true,
+          "outline_oblique": true,
+          "outline_plan": true,
+          "height": true,
+          "triangles": true
+        },
+        "mean_oblique_iou": 0.9397,
+        "plan_iou": 0.9758,
+        "height_m": 112.73,
+        "height_ratio": 0.976,
+        "triangles": 15184,
+        "per_view_iou": {
+          "north": 0.9356,
+          "east": 0.9481,
+          "south": 0.9425,
+          "west": 0.9327,
+          "overhead": 0.9758
+        },
+        "limits": {
+          "mean_oblique_iou": 0.7,
+          "plan_iou": 0.75,
+          "height_ratio": [
+            0.8,
+            1.3
+          ],
+          "max_triangles": 200000
+        }
+      },
+      "performance": {
+        "meshCount": 370,
+        "uniqueGeometries": 370,
+        "uniqueMaterials": 8,
+        "geometryBytes": 1413360,
+        "drawCalls": 371,
+        "textures": 16,
+        "note": "One rendered frame; geometryBytes counts CPU attribute buffers, not total GPU memory or city throughput."
+      },
+      "attempts": 2,
+      "attempt_errors": [
+        "REVIEW_INCOMPLETE; no implicit retry"
+      ],
+      "unreviewed_attempts": [
+        1
+      ],
+      "usage": {
+        "calls": 5,
+        "input_tokens": 46133,
+        "output_tokens": 8895,
+        "unknown_token_reserve": 39752,
+        "cache_hits": 1,
+        "active_seconds": 277.1620655000006,
+        "cost_usd": null
+      },
+      "render": "runs\\quality-holdout-office-high-v1\\attempt-0\\render-sheet.jpg"
+    }
+  ],
+  "buildable_cases": 3,
+  "metric_pass_cases": 3,
+  "visually_accepted_cases": 0,
+  "probes": [
+    {
+      "path": "runs\\scale-probe-controlled-9-batched",
+      "result": {
+        "passed": true,
+        "count": 9,
+        "batched": true,
+        "elapsed_seconds": 23.83,
+        "performance": {
+          "meshCount": 118,
+          "uniqueGeometries": 118,
+          "uniqueMaterials": 35,
+          "geometryBytes": 271280,
+          "drawCalls": 118,
+          "textures": 13,
+          "note": "One rendered frame; geometryBytes counts CPU attribute buffers, not total GPU memory or city throughput."
+        },
+        "triangles": 286317,
+        "bounds": {
+          "min": [
+            -38.71604537963867,
+            0,
+            -38.397125244140625
+          ],
+          "max": [
+            184.09039306640625,
+            26.350000381469727,
+            179.3287582397461
+          ]
+        },
+        "state_preserves_geometry": true,
+        "runtime_error": null
+      }
+    },
+    {
+      "path": "runs\\scale-probe-controlled-9-unbatched",
+      "result": {
+        "passed": true,
+        "count": 9,
+        "batched": false,
+        "elapsed_seconds": 17.52,
+        "performance": {
+          "meshCount": 9018,
+          "uniqueGeometries": 1002,
+          "uniqueMaterials": 35,
+          "geometryBytes": 2629328,
+          "drawCalls": 9018,
+          "textures": 13,
+          "note": "One rendered frame; geometryBytes counts CPU attribute buffers, not total GPU memory or city throughput."
+        },
+        "triangles": 286317,
+        "bounds": {
+          "min": [
+            -38.71604537963867,
+            0,
+            -38.397125244140625
+          ],
+          "max": [
+            184.09038543701172,
+            26.350000381469727,
+            179.3287582397461
+          ]
+        },
+        "state_preserves_geometry": true,
+        "runtime_error": null
+      }
+    }
+  ]
+}

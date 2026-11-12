@@ -6,6 +6,8 @@ Cải tiến chất lượng đang triển khai: [kit và vòng đánh giá](10-
 
 ## 1. Bài toán
 
+Thử nghiệm công trình mới, recovery khi gateway lỗi và static batching: [kết quả chất lượng và scale](13-heldout-quality-and-scale.md). Ba site đã có bản dựng qua metric nhưng chưa đạt visual acceptance; phân biệt rõ kit reuse, recipe transfer và renderer instancing.
+
 Workflow đã có nhánh [tự phát triển kit theo quyền hạn và phiên bản riêng](12-adaptive-agent-kit-evolution.md): triage → developer → kiểm thử API cũ/mới → consumer → render/critic → kích hoạt hoặc giữ bản trước. Chất lượng pilot vẫn chưa đạt nghiệm thu; xem số liệu trong docs/10 và docs/12.
 
 Tạo mô hình 3D đô thị bằng code Three.js sao cho:

@@ -119,11 +119,41 @@ def _evolve_design(source_run, run, settings, max_cycles=1, max_tokens=220000, p
         cycles=[]
         selected_folder=baseline
         for index in range(max_cycles):
+            if metrics['passed'] and all(scores[k]>=v for k,v in design.ACCEPT.items()):
+                break
             proposal_folder=run/f'cycle-{index}'
             candidate=kit_evolution.propose(provider,proposal_folder,active,history,
                 [references,selected_folder/'render-sheet.jpg',*style_images,details,selected_folder/'detail-sheet.jpg'],site)
             if candidate is None:
                 decision=read(proposal_folder/'decision.json')
+                if decision.get('status')=='fix-design':
+                    reply=design.author(provider,f'design-repair-{index}',site,style,
+                        [references,*style_images,details,selected_folder/'render-sheet.jpg',selected_folder/'detail-sheet.jpg'],
+                        previous=code,feedback={'route':decision,'review':review,
+                            'instruction':'Correct the highest-value observed architectural defects using the existing API. Preserve measured geometry and supported details; do not invent ornament.'},
+                        kit_api=active.parent/'kit-api.md')
+                    folder=proposal_folder/'design-repair'
+                    after,error=design.render_attempt(folder,reply['code'],site,style,evidence,kit_path=active)
+                    if error:
+                        decision.update({'status':'design-repair-failed','error':error})
+                    else:
+                        after_review=design.critic(provider,f'design-repair-critic-{index}',site,style,after,
+                            [references,folder/'render-sheet.jpg',*style_images,details,folder/'detail-sheet.jpg'])
+                        after_scores=design.validated_scores(after_review)
+                        write_json(folder/'review.json',after_review)
+                        def rank(m,s):
+                            return design.candidate_rank({'accepted':m['passed'] and all(s[k]>=v for k,v in design.ACCEPT.items()),
+                                'metrics_passed':m['passed'],'scores':s})
+                        improved=(after['passed'] and after['mean_oblique_iou']>=metrics['mean_oblique_iou']-.025
+                                  and after_scores['likeness']>=scores['likeness']-.02 and rank(after,after_scores)>rank(metrics,scores))
+                        decision.update({'status':'design-refined','selected':improved,'kit_modified':False,
+                                         'before_scores':scores,'after_scores':after_scores})
+                        if improved:
+                            metrics,review,scores,code,selected_folder=after,after_review,after_scores,reply['code'],folder
+                    write_json(proposal_folder/'decision.json',decision)
+                    cycles.append(decision)
+                    history.append({'design_repair':decision,'review':review})
+                    continue
                 cycles.append(decision)
                 if decision.get('status')=='proposal-rejected':
                     history.append({'kit_failure':decision,

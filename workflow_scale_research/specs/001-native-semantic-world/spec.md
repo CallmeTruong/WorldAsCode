@@ -44,6 +44,12 @@ FR-014: For the measured-site design route, permit bounded node-authored kit evo
 
 FR-015: A kit candidate must execute compatibility fixtures and an explicit exercise of its new capability on varied footprints, retain per-case failures for node feedback, and pass real-site metric/critic comparison before run-local activation. Pin dependencies, preserve rollback and verify hashes on reuse. Local activation is not global release, family generality or human visual acceptance.
 
+FR-016: Evaluate held-out real sites using the same pinned kit. Distinguish kit reuse, unchanged recipe transfer and renderer replication; report visual acceptance separately from silhouette/build success.
+
+FR-017: A failed provider review must preserve previously completed evaluations and billing uncertainty without resubmission. Unreviewed renders cannot replace reviewed results. Bounded fix-design routing must execute author/render/critic rather than silently terminate.
+
+FR-018: Static scene batching must preserve geometry, UVs, transforms, material identity and instance ownership. Report draw calls and CPU geometry storage without claiming total GPU memory, device FPS or urban throughput.
+
 ## Key Entities
 EvidenceBundle; WorldIR; AssetBlueprint; AssetInstance; SemanticComponent; RuntimeState; NetworkEdge/Port; NativeState; PassReview; BuildArtifact; JobLedger.
 

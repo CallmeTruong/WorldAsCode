@@ -1,0 +1,72 @@
+{
+  "source_code_sha256": "be1af2bb0f44652689657d60a12c7dffeb260186b144e447901df8a6b6928dd9",
+  "replay_code_sha256": "be1af2bb0f44652689657d60a12c7dffeb260186b144e447901df8a6b6928dd9",
+  "source_run": "runs\\quality-holdout-office-low-v1",
+  "target_run": "runs\\quality-holdout-office-high-v1",
+  "kit_sha256": "d43abe5d5468636786109e33581894dbc0c0cf00ba6ea3a4ea9fcda21c3eb657",
+  "author_calls": 0,
+  "metrics": {
+    "passed": true,
+    "checks": {
+      "browser": true,
+      "outline_oblique": true,
+      "outline_plan": true,
+      "height": true,
+      "triangles": true
+    },
+    "mean_oblique_iou": 0.9303,
+    "plan_iou": 0.9768,
+    "height_m": 115.34,
+    "height_ratio": 0.999,
+    "triangles": 188034,
+    "per_view_iou": {
+      "north": 0.9296,
+      "east": 0.9288,
+      "south": 0.938,
+      "west": 0.9248,
+      "overhead": 0.9768
+    },
+    "limits": {
+      "mean_oblique_iou": 0.7,
+      "plan_iou": 0.75,
+      "height_ratio": [
+        0.8,
+        1.3
+      ],
+      "max_triangles": 200000
+    }
+  },
+  "error": null,
+  "accepted": false,
+  "scores": {
+    "likeness": 0.39,
+    "style": 0.67,
+    "detail": 0.34
+  },
+  "usage": {
+    "calls": 1,
+    "input_tokens": 11862,
+    "output_tokens": 984,
+    "unknown_token_reserve": 0,
+    "cache_hits": 0,
+    "attempts": [
+      {
+        "node": "unchanged-recipe-transfer",
+        "key": "9a8050bcf1980f5f43a177b4fdb38abb6aa69cea4852e8bddc729fa20b534f67",
+        "model": "gpt-6-sol",
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 11862,
+          "completion_tokens": 984,
+          "total_tokens": 12846,
+          "completion_tokens_details": {
+            "reasoning_tokens": 112
+          }
+        },
+        "seconds": 29.174
+      }
+    ],
+    "cost_usd": null,
+    "active_seconds": 29.238553100003628
+  }
+}

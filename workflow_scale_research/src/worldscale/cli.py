@@ -57,6 +57,8 @@ def main(argv=None):
     p.add_argument("--adaptive-kit", action="store_true", help="Develop isolated kit candidates after an unaccepted design")
     p.add_argument("--max-kit-cycles", type=int, default=1)
     p.add_argument("--kit-version", type=Path, help="Verified active-kit.json to pin for this run")
+    p = sub.add_parser('recover-design',help='Recover completed artifacts without model retries')
+    p.add_argument('--run',type=Path,required=True)
     p = sub.add_parser("adapt-kit", help="Develop and evaluate isolated kit versions from an existing design run")
     p.add_argument("--source-run", type=Path, required=True)
     p.add_argument("--run", type=Path, required=True)
@@ -85,6 +87,11 @@ def main(argv=None):
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--port", type=int, default=8770)
     args = parser.parse_args(argv)
+    if args.command=='recover-design':
+        from .design import recover_design
+
+        print(json.dumps(recover_design(args.run)))
+        return 2
     if args.command == "adapt-kit":
         from .adaptive import evolve_design
 

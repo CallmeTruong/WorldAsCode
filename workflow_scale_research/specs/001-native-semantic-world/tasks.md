@@ -38,4 +38,10 @@
 - [ ] T037 Demonstrate an activated kit candidate meeting visual acceptance on the real pilot, then validate a reusable family on a second real site.
 - [ ] T038 Implement broader domain retrieval, held-out release benchmarks, shared kit registry/promotion and asset migration; prove district throughput and seams.
 - [X] T039 Demonstrate model-authored run-local activation on the real pilot after compatibility/new-feature/browser/critic gates, retain absolute visual rejection, and verify pinned reuse hashes (v6; docs/12).
+- [X] T040 Capture two held-out real buildings from Google/OSM, run the same pinned kit across three sites and publish metric, critic, usage and interrupted-run evidence (docs/13).
+- [X] T041 Add architecture observer, architecture-appropriate author/critic prompts and an executable bounded fix-design branch; demonstrate accepted relative refinement without asserting absolute visual acceptance.
+- [X] T042 Implement static geometry/material batching with instance ownership; compare nine batched/unbatched asset replicas and preserve triangle/bounds/raycast checks.
+- [X] T043 Recover completed design reviews after provider failure without replaying ambiguous requests; retain unknown billing and unreviewed candidates separately.
+- [X] T044 Transfer an unchanged recipe to another real site, verify identical code hashes and retain the failed likeness result; do not promote it to a reusable family.
+- [ ] T045 Implement architectural family matching, scene integration of batching, LOD/streaming and broader multi-city visual acceptance benchmarks.
 - [X] T022 Bind macro wing poses before rendering and demonstrate footprint overlap improvement from 0.4352 to 0.9950. Full appearance acceptance remains T012/T021.

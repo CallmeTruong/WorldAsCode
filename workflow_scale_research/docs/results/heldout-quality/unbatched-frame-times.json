@@ -1,0 +1,20 @@
+{
+  "milliseconds": [
+    149.6000000089407,
+    252.3999999910593,
+    164.80000001192093,
+    75.8999999910593,
+    216.5,
+    182.40000000596046,
+    161.8999999910593,
+    195.1000000089407
+  ],
+  "drawCalls": 9018,
+  "contextLost": false,
+  "glError": 0,
+  "triangles": 286317,
+  "renderer": "WebKit WebGL",
+  "scope": "Eight warmed synchronized software-WebGL frames, not end-user hardware FPS.",
+  "mean_ms": 174.83,
+  "valid": true
+}

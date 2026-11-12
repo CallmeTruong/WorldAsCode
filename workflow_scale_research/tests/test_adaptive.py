@@ -2,11 +2,14 @@
 
 import json
 
+import pytest
+
 from worldscale import adaptive, kit_evolution
 from worldscale.artifacts import file_hash, write_json
 
 
-def test_consumer_repairs_new_option_usage_before_rewriting_kit(tmp_path, monkeypatch):
+@pytest.mark.parametrize('route',['kit','design'])
+def test_consumer_repairs_new_option_usage_before_rewriting_kit(tmp_path, monkeypatch,route):
     source=tmp_path/'source'
     (source/'attempt-0').mkdir(parents=True)
     (source/'attempt-0/design.mjs').write_text('original design')
@@ -22,6 +25,9 @@ def test_consumer_repairs_new_option_usage_before_rewriting_kit(tmp_path, monkey
 
     def propose(provider,folder,base,history,images,site):
         folder.mkdir()
+        if route=='design':
+            write_json(folder/'decision.json',{'activated':False,'status':'fix-design','reason':'Existing API is sufficient'})
+            return None
         kit=kit_evolution.snapshot(folder/'runtime')
         write_json(folder/'permissions.json',{'added_methods':[], 'consumer_required':True})
         write_json(folder/'exercise.json',{'method':'roof','options':{'newOption':True}})
@@ -57,13 +63,19 @@ def test_consumer_repairs_new_option_usage_before_rewriting_kit(tmp_path, monkey
 
     run=tmp_path/'run'
     result=adaptive.evolve_design(source,run,None,provider=Provider())
-    assert [c[0] for c in calls]==['kit-consumer-0','kit-consumer-repair-0']
-    assert calls[1][1]['build_error']=='RUNTIME: KIT_INVALID_WING_RECTANGLE'
-    assert result['cycles'][0]['activated']
+    assert [c[0] for c in calls]==(['kit-consumer-0','kit-consumer-repair-0'] if route=='kit' else ['design-repair-0'])
+    if route=='kit':
+        assert calls[1][1]['build_error']=='RUNTIME: KIT_INVALID_WING_RECTANGLE'
+        assert result['cycles'][0]['activated']
+    else:
+        assert result['cycles'][0]['selected'] and not result['cycles'][0]['kit_modified']
     assert result['shared_runtime_unchanged']
     # A relative improvement still falls below the absolute detail threshold.
     assert not result['accepted']
-    assert result['selected_render'].endswith('render-repair')
-    manifest=json.loads((run/'active-kit.json').read_text())
-    assert manifest['scope']=='run-local'
-    assert kit_evolution.copy_active_version(run/'active-kit.json',tmp_path/'reuse').exists()
+    assert result['selected_render'].endswith('render-repair' if route=='kit' else 'design-repair')
+    if route=='kit':
+        manifest=json.loads((run/'active-kit.json').read_text())
+        assert manifest['scope']=='run-local'
+        assert kit_evolution.copy_active_version(run/'active-kit.json',tmp_path/'reuse').exists()
+    else:
+        assert not (run/'active-kit.json').exists()

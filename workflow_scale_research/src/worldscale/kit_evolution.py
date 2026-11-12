@@ -99,12 +99,19 @@ def propose(provider, folder, base_kit, history, images, site):
     implementation={name:methods(source)[name] for name in relevant}
     if 'roof' in relevant:
         implementation['roofY']=methods(source)['roofY']
+    known_helpers={'_add','_material','_loft','_box','_prism','_world','_facadeMaterial','_edgeFrame'}
+    referenced=set(re.findall(r'this\.(_\w+)\(', '\n'.join(implementation.values())))-known_helpers
+    implementation.update({name:methods(source)[name] for name in referenced if name in methods(source)})
+    version_path=base_kit.parent/'version.json'
+    version=json.loads(version_path.read_text(encoding='utf-8')) if version_path.exists() else {}
     plan = provider.call('kit-gap-' + folder.name,
         'Triage rejected 3D designs. Return {"action":"develop-kit|fix-design|need-evidence", "reason":..., "capability":..., "methods":[up to 3 existing method names], "tests":[concrete geometry/visual requirements]}. Only request kit development when the API/implementation cannot express the observed architecture or repeated output defects prove a library bug. Existing permitted methods: '
         + json.dumps(sorted(PATCHABLE)) + '. The wall footprint, measured heights, camera, style and quality thresholds are protected. Never develop a Tokyo-specific primitive. Distinguish a real missing geometric capability from incorrect usage or uncertain scan data.\nHISTORY: '
         + json.dumps(history) + '\nSITE: ' + json.dumps(site)
         + '\nDECLARED CAPABILITIES (missing means not implemented, not a parameter issue): ' + (base_kit.parent/'capabilities.json').read_text(encoding='utf-8')
         + '\nRELEVANT ACTUAL IMPLEMENTATION: ' + json.dumps(implementation)
+        + '\nPINNED VERSION EXTENSIONS: '+json.dumps(version)
+        + '\nThe capability catalog can describe an older base version: its missing status must not override actual methods and extensions present in this pinned version. Do not repeatedly rebuild an operation already implemented by a versioned helper.'
         + '\nRepeated failures across designs can justify a reusable kit capability even though arbitrary custom geometry is technically possible. Do not ask to implement an operation already present; identify what its current implementation cannot express. Historical versions may differ from this pinned source.'
         + '\nAPI INDEX: ' + (base_kit.parent / 'kit-api.md').read_text(encoding='utf-8'), images, 1800)
     write_json(folder / 'triage.json', plan)
