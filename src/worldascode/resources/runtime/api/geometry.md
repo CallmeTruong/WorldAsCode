@@ -1,0 +1,5 @@
+- `b.box(frame, {w, h, d, y = 0, dx = 0, dz = 0, material})`
+- `b.cylinder(frame, {r, rTop, h, y, sides, material})`, `b.cone(frame, {r, h, y, sides, material})`
+- `b.prism(frame, {profile: [[x, y], ...], depth, y, dz, material})` — a vertical profile extruded inward.
+- `b.loft([{y, points: [[x, z], ...]}, ...], material)` — horizontal rings joined by flat faces.
+- `b.add(object3D, frame)` with `b.THREE` for fully custom meshes.

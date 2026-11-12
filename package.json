@@ -1,0 +1,14 @@
+{
+  "name": "worldascode-runtime",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "three": "0.183.2",
+    "esbuild": "0.28.2",
+    "acorn": "8.15.0",
+    "cesium": "1.147.0"
+  },
+  "scripts": {
+    "check": "node --check src/worldascode/resources/runtime/viewer.mjs"
+  }
+}

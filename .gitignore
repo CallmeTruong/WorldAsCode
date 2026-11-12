@@ -10,3 +10,9 @@
 workflow_research/vendor/
 workflow_research/.cache/
 workflow_research/runs/
+.worldascode/
+dist/
+build/
+kit_library/grants/
+kit_library/submissions/
+kit_library/workflow-profile.json

@@ -1,0 +1,4 @@
+- `b.window(frame, {width, height, y, trimMaterial, glass, trimWidth = 0.13, mullions: [2,2], pediment: 'triangular' | 'flat', keystone, out = 0.06})` — modeled jambs, lintel, sill, glass and mullions. Use per floor/edge with `walls({windows:false,...})`; upper-floor ornament may differ. Glass is a separate surface; no actual wall recess is claimed.
+- `b.bay(frame, {width, depth, height, y = 0, storeys, material, glass, roofMaterial, roofHeight})` — a mass projecting out of the facade.
+- `b.portal(frame, {width, height, depth, arch = true, material, door, steps})` — entrance surround.
+- `b.pilasters(which, {count | spacing, width, out, height, material})`, `b.quoins({size, height, material})`.

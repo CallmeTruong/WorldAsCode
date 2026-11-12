@@ -1,0 +1,297 @@
+{
+  "schema": "worldascode-kit-package-1",
+  "id": "buildings",
+  "api_version": "1",
+  "source_sha256": "cfd118f838204f9cd078901d93fee3aa268481b6f2dc2e35df3f6173e68814f1",
+  "api_sha256": "c32d7b5dfe7ff0bf059bfc9166fcf10d130c5969d1727499329f7ae76369a639",
+  "exports": [
+    "material",
+    "edge",
+    "along",
+    "at",
+    "walls",
+    "band",
+    "roof",
+    "roofY",
+    "box",
+    "cylinder",
+    "cone",
+    "prism",
+    "loft",
+    "add",
+    "dormer",
+    "chimney",
+    "gable",
+    "window",
+    "turret",
+    "bay",
+    "portal",
+    "pilasters",
+    "quoins",
+    "ground",
+    "look"
+  ],
+  "dependencies": {
+    "constructor": [
+      "THREE",
+      "counts",
+      "edges",
+      "lookConfig",
+      "materials",
+      "parts",
+      "plan",
+      "roofProfile",
+      "root",
+      "site",
+      "style"
+    ],
+    "material": [
+      "materials",
+      "site"
+    ],
+    "_material": [
+      "materials"
+    ],
+    "_facadeMaterial": [
+      "_material",
+      "materials"
+    ],
+    "edge": [
+      "_edgeFrame",
+      "edges"
+    ],
+    "_edgeFrame": [],
+    "along": [
+      "_edgeFrame",
+      "edge",
+      "edges",
+      "site"
+    ],
+    "at": [],
+    "_add": [
+      "counts",
+      "parts",
+      "root"
+    ],
+    "_loft": [],
+    "walls": [
+      "_add",
+      "_facadeMaterial",
+      "_loft",
+      "_material",
+      "counts",
+      "plan",
+      "site",
+      "wallGuard",
+      "wallTop"
+    ],
+    "band": [
+      "_add",
+      "_loft",
+      "_material",
+      "plan",
+      "site"
+    ],
+    "roof": [
+      "_add",
+      "_loft",
+      "_material",
+      "plan",
+      "roofMesh",
+      "roofProfile",
+      "site",
+      "wallTop"
+    ],
+    "roofY": [
+      "edges",
+      "plan",
+      "roofProfile",
+      "site",
+      "wallTop"
+    ],
+    "_world": [],
+    "_box": [
+      "_material"
+    ],
+    "_prism": [
+      "_material"
+    ],
+    "box": [
+      "_add",
+      "_box"
+    ],
+    "cylinder": [
+      "_add",
+      "_material"
+    ],
+    "cone": [
+      "_add",
+      "_material"
+    ],
+    "prism": [
+      "_add",
+      "_prism"
+    ],
+    "loft": [
+      "_add",
+      "_loft",
+      "_material"
+    ],
+    "add": [
+      "_add"
+    ],
+    "dormer": [
+      "_add",
+      "_box",
+      "_material",
+      "_prism",
+      "_world",
+      "roofMesh",
+      "roofY"
+    ],
+    "chimney": [
+      "_add",
+      "_material",
+      "roofY"
+    ],
+    "gable": [
+      "_add",
+      "_box",
+      "_material",
+      "_prism",
+      "_world",
+      "roofMesh",
+      "roofY",
+      "site",
+      "wallTop"
+    ],
+    "window": [
+      "_add",
+      "_box",
+      "_prism"
+    ],
+    "turret": [
+      "_add",
+      "_material",
+      "site",
+      "wallTop"
+    ],
+    "bay": [
+      "_add",
+      "_box",
+      "_prism",
+      "site"
+    ],
+    "portal": [
+      "_add",
+      "_box",
+      "_prism"
+    ],
+    "pilasters": [
+      "along",
+      "box",
+      "site"
+    ],
+    "quoins": [
+      "at",
+      "box",
+      "plan",
+      "site"
+    ],
+    "ground": [
+      "_add",
+      "_loft",
+      "_material",
+      "plan"
+    ],
+    "look": [
+      "lookConfig"
+    ],
+    "finish": [
+      "counts",
+      "lookConfig",
+      "parts",
+      "root",
+      "wallGuard"
+    ]
+  },
+  "documents": [
+    {
+      "id": "core",
+      "methods": [
+        "along",
+        "at",
+        "edge",
+        "look",
+        "material",
+        "walls"
+      ],
+      "path": "api/core.md",
+      "sha256": "0d28045251f411b709ccc550984fafdc929f77df589ceb4d34dd8fa8304bf2b4"
+    },
+    {
+      "id": "shell",
+      "methods": [
+        "band",
+        "ground",
+        "walls"
+      ],
+      "path": "api/shell.md",
+      "sha256": "6f18fd157a2402b273c83dcc0668a367c761ce9b5382bd2d8ade01a9b12d5df0"
+    },
+    {
+      "id": "roofs",
+      "methods": [
+        "dormer",
+        "gable",
+        "roof",
+        "roofY"
+      ],
+      "path": "api/roofs.md",
+      "sha256": "1c6ccfc3530d2843356c2ee53e3dcbd229219b505173c5d6edddaf3266378de8"
+    },
+    {
+      "id": "facades",
+      "methods": [
+        "bay",
+        "pilasters",
+        "portal",
+        "quoins",
+        "window"
+      ],
+      "path": "api/facades.md",
+      "sha256": "ecfcdc372792904bea93cfd86fc83f2fc669aca236fa20d9ea6603d67053be34"
+    },
+    {
+      "id": "details",
+      "methods": [
+        "chimney",
+        "turret"
+      ],
+      "path": "api/details.md",
+      "sha256": "c6693063b6827fc6f040f5743065c456c553aac46be271cf219a14589097c27e"
+    },
+    {
+      "id": "geometry",
+      "methods": [
+        "add",
+        "box",
+        "cone",
+        "cylinder",
+        "loft",
+        "prism"
+      ],
+      "path": "api/geometry.md",
+      "sha256": "b2502ecbfc165acf40b13165eaf3dbaa76d7e3f6eb946ecdb21a2fa3a7daac50"
+    },
+    {
+      "id": "materials",
+      "methods": [
+        "material"
+      ],
+      "path": "api/materials.md",
+      "sha256": "d8ae00e9042ef32212995acc15a6c391d7dbb079ea8c8f1b9ac82e7387dc89c9"
+    }
+  ],
+  "validation_suite": "building-geometry-1"
+}

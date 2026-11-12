@@ -1,0 +1,2 @@
+- `b.chimney(frame, {width, depth, height, material, capMaterial, pots})` — hollow rectangular shaft/cap with open pots. `height` is above the roof at that point.
+- `b.turret(frame, {radius, sides = 8, y = 0, wallTop, roof: 'cone' | 'dome', roofHeight, material, roofMaterial, finial})` — `sides: 4` gives a square tower.

@@ -1,0 +1,2 @@
+# Runtime package manifests hash exact resource bytes on every platform.
+src/worldascode/resources/** -text whitespace=-blank-at-eof,cr-at-eol

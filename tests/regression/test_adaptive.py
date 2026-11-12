@@ -1,0 +1,146 @@
+"""Orchestration contracts; mocked scores do not establish visual quality."""
+
+import json
+
+import pytest
+
+import worldascode.kits.evolution as kit_evolution
+import worldascode.workflows.refinement as adaptive
+from worldascode.storage.artifacts import file_hash, write_json
+
+
+@pytest.mark.parametrize("route", ["kit", "design"])
+def test_consumer_repairs_new_option_usage_before_rewriting_kit(
+    tmp_path, monkeypatch, route
+):
+    source = tmp_path / "source"
+    (source / "attempt-0").mkdir(parents=True)
+    (source / "attempt-0/design.mjs").write_text("original design")
+    evidence = tmp_path / "evidence.json"
+    write_json(evidence, {"fixture": True})
+    write_json(
+        source / "result.json",
+        {"best_attempt": 0, "evidence_sha256": file_hash(evidence)},
+    )
+    write_json(source / "site.json", {})
+    write_json(source / "style.json", {})
+    write_json(source / "fit.json", {"evidence_path": str(evidence)})
+    (source / "reference-details.jpg").touch()
+    monkeypatch.setattr(
+        adaptive.georef, "load_evidence", lambda path: {"path": str(evidence)}
+    )
+    calls = []
+
+    def propose(provider, folder, base, history, images, site):
+        folder.mkdir()
+        if route == "design":
+            write_json(
+                folder / "decision.json",
+                {
+                    "activated": False,
+                    "status": "fix-design",
+                    "reason": "Existing API is sufficient",
+                },
+            )
+            return None
+        kit = kit_evolution.snapshot(folder / "runtime")
+        write_json(
+            folder / "permissions.json",
+            {"added_methods": [], "consumer_required": True},
+        )
+        write_json(
+            folder / "exercise.json", {"method": "roof", "options": {"newOption": True}}
+        )
+        write_json(folder / "proposal.json", {"requires_design_update": True})
+        return kit
+
+    monkeypatch.setattr(adaptive.kit_evolution, "propose", propose)
+    monkeypatch.setattr(adaptive, "regressions", lambda *a: [{"passed": True}])
+
+    def author(provider, node, site, style, images, previous, feedback, kit_api):
+        calls.append((node, feedback))
+        return {"code": "repaired caller" if "repair" in node else "invalid caller"}
+
+    def render(folder, code, *args, **kwargs):
+        folder.mkdir(parents=True)
+        (folder / "design.mjs").write_text(code)
+        if code == "invalid caller":
+            return None, "RUNTIME: KIT_INVALID_WING_RECTANGLE"
+        return {"passed": True, "mean_oblique_iou": 0.88}, None
+
+    def critic(provider, node, *args):
+        return {
+            "likeness": 0.6,
+            "style": 0.6,
+            "detail": 0.4 if "baseline" in node else 0.48,
+        }
+
+    monkeypatch.setattr(adaptive.design, "author", author)
+    monkeypatch.setattr(adaptive.design, "render_attempt", render)
+    monkeypatch.setattr(adaptive.design, "critic", critic)
+    publications = []
+    from worldascode.kits.registry import Library as RealLibrary
+
+    class Library:
+        def pin(self, destination):
+            return RealLibrary().pin(destination)
+
+        def submit(self, manifest, package, token):
+            assert token == "host-only-grant" and manifest.is_file()
+            publications.append("submit")
+            return {"id": "submission"}
+
+        def validate(self, submission):
+            publications.append("validate")
+            return {"incubating_eligible": True}
+
+        def promote(self, submission, channel, token, set_default):
+            publications.append(channel)
+            return {"channel": channel, "default_changed": set_default}
+
+    monkeypatch.setattr("worldascode.kits.registry.Library", Library)
+
+    class Provider:
+        usage = {}
+
+        def save(self):
+            pass
+
+    run = tmp_path / "run"
+    result = adaptive.evolve_design(
+        source,
+        run,
+        None,
+        provider=Provider(),
+        publish_kit=True,
+        kit_grant="host-only-grant",
+    )
+    assert [c[0] for c in calls] == (
+        ["kit-consumer-0", "kit-consumer-repair-0"]
+        if route == "kit"
+        else ["design-repair-0"]
+    )
+    if route == "kit":
+        assert calls[1][1]["build_error"] == "RUNTIME: KIT_INVALID_WING_RECTANGLE"
+        assert result["cycles"][0]["activated"]
+    else:
+        assert (
+            result["cycles"][0]["selected"] and not result["cycles"][0]["kit_modified"]
+        )
+    assert result["shared_runtime_unchanged"]
+    # A relative improvement still falls below the absolute detail threshold.
+    assert not result["accepted"]
+    assert result["selected_render"].endswith(
+        "render-repair" if route == "kit" else "design-repair"
+    )
+    if route == "kit":
+        manifest = json.loads((run / "active-kit.json").read_text())
+        assert manifest["scope"] == "run-local"
+        assert kit_evolution.copy_active_version(
+            run / "active-kit.json", tmp_path / "reuse"
+        ).exists()
+        assert publications == ["submit", "validate", "incubating"]
+        assert result["shared_publication"]["default_changed"]
+    else:
+        assert not (run / "active-kit.json").exists()
+        assert publications == []

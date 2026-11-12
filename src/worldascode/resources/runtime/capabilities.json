@@ -1,0 +1,16 @@
+{
+  "schema": "world-kit-capabilities-1",
+  "scope": "building authoring subset; not a complete urban SDK",
+  "capabilities": {
+    "walls.measured_plan": {"status": "implemented", "method": "walls"},
+    "roof.single_offset_profile": {"status": "implemented", "method": "roof"},
+    "roof.local_gable_attachment": {"status": "implemented", "method": "gable"},
+    "roof.local_dormer_attachment": {"status": "implemented", "method": "dormer"},
+    "roof.frame_rectangle_opening": {"status": "implemented", "method": "dormer"},
+    "roof.continuous_multi_wing_ridge_valley_graph": {"status": "missing", "method": "roof"},
+    "facade.modeled_surround": {"status": "implemented", "method": "window"},
+    "facade.true_wall_recess": {"status": "missing", "method": "window"},
+    "chimney.hollow_flue": {"status": "implemented", "method": "chimney"},
+    "geometry.custom_mesh": {"status": "implemented", "method": "add", "note": "Custom geometry is an escape hatch, not proof that a reusable architectural operation already exists."}
+  }
+}

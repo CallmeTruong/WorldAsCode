@@ -1,0 +1,37 @@
+# Relative paths follow this file; secrets belong in .env or environment variables.
+[paths]
+data_dir = ".worldascode"
+node_modules = "node_modules"
+
+[llm]
+default_provider = "primary"
+timeout_seconds = 240
+
+[llm.providers.primary]
+base_url = "" # OPENAI_BASE_URL overrides this value.
+api_key_env = "OPENAI_API_KEY"
+
+# Unset role models inherit default. Provider endpoints must support chat/completions.
+[models]
+default = "gpt-6-sol"
+observer = ""
+style = ""
+author = ""
+critic = ""
+kit_developer = ""
+planner = ""
+
+# Example: critic = "secondary" routes critics to [llm.providers.secondary].
+[model_providers]
+
+[budgets]
+max_tokens = 220000
+max_revisions = 1
+max_kit_cycles = 1
+
+[capture]
+viewer_url = "http://127.0.0.1:8767/"
+width = 1440
+height = 1080
+ready_timeout_s = 120
+solar_noon_date = "2026-06-21"
