@@ -7,6 +7,20 @@ from worldascode.contracts.execution import RunOutcome, normalize_result
 from worldascode.storage.artifacts import write_json
 
 
+def load_massing_map(path):
+    if path is None:
+        return {}
+    mapping = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(mapping, dict) or any(
+        not isinstance(v, str) for v in mapping.values()
+    ):
+        raise ValueError("MASSING_MAP_REQUIRES_ENTITY_TO_PATH_OBJECT")
+    return {
+        entity_id: (path.parent / value).resolve()
+        for entity_id, value in mapping.items()
+    }
+
+
 def main(argv=None):
     import os
 
@@ -29,6 +43,145 @@ def main(argv=None):
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("demo")
     p.add_argument("--run", type=Path, default=paths().runs_dir / "semantic-demo")
+    p = sub.add_parser(
+        "area-restyle",
+        help="Reuse observed facts and recipes with live style switching; no model calls",
+    )
+    p.add_argument("--source-run", type=Path, required=True)
+    p.add_argument("--run", type=Path, required=True)
+    p.add_argument(
+        "--style",
+        action="append",
+        help="Repeat a preset name or JSON profile path; default illustrated, pastel, neon-night, clay",
+    )
+    p.add_argument(
+        "--recipes-from",
+        type=Path,
+        help="Retained area-style run; reuse its actual authored JavaScript instead of builtin recipes",
+    )
+    p = sub.add_parser(
+        "area-style",
+        help="Author and review reusable procedural recipes from user style references",
+    )
+    p.add_argument("--source-run", type=Path, required=True)
+    p.add_argument(
+        "--styles",
+        type=Path,
+        required=True,
+        help="Style image or directory of style images",
+    )
+    p.add_argument("--run", type=Path, required=True)
+    p.add_argument("--max-rounds", type=int, default=1)
+    p.add_argument("--max-tokens", type=int, default=defaults.get("max_tokens", 220000))
+    p.add_argument("--reuse-pack", type=Path)
+    p.add_argument(
+        "--projection",
+        choices=["perspective", "orthographic"],
+        help="Override style overview projection; source camera pairs remain calibrated perspective",
+    )
+    p.add_argument(
+        "--initial-run",
+        type=Path,
+        help="Review/repair retained authored recipes without regenerating them",
+    )
+    p.add_argument("--require-quality", action="store_true")
+    for command in ("area", "area-capture"):
+        p = sub.add_parser(
+            command,
+            help="Build a complete mapped area"
+            if command == "area"
+            else "Capture an area height grid and calibrated source views",
+        )
+        p.add_argument("--latitude", type=float, required=True)
+        p.add_argument("--longitude", type=float, required=True)
+        p.add_argument("--radius", type=float, default=200)
+        if command == "area":
+            p.add_argument("--run", type=Path, required=True)
+            p.add_argument(
+                "--osm",
+                type=Path,
+                help="Offline OSM XML snapshot; otherwise fetch and cache map data",
+            )
+            p.add_argument("--measurements", type=Path)
+            p.add_argument("--palette", type=Path, help="JSON palette overrides")
+            p.add_argument(
+                "--surface",
+                choices=("recipes", "observed", "measured"),
+                default="recipes",
+                help="recipes: class recipes and a fixed palette. observed: procedural, with "
+                "masses, facade tones, glazing and ground colours taken from the measurement "
+                "views and rendered in --style. measured: reprojected capture imagery, for "
+                "comparison only. observed and measured need --measurements",
+            )
+            p.add_argument(
+                "--style",
+                default="faithful",
+                help="Preset (faithful, illustrated, pastel, neon-night, clay) or a JSON style "
+                "file; used with --surface observed",
+            )
+        else:
+            p.add_argument("--out", type=Path, required=True)
+            p.add_argument("--step", type=float, default=3)
+            p.add_argument("--viewer-url", default=None)
+    p = sub.add_parser(
+        "region-plan",
+        help="Partition a registry into close-view cells of at most five objects",
+    )
+    p.add_argument("--scene", type=Path, required=True)
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument(
+        "--cell-size",
+        type=float,
+        default=80,
+        help="Maximum horizontal span in metres; larger single entities remain whole",
+    )
+    p.add_argument("--max-entities", type=int, default=5)
+    p = sub.add_parser(
+        "region-baseline", help="Render registry shells without LLM or source imagery"
+    )
+    p.add_argument("--scene", type=Path, required=True)
+    p.add_argument("--run", type=Path, required=True)
+    p.add_argument(
+        "--massing-evidence-map",
+        type=Path,
+        help="JSON object mapping entity ID to calibrated building evidence.json; paths relative to the map",
+    )
+    p = sub.add_parser(
+        "region",
+        help="Observe a region, request source views and repair addressed entity scripts",
+    )
+    p.add_argument("--scene", type=Path, required=True)
+    p.add_argument("--run", type=Path, required=True)
+    p.add_argument(
+        "--massing-evidence-map",
+        type=Path,
+        help="Fit building massing from calibrated evidence bundles before detailing",
+    )
+    p.add_argument("--styles", type=Path)
+    p.add_argument(
+        "--reference-photos",
+        type=Path,
+        help="JSON list of entity/surface-bound roof or facade photographs; camera alignment is not assumed",
+    )
+    p.add_argument("--max-rounds", type=int, default=2)
+    p.add_argument("--max-captures", type=int, default=12)
+    p.add_argument(
+        "--initial-run",
+        type=Path,
+        help="Re-evaluate pinned entity scripts from a prior run in a NEW output directory",
+    )
+    p.add_argument("--max-cell-span", type=float, default=80)
+    p.add_argument(
+        "--evidence",
+        type=Path,
+        nargs="*",
+        default=[],
+        help="Previously captured evidence.json manifests in this exact region frame",
+    )
+    p.add_argument("--max-tokens", type=int, default=defaults.get("max_tokens", 220000))
+    p.add_argument("--max-pack-cycles", type=int, default=1)
+    p.add_argument("--pack", type=Path, action="append", default=[])
+    p.add_argument("--require-quality", action="store_true")
     p = sub.add_parser(
         "object",
         help="Author, render, review and refine a non-building object or small scene",
@@ -224,6 +377,213 @@ def main(argv=None):
         "doctor", help="Check installed runtime dependencies without provider requests"
     )
     args = parser.parse_args(argv)
+    if args.command == "area-restyle":
+        from worldascode.workflows.area_variants import run_area_variants
+
+        profiles = [
+            json.loads(Path(p).read_text(encoding="utf-8"))
+            if p.endswith(".json")
+            else p
+            for p in (args.style or ["illustrated", "pastel", "neon-night", "clay"])
+        ]
+        result = run_area_variants(
+            args.source_run, profiles, args.run, args.recipes_from
+        )
+        print(json.dumps(result, ensure_ascii=False))
+        return 0 if result["execution_status"] == "completed" else 2
+    if args.command == "area":
+        from worldascode.workflows.area import run_area
+
+        result = run_area(
+            args.latitude,
+            args.longitude,
+            args.radius,
+            args.run,
+            measurements=args.measurements,
+            palette=json.loads(args.palette.read_text(encoding="utf-8"))
+            if args.palette
+            else None,
+            osm=args.osm,
+            surface=args.surface,
+            style=json.loads(Path(args.style).read_text(encoding="utf-8"))
+            if args.style.endswith(".json")
+            else args.style,
+        )
+        print(json.dumps(result, ensure_ascii=False))
+        return 0 if result.get("execution_status") == "completed" else 2
+    if args.command == "area-style":
+        from worldascode.workflows.area_style import run_area_style
+
+        styles = (
+            sorted(
+                p
+                for p in args.styles.iterdir()
+                if p.suffix.lower() in {".png", ".jpg", ".jpeg"}
+            )
+            if args.styles.is_dir()
+            else [args.styles]
+        )
+        result = run_area_style(
+            args.source_run,
+            styles,
+            args.run,
+            max_rounds=args.max_rounds,
+            max_tokens=args.max_tokens,
+            reuse_pack=args.reuse_pack,
+            initial_run=args.initial_run,
+            projection=args.projection,
+        )
+        print(json.dumps(result, ensure_ascii=False))
+        return (
+            0
+            if result["execution_status"] == "completed"
+            and (not args.require_quality or result["accepted"])
+            else 2
+        )
+    if args.command == "area-capture":
+        from worldascode.adapters.geospatial.area_capture import capture_area
+
+        result = capture_area(
+            args.latitude,
+            args.longitude,
+            args.radius,
+            args.out,
+            step=args.step,
+            url=args.viewer_url,
+        )
+        print(json.dumps(result, ensure_ascii=False))
+        return 0 if result["execution_status"] == "completed" else 2
+    if args.command == "region-plan":
+        from worldascode.contracts.region import Region
+        from worldascode.evidence.region_focus import partition_region, union_bounds
+
+        scene = Region.model_validate(
+            json.loads(args.scene.read_text(encoding="utf-8"))
+        )
+        cells = partition_region(scene, args.cell_size, args.max_entities)
+        args.out.mkdir(parents=True, exist_ok=False)
+        rows = []
+        for number, cell in enumerate(cells):
+            path = args.out / f"cell-{number:03d}.json"
+            write_json(path, cell.model_dump(mode="json"))
+            b = union_bounds(cell.entities)
+            rows.append(
+                {
+                    "cell_id": cell.id,
+                    "path": str(path.resolve()),
+                    "entity_ids": [e.id for e in cell.entities],
+                    "bounds": b.model_dump(mode="json"),
+                    "oversized_single_entity": len(cell.entities) == 1
+                    and max(b.max[i] - b.min[i] for i in [0, 2]) > args.cell_size,
+                }
+            )
+        write_json(
+            args.out / "cells.json",
+            {
+                "source_region": scene.id,
+                "frame": scene.origin.model_dump(),
+                "cell_size_m": args.cell_size,
+                "max_entities": args.max_entities,
+                "cells": rows,
+            },
+        )
+        print(
+            json.dumps({"cells": len(rows), "manifest": str(args.out / "cells.json")})
+        )
+        return 0
+    if args.command == "region-baseline":
+        from worldascode.workflows.region_massing import run_baseline
+
+        result = run_baseline(
+            json.loads(args.scene.read_text(encoding="utf-8")),
+            args.run,
+            massing_evidence=load_massing_map(args.massing_evidence_map),
+        )
+        print(json.dumps(result, ensure_ascii=False))
+        return 0 if result["execution_status"] == "completed" else 2
+    if args.command == "region":
+        from worldascode.workflows.regions import run_region
+
+        styles = (
+            sorted(
+                p
+                for p in args.styles.iterdir()
+                if p.suffix.lower() in {".png", ".jpg", ".jpeg"}
+            )
+            if args.styles
+            else []
+        )
+        if len(styles) > 6:
+            parser.error("At most six style references per region run")
+        scene = json.loads(args.scene.read_text(encoding="utf-8"))
+        if args.initial_run and args.massing_evidence_map:
+            parser.error(
+                "Use a new design run when fitting massing; prior scripts belong to the old geometry"
+            )
+        resume = {}
+        if args.initial_run:
+            from worldascode.contracts.region import Region
+            from worldascode.storage.artifacts import digest
+
+            source = args.initial_run.resolve()
+            prior = Region.model_validate(
+                json.loads((source / "region.json").read_text(encoding="utf-8"))
+            )
+            if digest(prior.model_dump(mode="json")) != digest(
+                Region.model_validate(scene).model_dump(mode="json")
+            ):
+                parser.error(
+                    "Initial run must use the exact same region registry/frame"
+                )
+            outcome = json.loads((source / "result.json").read_text(encoding="utf-8"))
+            selected = Path(outcome.get("selected_render") or "")
+            if not selected.is_absolute() or not selected.resolve().is_relative_to(
+                source
+            ):
+                parser.error("Initial run has no retained render inside its run folder")
+            resume = {
+                "initial_scripts": json.loads(
+                    (selected / "scripts.json").read_text(encoding="utf-8")
+                ),
+                "initial_observation": json.loads(
+                    (source / "observation.json").read_text(encoding="utf-8")
+                )
+                if (source / "observation.json").exists()
+                else None,
+                "initial_building_plans": json.loads(
+                    (selected / "building-details.json").read_text(encoding="utf-8")
+                )
+                if (selected / "building-details.json").exists()
+                else None,
+                "initial_evidence": [
+                    json.loads(p.read_text(encoding="utf-8"))
+                    for p in sorted((source / "evidence").glob("*/evidence.json"))
+                ],
+            }
+        result = run_region(
+            scene,
+            args.run,
+            Settings.load(),
+            styles=styles,
+            max_rounds=args.max_rounds,
+            max_tokens=args.max_tokens,
+            max_captures=args.max_captures,
+            max_pack_cycles=args.max_pack_cycles,
+            extra_packs=args.pack,
+            initial_evidence=resume.pop("initial_evidence", None)
+            or [json.loads(p.read_text(encoding="utf-8")) for p in args.evidence],
+            max_cell_span=args.max_cell_span,
+            massing_evidence=load_massing_map(args.massing_evidence_map),
+            reference_photos=args.reference_photos,
+            **resume,
+        )
+        print(json.dumps(result, ensure_ascii=False))
+        return (
+            0
+            if result["execution_status"] == "completed"
+            and (not args.require_quality or result["accepted"])
+            else 2
+        )
     if args.command == "object-scale":
         from worldascode.workflows.scale_probe import probe_object
 

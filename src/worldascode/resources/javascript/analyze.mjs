@@ -17,7 +17,18 @@ const walk=(node,visit)=>{
 const memberName=node=>!node.computed&&node.property.type==='Identifier'?node.property.name:
   node.computed&&node.property.type==='Literal'&&typeof node.property.value==='string'?node.property.value:null;
 const methods=Object.create(null),api=new Set(),imports=[],dynamic=[],packParts=[],hostMembers=new Set(),optionNames=new Set();let hasDynamicImport=false;
+const materialLiteralErrors=[];
 walk(tree,node=>{
+  if(node.type==='CallExpression'&&node.callee.type==='MemberExpression'&&node.callee.object.type==='Identifier'&&node.callee.object.name==='b'){
+    const method=memberName(node.callee),keys=new Set(['material','roofMaterial','trimMaterial','capMaterial','finialMaterial','glass','frame','spandrel','louvers']);
+    for(const argument of node.arguments)if(argument.type==='ObjectExpression')for(const property of argument.properties){
+      if(property.type!=='Property')continue;const name=property.key.name??property.key.value,value=property.value;
+      if(keys.has(name)&&value.type==='Literal'&&typeof value.value==='boolean'){
+        const disabled=value.value===false&&((method==='mechanical'&&name==='louvers')||(['volume','railing'].includes(method)&&name==='glass'));
+        if(!disabled)materialLiteralErrors.push({method,option:name,value:value.value});
+      }
+    }
+  }
   if(node.type==='ImportDeclaration')imports.push(node.source.value);
   if(node.type==='ImportExpression')hasDynamicImport=true;
   if(node.type==='MemberExpression'&&node.object.type==='Identifier'&&['o','options'].includes(node.object.name)){const name=memberName(node);if(name)optionNames.add(name);}
@@ -57,6 +68,6 @@ walk(tree,node=>{
     if(name)api.add(name);else dynamic.push({start:node.start,end:node.end});
   }
 });
-console.log(JSON.stringify({methods,public_methods:Object.keys(methods).filter(n=>n!=='constructor'&&!n.startsWith('_')&&n!=='finish'),
+console.log(JSON.stringify({methods,material_literal_errors:materialLiteralErrors,public_methods:Object.keys(methods).filter(n=>n!=='constructor'&&!n.startsWith('_')&&n!=='finish'),
   api_methods:[...api].sort(),dynamic_api_access:dynamic.length>0,imports,
   pack_parts:packParts,host_members:[...hostMembers].sort(),option_names:[...optionNames].sort(),dynamic_import:hasDynamicImport}));

@@ -2,8 +2,8 @@
   "schema": "worldascode-kit-package-1",
   "id": "buildings",
   "api_version": "1",
-  "source_sha256": "92d02b558eeaa371a20eeb72fabd9d0447fbcebb20339d7cf2eb44782be92089",
-  "api_sha256": "8b2f6fcfe35bcb3328d987a732f666dcb082545c9cafd0c86c77be08d5e6649a",
+  "source_sha256": "9c4a8874aeb27bf25829b07be523c52bea23ac01fce572ca174f0eda0481b57d",
+  "api_sha256": "6ce430c71b18ecfac9465b689ca769ff6dce2b097830b44c12cdf058ae026685",
   "exports": [
     "material",
     "edge",
@@ -433,7 +433,7 @@
         "walls"
       ],
       "path": "api/shell.md",
-      "sha256": "d081d391543a4b7ad70a63499c9cf19b86f6c830baa582240054181679ec768f"
+      "sha256": "a67bacfd301f95ce1648561cacf728a3599503ea6e3f1cd46f256114dadbc0dc"
     },
     {
       "id": "roofs",
@@ -465,7 +465,7 @@
         "turret"
       ],
       "path": "api/details.md",
-      "sha256": "c6693063b6827fc6f040f5743065c456c553aac46be271cf219a14589097c27e"
+      "sha256": "e99687e4ea7d80bb9f47bc47f9cd241252b2eba4598ae72dae190bc8a07be48b"
     },
     {
       "id": "massing",
@@ -517,7 +517,7 @@
         "tank"
       ],
       "path": "api/rooftop.md",
-      "sha256": "b54470f8afe0957409ad5784ce0a31d0536d48b17f626afdeff2f8025724dc06"
+      "sha256": "3eafa72f36bfc870c8c5566dec168fb8f15b90e92c0fc5d469a3523c0afa06c5"
     },
     {
       "id": "geometry",

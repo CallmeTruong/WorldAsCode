@@ -2,7 +2,7 @@ let viewer,tileset,configuration;
 const evidence={tileLoads:0,tileFailures:0,renderErrors:0,selectedTiles:0,tilesLoaded:false};
 window.googleEvidenceStats=()=>({...evidence,tilesLoaded:tileset?.tilesLoaded||false,selectedTiles:tileset?._selectedTiles?.length||0,
   source:'Google Photorealistic 3D Tiles via Cesium ion',sdk:Cesium.VERSION,
-  camera:viewer?{longitude:Cesium.Math.toDegrees(viewer.camera.positionCartographic.longitude),latitude:Cesium.Math.toDegrees(viewer.camera.positionCartographic.latitude),height:viewer.camera.positionCartographic.height,position_ecef:[viewer.camera.positionWC.x,viewer.camera.positionWC.y,viewer.camera.positionWC.z],direction_ecef:[viewer.camera.directionWC.x,viewer.camera.directionWC.y,viewer.camera.directionWC.z],up_ecef:[viewer.camera.upWC.x,viewer.camera.upWC.y,viewer.camera.upWC.z],view_matrix:Cesium.Matrix4.toArray(viewer.camera.viewMatrix),projection_matrix:Cesium.Matrix4.toArray(viewer.camera.frustum.projectionMatrix),viewport:[viewer.canvas.width,viewer.canvas.height],origin:{longitude:configuration.longitude,latitude:configuration.latitude,height:0}}:null});
+  camera:viewer?{longitude:Cesium.Math.toDegrees(viewer.camera.positionCartographic.longitude),latitude:Cesium.Math.toDegrees(viewer.camera.positionCartographic.latitude),height:viewer.camera.positionCartographic.height,position_ecef:[viewer.camera.positionWC.x,viewer.camera.positionWC.y,viewer.camera.positionWC.z],direction_ecef:[viewer.camera.directionWC.x,viewer.camera.directionWC.y,viewer.camera.directionWC.z],up_ecef:[viewer.camera.upWC.x,viewer.camera.upWC.y,viewer.camera.upWC.z],view_matrix:Cesium.Matrix4.toArray(viewer.camera.viewMatrix),projection_matrix:Cesium.Matrix4.toArray(viewer.camera.frustum.projectionMatrix),viewport:[viewer.canvas.width,viewer.canvas.height],fov_vertical_deg:Cesium.Math.toDegrees(viewer.camera.frustum.fovy),origin:{longitude:configuration.longitude,latitude:configuration.latitude,height:0}}:null});
 window.setEvidenceView=(heading=0,pitch=-30,range=260)=>{
  const center=Cesium.Cartesian3.fromDegrees(configuration.longitude,configuration.latitude,configuration.target_height||15);
  viewer.camera.lookAt(center,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading),Cesium.Math.toRadians(pitch),range));
@@ -30,6 +30,17 @@ window.clipEvidenceFootprint=(coordinates)=>{
  if(!coordinates){if(tileset.clippingPolygons)tileset.clippingPolygons.enabled=false;return;}
  tileset.clippingPolygons=new Cesium.ClippingPolygonCollection({polygons:[new Cesium.ClippingPolygon({positions:Cesium.Cartesian3.fromDegreesArray(coordinates.flat())})],inverse:true});
  viewer.scene.requestRender();
+};
+// Surface positions under a pixel grid of the current frame, read from the depth buffer.
+// Returns flat [longitude, latitude, height, ...] in degrees and metres; far faster than
+// most-detailed height sampling when a whole area is needed.
+window.pickEvidenceGrid=(step=4,x0=0,y0=0,x1=null,y1=null)=>{
+ viewer.scene.render();const w=x1??viewer.canvas.clientWidth,h=y1??viewer.canvas.clientHeight,out=[];
+ for(let y=y0+step/2;y<h;y+=step)for(let x=x0+step/2;x<w;x+=step){
+  const p=viewer.scene.pickPosition(new Cesium.Cartesian2(x,y));if(!p)continue;
+  const c=Cesium.Cartographic.fromCartesian(p);if(!Number.isFinite(c.height))continue;
+  out.push(Cesium.Math.toDegrees(c.longitude),Cesium.Math.toDegrees(c.latitude),c.height);}
+ return out;
 };
 window.sampleEvidenceHeights=async(points)=>{
  const samples=points.map(p=>Cesium.Cartographic.fromDegrees(p[0],p[1]));

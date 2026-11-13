@@ -41,7 +41,7 @@ Write one ES module: `export function design(site, b, style) { ... }`. No import
 
 ## Main masses
 
-- `b.walls({material, height = site.eave_m, storeys = site.storeys, bay = 3.2, window: {w, h, sill, arch, mullions: [cols, rows], frame, glass, glow}, course, windows = true})` — `bay` is window spacing in metres; `w`/`h`/`sill` are fractions of a bay/storey; `course` is a colour for a line at each floor.
+- `b.walls({material, height = site.eave_m, storeys = site.storeys, bay = 3.2, window: {w, h, sill, arch, mullions: [cols, rows], frame, glass, glow}, course, windows = true})` — `bay` is window spacing in metres; `w`/`h`/`sill` are fractions of a bay/storey; `window.frame`, `window.glass`, and `course` accept CSS colours or declared b.material IDs for the facade texture. Other geometric APIs require declared material IDs.
 - `b.band({y, height = 0.4, out = 0.25, material})` — horizontal band around the whole outline (cornice, plinth, string course).
 - `b.roof({form: 'hip' | 'gable' | 'mansard' | 'flat', rise, overhang = 0.3, material, lowerFraction, lowerRun, parapet})` → `{ridgeY, eaveY}`. `rise` defaults to the measured ridge.
 - `b.ground({material, margin = 3})` — pavement slab around the building.
@@ -72,7 +72,7 @@ Write one ES module: `export function design(site, b, style) { ... }`. No import
 
 ## Rooftop (frames from `b.at(x, z)`; height defaults to the roof at that point)
 
-- `b.mechanical(frame, {width, depth, height, material, louvers})` — plant unit. `b.tank(frame, {radius, height, legs, material})`. `b.antenna(frame, {height, material})`.
+- `b.mechanical(frame, {width, depth, height, material, louvers})` — plant unit. `material` and optional `louvers` are declared string material IDs; `louvers: 'frame'` adds louvers using that material, omit/false disables them. Never pass `louvers: true`. `b.tank(frame, {radius, height, legs, material})`. `b.antenna(frame, {height, material})`.
 - `b.skylight(frame, {width, depth, rise, glass, frame})`, `b.dome(frame, {radius, rise, drum, material, drumMaterial})`, `b.spire(frame, {radius, height, sides, material})`.
 - `b.railing(which, {material, glass, height = 1.05, inset, y, spacing})` — guard rail along edges at roof or terrace level.
 
@@ -82,7 +82,7 @@ Write one ES module: `export function design(site, b, style) { ... }`. No import
 - `b.gable(frame, {width, height, depth, stem = 0, material, roofMaterial, trimMaterial, trimWidth, glass, maxDepth})` — the facade rises above the eave into a peaked gable whose roof runs level and inward until the host roof meets it (a closed cross roof, so a gable taller than the main ridge reads as a cross wing).
 - `b.window(frame, {width, height, y, trimMaterial, glass, trimWidth = 0.13, mullions: [2,2], pediment: 'triangular' | 'flat', keystone, out = 0.06})` — modeled jambs, lintel, sill, glass and mullions. Use per floor/edge with `walls({windows:false,...})`; upper-floor ornament may differ. Glass is a separate surface; no actual wall recess is claimed.
 - `b.chimney(frame, {width, depth, height, material, capMaterial, pots})` — hollow rectangular shaft/cap with open pots. `height` is above the roof at that point.
-- `b.turret(frame, {radius, sides = 8, y = 0, wallTop, roof: 'cone' | 'dome', roofHeight, material, roofMaterial, finial})` — `sides: 4` gives a square tower.
+- `b.turret(frame, {radius, sides = 8, y = 0, wallTop, roof: 'cone' | 'dome', roofHeight, material, roofMaterial, finial})` — `sides: 4` gives a square tower. `wallTop` is the local shaft top; positive `roofHeight` is the cap rise for both cone and dome. The dome default rise is `radius * 1.05`; the cone default is `radius * 2.2`. A finial begins at the cap apex.
 - `b.bay(frame, {width, depth, height, y = 0, storeys, material, glass, roofMaterial, roofHeight})` — a mass projecting out of the facade.
 - `b.portal(frame, {width, height, depth, arch = true, material, door, steps})` — entrance surround.
 - `b.pilasters(which, {count | spacing, width, out, height, material})`, `b.quoins({size, height, material})`.

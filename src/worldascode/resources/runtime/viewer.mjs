@@ -22,7 +22,10 @@ export function mount(root,config={}) {
   document.getElementById('viewport').append(renderer.domElement);
   const bounds=new THREE.Box3().setFromObject(root),size=bounds.getSize(new THREE.Vector3()),centre=bounds.getCenter(new THREE.Vector3());
   const radius=Math.max(size.x,size.y,size.z,1);
-  const camera=new THREE.PerspectiveCamera(38,width/height,Math.max(radius/2000,.01),radius*100);
+  const nearPlane=config.near??Math.max(radius/2000,.01),farPlane=config.far??radius*100;
+  const perspectiveCamera=new THREE.PerspectiveCamera(38,width/height,nearPlane,farPlane);
+  const orthographicCamera=new THREE.OrthographicCamera(-1,1,1,-1,nearPlane,farPlane);
+  let camera=perspectiveCamera;
   const controls=new OrbitControls(camera,renderer.domElement);controls.target.copy(centre);
   const sky=new THREE.HemisphereLight(0xd6e5f2,0x777165,2);scene.add(sky);
   const sun=new THREE.DirectionalLight(0xfff0d8,3);sun.position.copy(centre).add(new THREE.Vector3(radius,radius*1.7,radius*.8));sun.castShadow=true;
@@ -31,10 +34,19 @@ export function mount(root,config={}) {
   if(config.isolated_stage){floor.visible=false;scene.background.set('#000000');}
   function draw(){controls.update();renderer.render(scene,camera);}
   // Exact evidence camera in the asset's metric frame: no search, no reframing.
-  function pose(c){renderer.setSize(c.render_width,c.render_height);camera.fov=c.fov_vertical_deg;camera.aspect=c.render_width/c.render_height;camera.near=.5;camera.far=20000;camera.updateProjectionMatrix();
-    camera.position.set(...c.position);controls.target.set(...c.target);camera.lookAt(controls.target);draw();}
-  function view(azimuth=35,elevation=28,scale=1) {if(camera.fov!==38||renderer.domElement.width!==width){renderer.setSize(width,height);camera.fov=38;camera.aspect=width/height;camera.near=Math.max(radius/2000,.01);camera.far=radius*100;camera.updateProjectionMatrix();controls.target.copy(centre);}
-    const a=azimuth*Math.PI/180,e=elevation*Math.PI/180;let distance=radius*1.9;const axis=new THREE.Vector3(Math.sin(a)*Math.cos(e),Math.sin(e),Math.cos(a)*Math.cos(e));
+  function pose(c){camera=perspectiveCamera;controls.object=camera;renderer.setSize(c.render_width,c.render_height);camera.fov=c.fov_vertical_deg;camera.aspect=c.render_width/c.render_height;camera.near=c.near??.5;camera.far=c.far??20000;camera.updateProjectionMatrix();
+    camera.position.set(...c.position);camera.up.set(...(c.up??[0,1,0]));controls.target.set(...c.target);camera.lookAt(controls.target);draw();}
+  function view(azimuth=35,elevation=28,scale=1) {
+    if(config.projection==='orthographic'){
+      camera=orthographicCamera;controls.object=camera;renderer.setSize(width,height);controls.target.copy(centre);
+      const a=azimuth*Math.PI/180,e=elevation*Math.PI/180;camera.position.copy(centre).addScaledVector(new THREE.Vector3(Math.sin(a)*Math.cos(e),Math.sin(e),Math.cos(a)*Math.cos(e)),radius*2);camera.up.set(0,1,0);camera.lookAt(centre);camera.zoom=1;
+      camera.left=-width/height;camera.right=width/height;camera.top=1;camera.bottom=-1;camera.updateProjectionMatrix();camera.updateMatrixWorld(true);
+      let extent=0;for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]){const p=new THREE.Vector3(x,y,z).project(camera);extent=Math.max(extent,Math.abs(p.x),Math.abs(p.y));}
+      const half=Math.max(1,extent)*1.06*scale;camera.left=-half*width/height;camera.right=half*width/height;camera.top=half;camera.bottom=-half;camera.updateProjectionMatrix();draw();return;
+    }
+    camera=perspectiveCamera;controls.object=camera;
+    if(camera.fov!==38||renderer.domElement.width!==width||camera.near!==nearPlane){renderer.setSize(width,height);camera.fov=38;camera.aspect=width/height;camera.near=nearPlane;camera.far=farPlane;camera.updateProjectionMatrix();controls.target.copy(centre);}
+    camera.up.set(0,1,0);const a=azimuth*Math.PI/180,e=elevation*Math.PI/180;let distance=radius*1.9;const axis=new THREE.Vector3(Math.sin(a)*Math.cos(e),Math.sin(e),Math.cos(a)*Math.cos(e));
     for(let iteration=0;iteration<(config.isolated_stage?4:1);iteration++){
       camera.position.copy(centre).addScaledVector(axis,distance);camera.lookAt(centre);camera.updateMatrixWorld(true);
       if(config.isolated_stage){let extent=0;for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]){const p=new THREE.Vector3(x,y,z).project(camera);extent=Math.max(extent,Math.abs(p.x),Math.abs(p.y));}distance*=Math.max(.65,Math.min(1.5,extent/.9));}
@@ -44,7 +56,8 @@ export function mount(root,config={}) {
   // A design may set its own daylight look; night and the isolated black stage are unchanged.
   const look={background:'#ccd6dc',ground:'#a5aaa5',sky:2,sun:3,exposure:1,...(root.userData.look??{})};
   renderer.toneMappingExposure=look.exposure;floor.material.color.set(look.ground);
-  function state(v){const s=applyState(root,v);renderer.shadowMap.autoUpdate=Number(s.wind??0)>0;renderer.shadowMap.needsUpdate=true;sky.intensity=s.night?.18:look.sky;sun.intensity=s.night?.12:look.sun;scene.environmentIntensity=s.night?.02:.45;scene.background.set(config.isolated_stage?'#000000':(s.night?'#101923':look.background));draw();return s;}
+  let currentState={hour:13,wetness:0,wind:0};
+  function state(v){currentState={...currentState,...v};for(const key of ['hour','wetness','wind']){const control=document.getElementById(key);if(control&&Number.isFinite(currentState[key]))control.value=currentState[key];}const s=applyState(root,currentState);renderer.shadowMap.autoUpdate=Number(s.wind??0)>0;renderer.shadowMap.needsUpdate=true;sky.intensity=s.night?.18:look.sky;sun.intensity=s.night?.12:look.sun;scene.environmentIntensity=s.night?.02:.45;scene.background.set(config.isolated_stage?'#000000':(s.night?'#101923':look.background));draw();return {...currentState,...s};}
   function lookdev(mode){renderer.shadowMap.needsUpdate=true;if(mode==='grazing'){sky.intensity=.35;sun.intensity=4;sun.position.copy(centre).add(new THREE.Vector3(radius*1.5,radius*.25,radius*.1));}else{sky.intensity=look.sky;sun.intensity=look.sun;sun.position.copy(centre).add(new THREE.Vector3(radius,radius*1.7,radius*.8));}draw();}
   function manifest(){let triangles=0,meshCount=0,geometryBytes=0;const parts=[],geometries=new Set(),materials=new Set();root.traverse(o=>{if(o.isMesh){meshCount++;const g=o.geometry;const positionCount=g?.attributes?.position?.count??0;triangles+=(g?.index?.count??positionCount)/3*(o.isInstancedMesh?o.count:1);for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);if(g&&!geometries.has(g)){geometries.add(g);geometryBytes+=(g.index?.array?.byteLength??0)+Object.values(g.attributes).reduce((n,a)=>n+(a.array?.byteLength??0),0);}parts.push({name:o.name,geometry:g?.uuid??null,position:o.getWorldPosition(new THREE.Vector3()).toArray()});}});return {triangles,parts,bounds:{min:bounds.min.toArray(),max:bounds.max.toArray()},probes:semanticProbes(root),performance:{meshCount,uniqueGeometries:geometries.size,uniqueMaterials:materials.size,geometryBytes,drawCalls:renderer.info.render.calls,textures:renderer.info.memory.textures,note:'One rendered frame; geometryBytes counts CPU attribute buffers, not total GPU memory or city throughput.'},profile:{three:THREE.REVISION,toneMapping:'ACESFilmic',exposure:renderer.toneMappingExposure,colorSpace:renderer.outputColorSpace,environment:'RoomEnvironment',environmentIntensity:scene.environmentIntensity}};}
   const partNodes=(root.userData.components??[]).map(v=>[v.instance+'/'+v.component.id,v.pivot]);
@@ -52,6 +65,23 @@ export function mount(root,config={}) {
   for(const asset of root.userData.factoryAssets??[])collectParts(asset,(asset.userData.instanceId??asset.name)+'/');
   if(!partNodes.length)collectParts(root,'');
   const originals=partNodes.map(([id,o])=>({id,o,local:o.position.clone(),world:o.getWorldPosition(new THREE.Vector3())}));
+  function replaceRoot(next){
+    if(!next?.isObject3D||next===root)throw Error('VIEWER_INVALID_REPLACEMENT');
+    const previous=root;scene.remove(previous);root=next;scene.add(root);root.updateMatrixWorld(true);
+    bounds.copy(new THREE.Box3().setFromObject(root));centre.copy(bounds.getCenter(new THREE.Vector3()));
+    partNodes.splice(0,partNodes.length,...(root.userData.components??[]).map(v=>[v.instance+'/'+v.component.id,v.pivot]));
+    if(!partNodes.length)collectParts(root,'');
+    originals.splice(0,originals.length,...partNodes.map(([id,o])=>({id,o,local:o.position.clone(),world:o.getWorldPosition(new THREE.Vector3())})));
+    for(const key of Object.keys(look))delete look[key];
+    Object.assign(look,{background:'#ccd6dc',ground:'#a5aaa5',sky:2,sun:3,exposure:1,...root.userData.look});
+    renderer.toneMappingExposure=look.exposure;floor.material.color.set(look.ground);floor.position.y=bounds.min.y-.03;
+    window.worldscale.root=root;document.getElementById('selection').textContent='Click a part';
+    state(currentState);explode(Number(document.getElementById('explode').value));
+    // Rebuilt scenes own fresh resources. Keep any explicitly shared resources still in use.
+    const resources=o=>{const found=new Set();o.traverse(n=>{if(n.geometry)found.add(n.geometry);for(const m of (Array.isArray(n.material)?n.material:[n.material]))if(m){found.add(m);for(const value of Object.values(m))if(value?.isTexture)found.add(value);}});return found;};
+    const retained=resources(root);for(const value of resources(previous))if(!retained.has(value))value.dispose();
+    return root;
+  }
   function explode(amount=0){
     renderer.shadowMap.needsUpdate=true;
     for(const p of originals)p.o.position.copy(p.local);root.updateMatrixWorld(true);
@@ -100,7 +130,7 @@ export function mount(root,config={}) {
     const topAt=(list,x,z)=>{ray.set(new THREE.Vector3(x,1e4,z),down);ray.far=2e4;const hit=ray.intersectObjects(list,true)[0];return hit?hit.point.y:-Infinity;};
     let checked=0;
     for(const part of parts){
-      const kind=part.component.kind;if((root.userData.objectKind??'building')==='building'&&(hosts.has(kind)||surface.has(kind)))continue;
+      const kind=part.component.kind;if((part.entity_kind??root.userData.objectKind??'building')==='building'&&(hosts.has(kind)||surface.has(kind)))continue;
       const box=new THREE.Box3().setFromObject(part.pivot);if((root.userData.objectKind??'building')!=='building'&&box.min.y<-.25)issues.push({id:part.component.id,kind,problem:'below_ground',bottom_m:box.min.y,top_m:box.max.y});if(box.isEmpty()||box.min.y<=((root.userData.objectKind??'building')==='building'?.6:.25))continue;
       if(++checked>400)break;
       const size=box.getSize(new THREE.Vector3()),c=box.getCenter(new THREE.Vector3()),others=parts.filter(p=>p!==part&&p.component.kind!=='ground').map(p=>p.pivot);
@@ -116,7 +146,14 @@ export function mount(root,config={}) {
     }
     return {checked,issues};
   }
-  window.worldscale={view,pose,state,lookdev,manifest,geometry,explode,pick,silhouette,clay,heightMap,structure,root,renderer};
+  function addresses(){
+    const rect=b=>{const points=[];for(const x of [b.min[0],b.max[0]])for(const y of [b.min[1],b.max[1]])for(const z of [b.min[2],b.max[2]]){const p=new THREE.Vector3(x,y,z).project(camera);points.push(p);}
+      if(points.every(p=>p.z>1||p.z< -1))return null;
+      return {min:[Math.min(...points.map(p=>(p.x+1)*renderer.domElement.width/2)),Math.min(...points.map(p=>(1-p.y)*renderer.domElement.height/2))],max:[Math.max(...points.map(p=>(p.x+1)*renderer.domElement.width/2)),Math.max(...points.map(p=>(1-p.y)*renderer.domElement.height/2))]};};
+    return {entities:Object.fromEntries(Object.entries(root.userData.entityIndex??{}).map(([id,v])=>[id,{...v,screen:rect(v.bounds)}])),components:root.userData.componentIndex??{}};
+  }
+  window.worldscale={view,pose,state,lookdev,manifest,geometry,explode,pick,silhouette,clay,heightMap,structure,addresses,replaceRoot,root,renderer,
+    cameraState:()=>({position:camera.position.toArray(),target:controls.target.toArray(),up:camera.up.toArray(),projection:camera.type,zoom:camera.zoom})};
   const params=new URLSearchParams(location.search);view(Number(params.get('azimuth')??35),Number(params.get('elevation')??28));state({hour:13,wetness:0,wind:0});
   const hour=document.getElementById('hour'),wet=document.getElementById('wetness'),wind=document.getElementById('wind');
   const change=()=>state({hour:Number(hour.value),wetness:Number(wet.value),wind:Number(wind.value)});hour.oninput=change;wet.oninput=change;wind.oninput=change;

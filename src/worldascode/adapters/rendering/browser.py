@@ -158,7 +158,7 @@ def bundle(
         if (run / "render-config.json").exists()
         else {}
     )
-    config["isolated_stage"] = factory is not None
+    config.setdefault("isolated_stage", factory is not None)
     entry = (
         f"import {{monitorAssets}} from {json.dumps(runtime)};\nmonitorAssets();\n"
         + entry
@@ -267,8 +267,13 @@ def capture(
     extra=None,
     review_only=False,
     export_geometry=True,
+    prepare=None,
 ):
-    """``extra(page, shots)`` may take further captures and append their file names."""
+    """``extra(page, shots)`` may take further captures without changing geometry.
+
+    ``prepare(page)`` may rebuild styles before the geometry-invariance baseline;
+    it returns any screenshot names to include in the capture receipt.
+    """
     run = Path(run).resolve()
     errors = []
     denied = []
@@ -318,6 +323,9 @@ def capture(
         # Automated captures call draw() explicitly through view/pose/state.
         # Do not compete with a continuous animation loop on software WebGL.
         page.evaluate("worldscale.renderer.setAnimationLoop(null)")
+        # A preview may exercise explicit scene/style rebuilds before the state-invariance
+        # baseline. The subsequent night/weather check still requires identical geometry.
+        prepared_shots = prepare(page) if prepare else []
         try:
             initial = page.evaluate("worldscale.manifest()")
         except Exception as exc:
@@ -330,7 +338,7 @@ def capture(
             write_json(run / "browser-bootstrap-failure.json", failure)
             browser.close()
             return failure
-        shots = []
+        shots = list(prepared_shots or [])
         camera = camera_override or (
             fit_camera(page, reference, run)
             if reference
@@ -485,6 +493,9 @@ def record_runtime_snapshot(folder):
         "viewer.mjs",
         "semantic.mjs",
         "parts.mjs",
+        "region.mjs",
+        "area.mjs",
+        "buildings.mjs",
     }
     versions = {
         source.replace("\\", "/"): sha256(content.encode("utf-8")).hexdigest()
@@ -590,4 +601,174 @@ def render_object(folder, code, site, style=None, packs=None, kit_path=None):
         "performance": report["manifest"].get("performance"),
     }
     write_json(folder / "metrics.json", metrics)
+    return metrics, None
+
+
+def render_region(folder, scripts, region, style, evidence, selected_packs):
+    """Compose guarded local recipes and capture the source's exact regional cameras."""
+    import shutil
+
+    from PIL import ImageDraw
+
+    from worldascode.kits import packs as pack_library
+    from worldascode.storage.artifacts import digest
+
+    folder = Path(folder)
+    folder.mkdir(parents=True, exist_ok=True)
+    if set(scripts) != set(region.index()):
+        return None, "REGION_ENTITY_DESIGNS_MISMATCH"
+    runtime = folder / "selected-runtime"
+    runtime.mkdir(exist_ok=True)
+    for p in (ROOT / "runtime").glob("*.mjs"):
+        shutil.copy2(p, runtime / p.name)
+    imports = []
+    bindings = []
+    for index, (entity_id, code) in enumerate(scripts.items()):
+        problems = lint(code)
+        if problems:
+            return None, f"ENTITY {entity_id}: " + "; ".join(problems)
+        try:
+            from worldascode.kits.code import analyze_source
+
+            analyze_source(code)
+        except ValueError as error:
+            return None, f"ENTITY {entity_id}: {error}"
+        path = folder / ("entity-" + digest(entity_id)[:16] + ".mjs")
+        path.write_text(code, encoding="utf-8")
+        imports.append(
+            f"import {{design as design{index}}} from {json.dumps(path.resolve().as_posix())};"
+        )
+        bindings.append(json.dumps(entity_id) + f":design{index}")
+    pinned = [
+        pack_library.pin(p, folder / "selected-packs" / p["id"]) for p in selected_packs
+    ]
+    for index, p in enumerate(pinned):
+        imports.append(
+            f"import * as pack{index} from {json.dumps(Path(p['module']).as_posix())};"
+        )
+    registry = {
+        **region.model_dump(mode="json"),
+        "entities": [
+            {**e.model_dump(mode="json"), "site": e.site()} for e in region.entities
+        ],
+    }
+    imports.append(
+        f"import {{buildRegionDesign}} from {json.dumps((runtime / 'region.mjs').resolve().as_posix())};"
+    )
+    code = (
+        "\n".join(imports)
+        + f"\nexport function createModel(){{return buildRegionDesign({{{','.join(bindings)}}},{json.dumps(registry)},{json.dumps(style)},[{','.join('pack' + str(i) for i in range(len(pinned)))}]);}}"
+    )
+    factory = folder / "region-factory.mjs"
+    factory.write_text(code, encoding="utf-8")
+    write_json(folder / "render-config.json", {"isolated_stage": False})
+    write_json(folder / "scripts.json", scripts)
+    try:
+        bundle(folder, factory=factory)
+        record_runtime_snapshot(folder)
+    except (ValueError, RuntimeError) as error:
+        return None, str(error)[-1600:]
+    inspection = {}
+    aligned = []
+
+    def extra(page, shots):
+        inspection.update(
+            page.evaluate(
+                "({structure:worldscale.structure(),...worldscale.addresses(),part_calls:worldscale.root.userData.packCalls??{}})"
+            )
+        )
+        for name, az, el in [("overview", 125, 48), ("overview-top", 35, 75)]:
+            page.evaluate("v=>worldscale.view(...v)", [az, el])
+            page.locator("canvas").screenshot(path=str(folder / (name + ".png")))
+            shots.append(name + ".png")
+        for record in evidence:
+            if not record.get("camera"):
+                continue
+            page.evaluate("c=>worldscale.pose(c)", record["camera"])
+            name = record["id"] + ".png"
+            page.locator("canvas").screenshot(path=str(folder / name))
+            shots.append(name)
+            addresses = page.evaluate("worldscale.addresses()")
+            write_json(folder / (record["id"] + "-addresses.json"), addresses)
+            aligned.append(
+                {
+                    "evidence_id": record["id"],
+                    "entity_ids": record["request"]["entity_ids"],
+                    "source": record["image"],
+                    "output": str((folder / name).resolve()),
+                    "camera": record["camera"],
+                    "addresses": addresses["entities"],
+                    "reference_addresses": record.get(
+                        "projected_entities", addresses["entities"]
+                    ),
+                }
+            )
+
+    report = capture(folder, extra=extra, review_only=True, export_geometry=False)
+    if report.get("runtime_error"):
+        return None, "RUNTIME: " + str(report["runtime_error"])[:1800]
+    expected = region.index()
+    entities = inspection.get("entities", {})
+    checks = {
+        "browser": bool(report.get("passed")),
+        "entities": set(entities) == set(expected),
+        "structure": not inspection.get("structure", {}).get("issues", []),
+        "triangles": 0 < report["manifest"]["triangles"] <= 200000 * len(expected),
+    }
+    envelope = {}
+    for key, entity in expected.items():
+        actual = entities.get(key, {}).get("bounds")
+        wanted = entity.world_bounds()
+        envelope[key] = bool(
+            actual
+            and all(
+                actual["min"][i]
+                >= wanted.min[i] - max(1, (wanted.max[i] - wanted.min[i]) * 0.15)
+                and actual["max"][i]
+                <= wanted.max[i] + max(1, (wanted.max[i] - wanted.min[i]) * 0.3)
+                for i in range(3)
+            )
+        )
+    checks["entity_envelopes"] = all(envelope.values())
+    metrics = {
+        "passed": all(checks.values()),
+        "checks": checks,
+        "entity_envelopes": envelope,
+        "entities": entities,
+        "components": inspection.get("components", {}),
+        "structure": inspection.get("structure"),
+        "part_calls": inspection.get("part_calls", {}),
+        "triangles": report["manifest"]["triangles"],
+        "performance": report["manifest"].get("performance"),
+    }
+    write_json(folder / "metrics.json", metrics)
+    # Identical projected labels on source and output disambiguate neighboring objects.
+    for pair in aligned:
+        for key in ["source", "output"]:
+            img = Image.open(pair[key]).convert("RGB")
+            draw = ImageDraw.Draw(img)
+            for entity_id, record in pair["reference_addresses"].items():
+                rect = record.get("screen")
+                if not rect:
+                    continue
+                x0, y0 = [
+                    max(0, min(img.size[i] - 1, v)) for i, v in enumerate(rect["min"])
+                ]
+                x1, y1 = [
+                    max(0, min(img.size[i] - 1, v)) for i, v in enumerate(rect["max"])
+                ]
+                if x1 <= x0 or y1 <= y0:
+                    continue
+                draw.rectangle((x0, y0, x1, y1), outline="#ffbf00", width=2)
+                draw.text(
+                    (x0 + 3, y0 + 3),
+                    entity_id,
+                    fill="#ffbf00",
+                    stroke_width=1,
+                    stroke_fill="black",
+                )
+            path = folder / (pair["evidence_id"] + "-" + key + "-labeled.jpg")
+            img.save(path, quality=92)
+            pair[key + "_labeled"] = str(path.resolve())
+    write_json(folder / "aligned-evidence.json", aligned)
     return metrics, None

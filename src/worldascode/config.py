@@ -288,6 +288,8 @@ class CaptureProfile:
     poll_interval_ms: int = 350
     solar_noon_date: str = "2026-06-21"
     ground_estimator: str = "lowest-two-mean-v1"
+    inspection_sse: float = 4.0
+    inspection_cache_mb: int = 128
 
     @classmethod
     def load(cls):

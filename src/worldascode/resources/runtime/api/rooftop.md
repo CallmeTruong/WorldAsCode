@@ -1,3 +1,3 @@
-- `b.mechanical(frame, {width, depth, height, material, louvers})` — plant unit. `b.tank(frame, {radius, height, legs, material})`. `b.antenna(frame, {height, material})`.
+- `b.mechanical(frame, {width, depth, height, material, louvers})` — plant unit. `material` and optional `louvers` are declared string material IDs; `louvers: 'frame'` adds louvers using that material, omit/false disables them. Never pass `louvers: true`. `b.tank(frame, {radius, height, legs, material})`. `b.antenna(frame, {height, material})`.
 - `b.skylight(frame, {width, depth, rise, glass, frame})`, `b.dome(frame, {radius, rise, drum, material, drumMaterial})`, `b.spire(frame, {radius, height, sides, material})`.
 - `b.railing(which, {material, glass, height = 1.05, inset, y, spacing})` — guard rail along edges at roof or terrace level.

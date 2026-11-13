@@ -23,6 +23,7 @@ HOST_API = """Host contract: export function design(site,b,style) {...}.
 Units metres, X/Y/Z = east/up/south. Objects stand on y=0; +X is forward.
 b.material(id,{color,roughness,metalness,opacity,glow,weather,surface:{type:'plain|brick|slate|panels|asphalt|concrete|bark|foliage|soil',scale},seed}) declares a material before use.
 b.at(x,z,yaw=0) returns a placement frame. b.box(frame,{w,h,d,y=0,material}), b.cylinder(frame,{r,h,material}), b.cone(frame,{r,h,material}), b.add(THREE.Object3D,frame) are generic escape hatches. b.THREE exposes Three.js.
+For b.box/b.cylinder/b.cone, y is the BOTTOM elevation, not the centre; the host already adds h/2. A ground-standing pole/post uses y:0. Never pass h/2 as y to centre a primitive. Frame x/z are horizontal only. To create raw Three.js geometry through b.add, position it yourself using Three.js centre conventions.
 No walls or roof are required for a non-building object. For required_checks, attach returnedPart.object.userData.semanticChecks=[{component_id:actual named mesh, requirement:opening or air_path, axis:[x,y,z], centre:[x,y,z], length:positive, wall_probe:[x,y,z]}]. The centre ray must cross the real hole and wall_probe hit its actual shell; coordinates local to that named mesh. Use pack methods for reusable features. Keep placements and dimensions from the brief; vary only permitted features with site.seed. Do not invent a fixed style palette. Unknown source details are estimates, not measured truth."""
 
 
@@ -94,7 +95,16 @@ def publish_candidates(
     return receipt
 
 
-def _develop(provider, run, brief, catalog, feedback, cycle, initial_pack=None):
+def develop_pack(
+    provider,
+    run,
+    brief,
+    catalog,
+    feedback,
+    cycle,
+    initial_pack=None,
+    evidence_images=(),
+):
     folder = run / "pack-candidates" / f"cycle-{cycle}"
     seed_pack = None
     seed_report = None
@@ -137,9 +147,19 @@ def _develop(provider, run, brief, catalog, feedback, cycle, initial_pack=None):
 Module exports `export const parts={name(host,frame,o={}) {...}}`. Only import * as THREE from 'three'. Services: host._material(id), host._surface(id,{type,scale},seed), host._box(w,h,d,x,yBottom,z,materialId), host._prism(profile,depth,materialId), host._world(frame,x,z), host._add(object,kind,frame), host.at, host.roofY, host.site.seed, host.THREE. No other host fields, IO/globals/timers/dynamic imports or host mutations. Each part must add real geometry through host._add. The host is frozen.
 For physical openings: host._add returns {object,pivot,id}. Attach returned.object.userData.semanticChecks=[{component_id:actual named mesh,requirement:'opening'|'air_path',axis:[x,y,z],centre:[x,y,z],length:positive,wall_probe:[x,y,z]}]. Coordinates local to the named mesh. Centre ray crosses real void; wall_probe must hit surrounding material. Axis crosses the full thickness. Place plates and objects on y=0, not floating. Three.js Shape/ExtrudeGeometry can model actual holes. Never label paint as a hole.
 Fixture declares material IDs before use, calls every declared part, and must exercise the new operation. Include two size/shape variants when appropriate, with nonoverlapping frames. All parameters in metres. Three.js primitive conventions: CylinderGeometry is along Y, ExtrudeGeometry along Z, TorusGeometry lies in XY with its normal along Z. A horizontal ring around Y must be rotated appropriately. Geometry bounds and renders in diagnostics are authoritative. No place names, hardcoded object IDs or fixed style palettes in reusable code. Fixture/API colours are illustrative. Keep source below 12000 characters. Correct the actual diagnostic if this is a revision; preserve valid signatures."""
+    from worldascode.config import paths
+
+    reserved = analyze_source(
+        (paths().runtime_dir / "kit.mjs").read_text(encoding="utf-8")
+    )["public_methods"]
+    contract += (
+        "\nRESERVED HOST API NAMES (choose a descriptive different name for every new part): "
+        + json.dumps(reserved)
+    )
+    contract += "\nExport inline host functions exactly as export const parts={myReusablePart(host,frame,o={}){...}}; do not export an identifier alias. Design-facing docs use b.myReusablePart(b.at(x,z,yaw),options), never parts.myReusablePart(host,...)."
     previous = {}
     diagnostics = {}
-    feedback_images = []
+    feedback_images = [Path(p) for p in evidence_images]
     if initial_pack:
         seed_pack = seed_pack or packs.load(initial_pack)
         previous = {
@@ -152,7 +172,7 @@ Fixture declares material IDs before use, calls every declared part, and must ex
         diagnostics = seed_report or packs.validate(
             initial_pack, folder / "seed-validation"
         )
-        feedback_images = [
+        feedback_images += [
             p
             for p in (
                 folder / "seed-validation/seed-1/front.png",
@@ -314,7 +334,7 @@ def run_object(
         if (
             observation.get("missing_capabilities") or brief.get("require_new_pack")
         ) and max_pack_cycles:
-            candidate, diagnosis = _develop(
+            candidate, diagnosis = develop_pack(
                 provider,
                 run,
                 brief,
@@ -488,7 +508,7 @@ def run_object(
                 and (review.get("missing_capability") or stalled)
                 and developed < max_pack_cycles
             ):
-                candidate, diagnosis = _develop(
+                candidate, diagnosis = develop_pack(
                     provider, run, brief, catalog, feedback, developed
                 )
                 developed += 1

@@ -17,6 +17,17 @@ class BudgetExceeded(RuntimeError):
     pass
 
 
+def request_reserve(prompt, images, max_output):
+    """Conservative preflight token reservation, shared with workflow scheduling."""
+    image_reserve = 0
+    for path in images:
+        with Image.open(path) as im:
+            image_reserve += min(
+                8192, 1024 + 4 * math.ceil(im.width / 32) * math.ceil(im.height / 32)
+            )
+    return len(prompt) // 3 + image_reserve + max_output
+
+
 class Provider:
     def __init__(
         self, settings, run, max_calls=12, max_tokens=250000, max_seconds=1800
@@ -115,14 +126,7 @@ class Provider:
             self.usage["cache_hits"] += 1
             self.save()
             return json.loads(cached.read_text(encoding="utf-8"))["parsed"]
-        image_reserve = 0
-        for path in images:
-            with Image.open(path) as im:
-                image_reserve += min(
-                    8192,
-                    1024 + 4 * math.ceil(im.width / 32) * math.ceil(im.height / 32),
-                )
-        reserve = len(prompt) // 3 + image_reserve + max_output
+        reserve = request_reserve(prompt, images, max_output)
         self.save()
         if (
             self.usage["calls"] >= self.max_calls

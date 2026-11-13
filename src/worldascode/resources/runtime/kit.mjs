@@ -87,7 +87,7 @@ function windowTile(spec, color) {
 class Builder {
   constructor(site, style) {
     this.site = deepFreeze(structuredClone(site)); this.style = style ?? {}; this.THREE = THREE;
-    this.plan = site.footprint ? toPlan(site.footprint) : []; this.root = new THREE.Group(); this.root.name = site.object_id ?? 'building'; this.root.userData.objectKind=site.kind??'building';
+    this.plan = site.footprint ? toPlan(site.footprint) : []; this.holes=(site.holes??[]).map(h=>toPlan(h).reverse()); this.root = new THREE.Group(); this.root.name = site.object_id ?? 'building'; this.root.userData.objectKind=site.kind??'building';
     this.materials = new Map(); this.parts = []; this.counts = {}; this.roofProfile = null; this.lookConfig = {};
     const n = this.plan.length;
     this.edges = this.plan.map((a, i) => {
@@ -125,7 +125,12 @@ class Builder {
   _facadeMaterial(name, facade) {
     const key = name + '#facade#' + JSON.stringify(facade);
     if (!this.materials.has(key)) {
-      const base = this._material(name), spec = base.userData.spec, maps = windowTile({ ...facade, surface: spec.surface }, spec.color);
+      const base = this._material(name), spec = base.userData.spec;
+      // Facade painting accepts literal CSS colours and declared material IDs.
+      // Resolve IDs before Canvas sees them; invalid fillStyle silently retains the previous colour.
+      const colour=value=>this.materials.get(value)?.userData.spec.color??value;
+      const window=facade.window?{...facade.window,frame:colour(facade.window.frame),glass:colour(facade.window.glass)}:undefined;
+      const maps = windowTile({ ...facade,window,course:colour(facade.course), surface: spec.surface }, spec.color);
       const m = new THREE.MeshStandardMaterial({ color: '#ffffff', map: maps.map, emissiveMap: maps.emissiveMap, emissive: facade.window?.glow ?? '#ffcf82', emissiveIntensity: 0, roughness: base.roughness });
       m.userData.base = { roughness: base.roughness, emissive_at_night: true, weather_response: true }; this.materials.set(key, m);
     }
@@ -179,7 +184,7 @@ class Builder {
     this.parts.push({ instance: this.root.name, component: { id, kind: type, semantic_requirements: [] }, node: object, pivot });
     return { id, object, pivot };
   }
-  _loft(rings, material, facade) {
+  _loft(rings, material, facade, holes=[]) {
     const positions = [], uvs = [];
     const quad = (a, b, c, d, ua, ub, va, vb) => { for (const p of [a, b, c, a, c, d]) positions.push(...p); uvs.push(ua, va, ub, va, ub, vb, ua, va, ub, vb, ua, vb); };
     for (let k = 0; k + 1 < rings.length; k++) {
@@ -191,8 +196,12 @@ class Builder {
         quad([a[0], low.y, -a[1]], [b[0], low.y, -b[1]], [high.plan[j][0], high.y, -high.plan[j][1]], [high.plan[i][0], high.y, -high.plan[i][1]], 0, ub, va, vb);
       }
     }
-    const top = rings[rings.length - 1], contour = top.plan.map(p => new THREE.Vector2(p[0], p[1]));
-    for (const f of THREE.ShapeUtils.triangulateShape(contour, [])) for (const i of f) { positions.push(top.plan[i][0], top.y, -top.plan[i][1]); uvs.push(top.plan[i][0], top.plan[i][1]); }
+    for(const hole of holes)for(let k=0;k+1<rings.length;k++)for(let i=0;i<hole.length;i++){
+      const a=hole[i],b=hole[(i+1)%hole.length],length=Math.hypot(b[0]-a[0],b[1]-a[1]),low=rings[k],high=rings[k+1];
+      quad([a[0],low.y,-a[1]],[b[0],low.y,-b[1]],[b[0],high.y,-b[1]],[a[0],high.y,-a[1]],0,facade?Math.max(1,Math.round(length/facade.bay)):length,facade?(low.y-rings[0].y)/facade.storey:low.y,facade?(high.y-rings[0].y)/facade.storey:high.y);
+    }
+    const top = rings[rings.length - 1], contour = top.plan.map(p => new THREE.Vector2(p[0], p[1])),vertices=[...top.plan,...holes.flat()];
+    for (const f of THREE.ShapeUtils.triangulateShape(contour, holes.map(h=>h.map(p=>new THREE.Vector2(...p))))) for (const i of f) { positions.push(vertices[i][0], top.y, -vertices[i][1]); uvs.push(vertices[i][0], vertices[i][1]); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2)); g.computeVertexNormals();
     return new THREE.Mesh(g, material);
   }
@@ -202,14 +211,14 @@ class Builder {
     if (Math.abs(height / this.site.eave_m - 1) > .15 || y !== 0) throw Error('KIT_WALL_HEIGHT_OUTSIDE_MEASURED_TOLERANCE');
     const m = o.windows === false ? this._material(o.material) : this._facadeMaterial(o.material, facade);
     this.wallTop = Math.max(this.wallTop ?? 0, y + height);
-    const part = this._add(this._loft([{ y, plan: this.plan }, { y: y + height, plan: this.plan }], m, o.windows === false ? null : facade), 'walls');
+    const part = this._add(this._loft([{ y, plan: this.plan }, { y: y + height, plan: this.plan }], m, o.windows === false ? null : facade,this.holes), 'walls');
     this.wallGuard = {part, positions: Array.from(part.object.geometry.attributes.position.array)};
     return part;
   }
   band(o = {}) {
     const plan = offset(this.plan, -(o.out ?? 0.25)); if (!plan) throw Error('KIT_BAND_OFFSET_FAILED');
     const y = o.y ?? this.site.eave_m - (o.height ?? 0.4);
-    return this._add(this._loft([{ y, plan }, { y: y + (o.height ?? 0.4), plan }], this._material(o.material)), 'band');
+    return this._add(this._loft([{ y, plan }, { y: y + (o.height ?? 0.4), plan }], this._material(o.material),null,this.holes), 'band');
   }
   roof(o = {}) {
     const form = o.form ?? this.site.roof?.form ?? 'hip', eave = o.y ?? this.wallTop ?? this.site.eave_m, rise = o.rise ?? Math.max(0.3, (this.site.ridge_m ?? eave) - eave);
@@ -224,7 +233,8 @@ class Builder {
       rings.push({ y: eave + rise, plan: offset(this.plan, weights.map(w => limit * w)) }); insets.push(limit);
     }
     this.roofProfile = { eave, weights, ys: rings.map(r => r.y), insets, top: rings[rings.length - 1].y };
-    const part=this._add(this._loft(rings, this._material(o.material)), 'roof');this.roofMesh=part.object;
+    if(this.holes.length&&form!=='flat')throw Error('KIT_COURTYARD_PITCHED_ROOF_UNSUPPORTED');
+    const part=this._add(this._loft(rings, this._material(o.material),null,this.holes), 'roof');this.roofMesh=part.object;
     return { ...part, ridgeY: this.roofProfile.top, eaveY: eave };
   }
   // Height of the roof surface (or wall top outside any roof) at a plan position.
@@ -341,9 +351,12 @@ class Builder {
   turret(frame, o = {}) {
     const r = o.radius ?? 1.6, sides = o.sides ?? 8, y = o.y ?? 0, wall = (o.wallTop ?? (this.wallTop ?? this.site.eave_m) + 1.5) - y, g = new THREE.Group();
     const shaft = new THREE.Mesh(new THREE.CylinderGeometry(r, r, wall, sides), this._material(o.material)); shaft.position.y = y + wall / 2; if (sides === 4) shaft.rotation.y = Math.PI / 4; g.add(shaft);
-    const cap = o.roof === 'dome' ? new THREE.Mesh(new THREE.SphereGeometry(r * 1.05, Math.max(sides, 12), 8, 0, Math.PI * 2, 0, Math.PI / 2), this._material(o.roofMaterial ?? o.material)) : new THREE.Mesh(new THREE.ConeGeometry(r * 1.12, o.roofHeight ?? r * 2.2, sides), this._material(o.roofMaterial ?? o.material));
-    cap.position.y = y + wall + (o.roof === 'dome' ? 0 : (o.roofHeight ?? r * 2.2) / 2); if (sides === 4) cap.rotation.y = Math.PI / 4; g.add(cap);
-    if (o.finial) { const f = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, o.finial, 6), this._material(o.finialMaterial ?? o.roofMaterial ?? o.material)); f.position.y = y + wall + (o.roofHeight ?? r * 2.2) + o.finial / 2; g.add(f); }
+    const dome=o.roof==='dome',capHeight=o.roofHeight??r*(dome?1.05:2.2);
+    if(!Number.isFinite(capHeight)||capHeight<=0)throw Error('KIT_INVALID_TURRET_ROOF_HEIGHT');
+    const cap = dome ? new THREE.Mesh(new THREE.SphereGeometry(r * 1.05, Math.max(sides, 12), 8, 0, Math.PI * 2, 0, Math.PI / 2), this._material(o.roofMaterial ?? o.material)) : new THREE.Mesh(new THREE.ConeGeometry(r * 1.12, capHeight, sides), this._material(o.roofMaterial ?? o.material));
+    if(dome)cap.scale.y=capHeight/(r*1.05);
+    cap.position.y = y + wall + (dome ? 0 : capHeight / 2); if (sides === 4) cap.rotation.y = Math.PI / 4; g.add(cap);
+    if (o.finial) { const f = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, o.finial, 6), this._material(o.finialMaterial ?? o.roofMaterial ?? o.material)); f.position.y = y + wall + capHeight + o.finial / 2; g.add(f); }
     return this._add(g, 'turret', frame);
   }
   // A mass projecting out of the facade (oriel, porch block, stair tower).
@@ -445,7 +458,7 @@ class Builder {
   // Stacked bands stepping outward: a moulded cornice rather than a single strip.
   cornice(o = {}) {
     const steps = o.steps ?? 3, height = o.height ?? .9, out = o.out ?? .5, top = o.y ?? this.wallTop ?? this.site.eave_m, g = new THREE.Group();
-    for (let i = 0; i < steps; i++) { const plan = offset(this.plan, -out * (i + 1) / steps); if (!plan) throw Error('KIT_CORNICE_OFFSET_FAILED'); const y = top - height + height * i / steps; g.add(this._loft([{ y, plan }, { y: y + height / steps, plan }], this._material(o.material))); }
+    for (let i = 0; i < steps; i++) { const plan = offset(this.plan, -out * (i + 1) / steps); if (!plan) throw Error('KIT_CORNICE_OFFSET_FAILED'); const y = top - height + height * i / steps; g.add(this._loft([{ y, plan }, { y: y + height / steps, plan }], this._material(o.material),null,this.holes)); }
     return this._add(g, 'cornice');
   }
 
